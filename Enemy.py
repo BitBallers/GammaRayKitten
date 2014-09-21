@@ -19,12 +19,16 @@ class Enemy(PS.Sprite):
 
         self.x_velocity = x_vel
         self.y_velocity = y_vel
+        self.x = self.rect.x
+        self.y = self.rect.y
 
 
     def update(self, dt):
-        self.rect.x += self.x_velocity*dt
-        self.rect.y += self.y_velocity*dt
-
+        self.x += self.x_velocity * dt
+        self.y += self.y_velocity * dt
+        #update rect.x and rect.y
+        self.rect.x = self.x
+        self.rect.y = self.y
         #check wall collisions, change directions
         if self.rect.x > 800 - self.rect.width:
             self.x_velocity *= -1

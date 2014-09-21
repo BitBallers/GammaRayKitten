@@ -22,12 +22,14 @@ class Player(PS.Sprite):
 
         self.image = Player.IMAGE
         self.rect = self.image.get_rect()
-        self.rect.height -= 20  
         self.rect.centerx = x_cord
         self.rect.centery = y_cord+10
         self.x_velocity = 0
         self.y_velocity = 0
-        self.speed = 10.2
+        self.speed = 150
+        #Rect vals are ints, and the x and y's will be floats
+        self.x = self.rect.x
+        self.y = self.rect.y
 
 
     def handle_events(self, event):
@@ -57,37 +59,32 @@ class Player(PS.Sprite):
 
     #takes in the fixed time interval, dt
     def update(self, dt):
-        pls = 0
-        if self.x_velocity > 0:
-            print "VEL"
-            print self.x_velocity
-            print "COORDINATE"
-            print self.rect.centerx
-            pls = 1
-        self.rect.centerx += self.x_velocity * dt
-        self.rect.centery += self.y_velocity * dt
-        if pls == 1:
-            print "VEL"
-            print self.x_velocity
-            print "COORDINATE"
-            print self.rect.centerx
-        
+        self.x += self.x_velocity * dt
+        self.y += self.y_velocity * dt
+        #update rect.x and rect.y
+        self.rect.x = self.x
+        self.rect.y = self.y
+        #check wall collisions, change directions
         if self.rect.x > 800 - self.rect.width:
             self.x_velocity = 0
             self.rect.x = 800 - self.rect.width
-            SOUND.play()
+            self.x = self.rect.x
+            Player.SOUND.play()
 
         if self.rect.x < 0:
             self.x_velocity = 0
             self.rect.x = 0
-            SOUND.play()
+            self.x = self.rect.x
+            Player.SOUND.play()
             
         if self.rect.y > 600 - self.rect.height:
             self.y_velocity = 0
             self.rect.y = 600 - self.rect.height
-            SOUND.play()
+            self.y = self.rect.y
+            Player.SOUND.play()
 
         if self.rect.y < 0:
             self.y_velocity = 0
             self.rect.y = 0
-            SOUND.play()
+            self.y = self.rect.y
+            Player.SOUND.play()

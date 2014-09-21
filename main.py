@@ -27,7 +27,7 @@ clock = PT.Clock()
 current_time = PT.get_ticks()
 all_sprites_list = PS.Group()
 enemies = []
-enemy_speed = 10
+enemy_speed = 50
 
 for i in range(13):
     new_x = random.randint(30,700)
