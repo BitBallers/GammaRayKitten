@@ -17,8 +17,8 @@ import random
 WIDTH = 800
 HEIGHT = 600
 COLOR = (255, 255, 255)
-INTERVAL = .2
-
+INTERVAL = .02
+#set up
 PG.init()
 screen = PD.set_mode((WIDTH, HEIGHT))
 PD.set_caption("Gamma Ray Kitten")
@@ -26,20 +26,18 @@ screen.fill(COLOR)
 clock = PT.Clock()
 current_time = PT.get_ticks()
 all_sprites_list = PS.Group()
-enemies = []
-enemy_speed = 50
-
+enemy_speed = 1
+leftover = 0.0
+# set up enemies
 for i in range(13):
-    new_x = random.randint(30,700)
+    new_x = random.randint(30, 700)
     new_y = random.randint(30, 500)
-    new_x_vel = random.randint(-2,1)*enemy_speed
-    #new_x_vel = enemy_speed
+    new_x_vel = random.randint(-2, 1) * enemy_speed
     if new_x_vel == 0:
         new_y_vel = -enemy_speed
     else:
         new_y_vel = 0
-    enemies.append( Enemy.Enemy(new_x, new_y, new_x_vel, new_y_vel) )
-    all_sprites_list.add(enemies[i])
+    all_sprites_list.add(Enemy.Enemy(new_x, new_y, new_x_vel, new_y_vel))
 
 player = Player.Player(400, 300)
 all_sprites_list.add(player)
@@ -56,16 +54,12 @@ while True:
 
     PD.flip()
     #Update Loop
-    while frame_time > INTERVAL:
-        for e in enemies:
-            e.update(INTERVAL)
-        player.update(INTERVAL)
-        frame_time -= INTERVAL
-    #Update remaining frame_time
-    for e in enemies:
-        e.update(frame_time)
-    player.update(frame_time)
+    leftover += frame_time
+    while leftover > INTERVAL:
+        all_sprites_list.update()
+        leftover -= INTERVAL
 
+    #handle events
     for event in PE.get():
         if event.type == PG.QUIT:
             exit()
