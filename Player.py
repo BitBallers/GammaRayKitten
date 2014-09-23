@@ -17,7 +17,7 @@ class Player(PS.Sprite):
         PS.Sprite.__init__(self)
 
         if not Player.IMAGE:
-            Player.IMAGE = PI.load("cat_sprite.png").convert()
+            Player.IMAGE = PI.load("cat_sprite.png").convert_alpha()
 
         if not Player.SOUND:
             Player.SOUND = PM.Sound("meow.wav")
