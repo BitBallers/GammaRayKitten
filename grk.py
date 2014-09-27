@@ -12,6 +12,7 @@ import pygame.color as PC
 import pygame.mixer as PX
 import Menu
 import Globals as G
+import Title
 
 def main():
     initialize()
@@ -28,7 +29,7 @@ def initialize():
     PD.set_caption("Gamma Ray Kitten")
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
     G.Globals.HEIGHT = G.Globals.SCREEN.get_height()
-    G.Globals.STATE = Menu.Menu()
+    G.Globals.STATE = Title.Title()
 
 def loop():
     while G.Globals.RUNNING:
