@@ -48,7 +48,9 @@ class Menu(State.State):
             y_cord += (surf.get_height() + y_spacing)
 
     def event(self, event):
-        pass
+        if event.type == PG.MOUSEBUTTONDOWN:
+            if self.selected[4]:
+                G.Globals.RUNNING = False
 
     def check_mouse(self, x, y, width, height):
         pos = PM.get_pos()
