@@ -1,0 +1,16 @@
+GammaRayKitten
+==============
+TEAM MEMBERS:
+
+Trevor Aron: taron1@jhu.edu
+Jay Miller
+Glen Smith
+Bertha Hu
+
+
+RUN WITH: python main.py
+Control the cat with the arrow keys
+meow.wav is the sound used when hit against walls
+cat_sprite.png is the image of the main char
+slime_sprite.png is the image of the enemies
+The game we are making
