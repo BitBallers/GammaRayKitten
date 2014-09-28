@@ -3,6 +3,7 @@ import pygame.font as PF
 import pygame.mouse as PM
 import Globals as G
 import State
+import Score
 
 class Menu(State.State):
     FONT = None
@@ -51,6 +52,8 @@ class Menu(State.State):
         if event.type == PG.MOUSEBUTTONDOWN:
             if self.selected[4]:
                 G.Globals.RUNNING = False
+            if self.selected[3]:
+                G.Globals.STATE = Score.Score()
 
     def check_mouse(self, x, y, width, height):
         pos = PM.get_pos()
