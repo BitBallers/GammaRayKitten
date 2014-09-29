@@ -30,7 +30,7 @@ def initialize():
     PD.set_caption("Gamma Ray Kitten")
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
     G.Globals.HEIGHT = G.Globals.SCREEN.get_height()
-    G.Globals.STATE = Game.Game()
+    G.Globals.STATE = Title.Title()
 
 def loop():
     while G.Globals.RUNNING:

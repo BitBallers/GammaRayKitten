@@ -44,7 +44,7 @@ class Game(State.State):
         while self.time > G.Globals.INTERVAL:
             for e in self.enemies:
                 e.update()
-            self.player.update(G.Globals.Interval)
+            self.player.update(G.Globals.INTERVAL)
             self.time -= G.Globals.INTERVAL
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key  == PG.K_ESCAPE:

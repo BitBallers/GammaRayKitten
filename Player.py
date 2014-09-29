@@ -102,7 +102,6 @@ class Player(PS.Sprite):
 
         #animations
         k = Player.CYCLE/8.0
-        print k
         index = math.floor(self.time/k)
         index  = int(index)
         if self.y_velocity < 0:
