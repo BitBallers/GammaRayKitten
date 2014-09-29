@@ -129,21 +129,21 @@ class Player(PS.Sprite):
                          Player.WIDTH, Player.HEIGHT))
             Player.FORWARD_IMAGES.append(surface)
 
-        Player.LEFT_IMAGES = []
+        Player.BACK_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT,
                          Player.WIDTH, Player.HEIGHT))
-            Player.LEFT_IMAGES.append(surface)
+            Player.BACK_IMAGES.append(surface)
 
-        Player.BACK_IMAGES = []
+        Player.LEFT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2,
                          Player.WIDTH, Player.HEIGHT))
-            Player.BACK_IMAGES.append(surface)
+            Player.LEFT_IMAGES.append(surface)
 
         Player.RIGHT_IMAGES = []
         for i in range(8):
