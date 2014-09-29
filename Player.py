@@ -8,6 +8,7 @@ import pygame.sprite as PS
 import pygame.mixer as PM
 import math
 
+
 class Player(PS.Sprite):
 
     FORWARD_IMAGES = None
@@ -74,12 +75,12 @@ class Player(PS.Sprite):
                     self.x_velocity = 0
                     self.image = Player.RIGHT_IMAGES[2]
 
-    #takes in the fixed time interval, dt
+    # takes in the fixed time interval, dt
     def update(self, time):
-        #update rect.x and rect.y
+        # update rect.x and rect.y
         self.rect.x += self.x_velocity
         self.rect.y += self.y_velocity
-        #check wall collisions, change directions
+        # check wall collisions, change directions
         if self.rect.x > 800 - self.rect.width:
             self.x_velocity = 0
             self.rect.x = 800 - self.rect.width
@@ -100,10 +101,10 @@ class Player(PS.Sprite):
             self.rect.y = 0
             Player.SOUND.play()
 
-        #animations
+        # animations
         k = Player.CYCLE/8.0
         index = math.floor(self.time/k)
-        index  = int(index)
+        index = int(index)
         if self.y_velocity < 0:
             self.image = Player.BACK_IMAGES[index]
         if self.y_velocity > 0:
@@ -124,26 +125,30 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            surface.blit(sheet, (0, 0), (i*Player.WIDTH, 0, Player.WIDTH, Player.HEIGHT))
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, 0,
+                         Player.WIDTH, Player.HEIGHT))
             Player.FORWARD_IMAGES.append(surface)
 
         Player.LEFT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT, Player.WIDTH, Player.HEIGHT))
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT,
+                         Player.WIDTH, Player.HEIGHT))
             Player.LEFT_IMAGES.append(surface)
 
         Player.BACK_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2, Player.WIDTH, Player.HEIGHT))
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2,
+                         Player.WIDTH, Player.HEIGHT))
             Player.BACK_IMAGES.append(surface)
 
         Player.RIGHT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*3, Player.WIDTH, Player.HEIGHT))
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*3,
+                         Player.WIDTH, Player.HEIGHT))
             Player.RIGHT_IMAGES.append(surface)
