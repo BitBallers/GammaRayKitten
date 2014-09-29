@@ -15,9 +15,9 @@ class Enemy(PS.Sprite):
         if not Enemy.IMAGES:
             self.load_images()
 
-        self.image = Enemy.IMAGES[0]
-        self.b_index = 0
-        self.c_index = 0
+        self.image = Enemy.IMAGES[8]
+        self.b_index = 8
+        self.c_index = 8
         self.rect = self.image.get_rect()
         self.rect.x = x_cord
         self.rect.y = y_cord
@@ -64,18 +64,18 @@ class Enemy(PS.Sprite):
         key = sheet.get_at((0, 0))
         for y in range(4):
             for x in range(4):
-                surface = PG.Surface((29, 22)).convert()
+                surface = PG.Surface((30, 20)).convert()
                 surface.set_colorkey(key)
-                surface.blit(sheet, (0, 0), (x*29, y*22, 29, 22))
+                surface.blit(sheet, (0, 0), (x*30, y*20, 30, 20))
                 Enemy.IMAGES.append(surface)
 
     def update_image(self):
         if self.y_velocity > 0:
-            self.b_index = 0
+            self.b_index = 8
         elif self.y_velocity < 0:
             self.b_index = 12
         if self.x_velocity > 0:
-            self.b_index = 8
+            self.b_index = 0
         elif self.x_velocity < 0:
             self.b_index = 4
         self.image = Enemy.IMAGES[self.b_index + self.c_index]

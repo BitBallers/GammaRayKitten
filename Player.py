@@ -118,13 +118,13 @@ class Player(PS.Sprite):
             self.time = 0
 
     def load_images(self):
-        sheet = PI.load("cat_sprite_sheet.png").convert()
-        key = sheet.get_at((0, 0))
+        sheet = PI.load("cat_sprite_sheet.png").convert_alpha()
+        #key = sheet.get_at((0, 0))
 
         Player.FORWARD_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
-            surface.set_colorkey(key)
+            #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, 0,
                          Player.WIDTH, Player.HEIGHT))
             Player.FORWARD_IMAGES.append(surface)
@@ -132,7 +132,7 @@ class Player(PS.Sprite):
         Player.BACK_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
-            surface.set_colorkey(key)
+            #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT,
                          Player.WIDTH, Player.HEIGHT))
             Player.BACK_IMAGES.append(surface)
@@ -140,7 +140,7 @@ class Player(PS.Sprite):
         Player.LEFT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
-            surface.set_colorkey(key)
+            #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2,
                          Player.WIDTH, Player.HEIGHT))
             Player.LEFT_IMAGES.append(surface)
@@ -148,7 +148,7 @@ class Player(PS.Sprite):
         Player.RIGHT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
-            surface.set_colorkey(key)
+            #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*3,
                          Player.WIDTH, Player.HEIGHT))
             Player.RIGHT_IMAGES.append(surface)
