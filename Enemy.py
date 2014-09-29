@@ -49,32 +49,32 @@ class Enemy(PS.Sprite):
             self.rect.y = 0
         self.x = self.rect.x
         self.y = self.rect.y
-        
+
         self.time += Globals.Globals.INTERVAL
         if self.time > Enemy.CYCLE:
             self.time = 0.0
         index = int(self.time / (Enemy.CYCLE / 4))
         if index != self.c_index:
             self.c_index = index
-            self.update_image() 
+            self.update_image()
 
     def load_images(self):
         Enemy.IMAGES = []
         sheet = PI.load("slime_sprite_sheet.png").convert()
-        key = sheet.get_at((0,0))
+        key = sheet.get_at((0, 0))
         for y in range(4):
             for x in range(4):
-                surface = PG.Surface((29,22)).convert()
+                surface = PG.Surface((29, 22)).convert()
                 surface.set_colorkey(key)
                 surface.blit(sheet, (0, 0), (x*29, y*22, 29, 22))
                 Enemy.IMAGES.append(surface)
 
     def update_image(self):
         if self.y_velocity > 0:
-           self.b_index = 0
+            self.b_index = 0
         elif self.y_velocity < 0:
             self.b_index = 12
-        if self.x_velocity > 0: 
+        if self.x_velocity > 0:
             self.b_index = 8
         elif self.x_velocity < 0:
             self.b_index = 4

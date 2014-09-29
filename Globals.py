@@ -1,3 +1,7 @@
+import Menu
+import Score
+
+
 class Globals(object):
     RUNNING = True
     SCREEN = None

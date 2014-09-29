@@ -15,10 +15,13 @@ import Globals as G
 import Title
 import Game
 
+
 def main():
+
     initialize()
     loop()
     finalize()
+
 
 def initialize():
     passed, failed = PG.init()
@@ -31,6 +34,7 @@ def initialize():
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
     G.Globals.HEIGHT = G.Globals.SCREEN.get_height()
     G.Globals.STATE = Title.Title()
+
 
 def loop():
     while G.Globals.RUNNING:
@@ -45,9 +49,8 @@ def loop():
             else:
                 G.Globals.STATE.event(event)
 
+
 def finalize():
     PG.quit()
 
 main()
-    
-        
