@@ -4,7 +4,7 @@ import pygame.mouse as PM
 import Globals as G
 import State
 import Score
-import Game
+import Main
 
 
 class Menu(State.State):
@@ -63,7 +63,7 @@ class Menu(State.State):
     def event(self, event):
         if event.type == PG.MOUSEBUTTONDOWN:
             if self.selected[0]:
-                G.Globals.STATE = Game.Game()
+                G.Globals.STATE = Main.Game()
             if self.selected[4]:
                 G.Globals.RUNNING = False
             if self.selected[3]:

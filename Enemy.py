@@ -60,12 +60,12 @@ class Enemy(PS.Sprite):
 
     def load_images(self):
         Enemy.IMAGES = []
-        sheet = PI.load("slime_sprite_sheet.png").convert()
-        key = sheet.get_at((0, 0))
+        sheet = PI.load("slime_sprite_sheet.png").convert_alpha()
+        #key = sheet.get_at((0, 0))
         for y in range(4):
             for x in range(4):
-                surface = PG.Surface((30, 20)).convert()
-                surface.set_colorkey(key)
+                surface = PG.Surface((30, 20)).convert_alpha()
+                #surface.set_colorkey(key)
                 surface.blit(sheet, (0, 0), (x*30, y*20, 30, 20))
                 Enemy.IMAGES.append(surface)
 

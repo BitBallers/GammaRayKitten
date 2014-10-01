@@ -18,7 +18,7 @@ class Player(PS.Sprite):
     SOUND = None
     WIDTH = 40
     HEIGHT = 50
-    CYCLE = 2
+    CYCLE = 1
 
     def __init__(self, x_cord, y_cord):
         PS.Sprite.__init__(self)
@@ -123,7 +123,7 @@ class Player(PS.Sprite):
 
         Player.FORWARD_IMAGES = []
         for i in range(8):
-            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert_alpha()
             #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, 0,
                          Player.WIDTH, Player.HEIGHT))
@@ -131,7 +131,7 @@ class Player(PS.Sprite):
 
         Player.BACK_IMAGES = []
         for i in range(8):
-            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert_alpha()
             #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT,
                          Player.WIDTH, Player.HEIGHT))
@@ -139,7 +139,7 @@ class Player(PS.Sprite):
 
         Player.LEFT_IMAGES = []
         for i in range(8):
-            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert_alpha()
             #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2,
                          Player.WIDTH, Player.HEIGHT))
@@ -147,7 +147,7 @@ class Player(PS.Sprite):
 
         Player.RIGHT_IMAGES = []
         for i in range(8):
-            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert_alpha()
             #surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*3,
                          Player.WIDTH, Player.HEIGHT))

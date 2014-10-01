@@ -1,0 +1,20 @@
+GammaRayKitten
+==============
+TEAM MEMBERS:
+
+Trevor Aron: taron1@jhu.edu
+Jay Miller
+Glen Smith
+Bertha Hu
+
+
+RUN WITH: python game.py
+
+
+Control the cat with the arrow keys in game
+meow.wav is the sound used when hit against walls
+cat_sprite_sheet.png is the images of the main char
+slime_sprite_sheet.png is the images of the enemies
+blox.ttf is the font
+scores.txt is the high score list
+Hitting ESCAPE in the game will return to the menu
