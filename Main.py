@@ -35,7 +35,7 @@ class Game(State.State):
         self.all_sprites_list.add(self.player)
 
     def render(self):
-        G.Globals.SCREEN.fill(PC.Color("black"))
+        G.Globals.SCREEN.fill(PC.Color("white"))
         self.all_sprites_list.draw(G.Globals.SCREEN)
 
     def update(self, time):

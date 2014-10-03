@@ -13,7 +13,7 @@ import pygame.mixer as PX
 import Menu
 import Globals as G
 import Title
-import Game
+import Main
 
 
 def main():
