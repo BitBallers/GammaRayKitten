@@ -1,69 +1,54 @@
-#BitBallers
-#Intro Video Game Design
-#Main
-
-
 import pygame as PG
-import pygame.display as PD
+import pygame.color as PC
 import pygame.event as PE
-import pygame.font as PF
 import pygame.time as PT
 import pygame.sprite as PS
+import pygame.mixer as PX
 import Enemy
 import Player
 import random
+import State
+import Menu
+import Globals as G
 
-#constants
-WIDTH = 800
-HEIGHT = 600
-COLOR = (255, 255, 255)
-INTERVAL = .02
-#set up
-PG.init()
-screen = PD.set_mode((WIDTH, HEIGHT))
-PD.set_caption("Gamma Ray Kitten")
-screen.fill(COLOR)
-clock = PT.Clock()
-current_time = PT.get_ticks()
-all_sprites_list = PS.Group()
-enemy_speed = 1
-leftover = 0.0
-# set up enemies
-for i in range(13):
-    new_x = random.randint(30, 700)
-    new_y = random.randint(30, 500)
-    new_x_vel = random.randint(-2, 1) * enemy_speed
-    if new_x_vel == 0:
-        new_y_vel = -enemy_speed
-    else:
-        new_y_vel = 0
-    all_sprites_list.add(Enemy.Enemy(new_x, new_y, new_x_vel, new_y_vel))
 
-player = Player.Player(400, 300)
-all_sprites_list.add(player)
+class Game(State.State):
+    def __init__(self):
+        State.State.__init__(self)
+        self.all_sprites_list = PS.Group()
+        self.enemy_speed = 1
+        self.time = 0.0
+        self.enemies = []
 
-while True:
-    new_time = PT.get_ticks()
-    frame_time = (new_time - current_time) / 1000.0
-    current_time = new_time
-    clock.tick()
+        for i in range(13):
+                new_x = random.randint(30, 700)
+                new_y = random.randint(30, 500)
+                new_x_vel = random.randint(-2, 1) * self.enemy_speed
+                if new_x_vel == 0:
+                    new_y_vel = -self.enemy_speed
+                else:
+                    new_y_vel = 0
+                new_enemy = Enemy.Enemy(new_x, new_y, new_x_vel, new_y_vel)
+                self.all_sprites_list.add(new_enemy)
+                self.enemies.append(new_enemy)
+        self.player = Player.Player(400, 300)
+        self.all_sprites_list.add(self.player)
 
-    screen.fill(COLOR)
+    def render(self):
+        G.Globals.SCREEN.fill(PC.Color("white"))
+        self.all_sprites_list.draw(G.Globals.SCREEN)
 
-    all_sprites_list.draw(screen)
+    def update(self, time):
+        self.time += time
+        while self.time > G.Globals.INTERVAL:
+            for e in self.enemies:
+                e.update()
+            self.player.update(G.Globals.INTERVAL)
+            self.time -= G.Globals.INTERVAL
 
-    PD.flip()
-    #Update Loop
-    leftover += frame_time
-    while leftover > INTERVAL:
-        all_sprites_list.update()
-        leftover -= INTERVAL
+    def event(self, event):
+        if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
+            G.Globals.STATE = Menu.Menu()
 
-    #handle events
-    for event in PE.get():
-        if event.type == PG.QUIT:
-            exit()
-        elif event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
-            exit()
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
-            player.handle_events(event)
+            self.player.handle_events(event)
