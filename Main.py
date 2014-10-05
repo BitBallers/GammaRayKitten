@@ -10,15 +10,24 @@ import random
 import State
 import Menu
 import Globals as G
+import Tile
 
 
 class Game(State.State):
+
+    TILE_WIDTH = 50
+    TILE_HEIGHT = 50
+
     def __init__(self):
         State.State.__init__(self)
         self.all_sprites_list = PS.Group()
+        self.wall_sprites_list = PS.Group()
+        self.map_sprites_list = PS.Group()
         self.enemy_speed = 1
         self.time = 0.0
         self.enemies = []
+
+        self.map = []
 
         for i in range(13):
                 new_x = random.randint(30, 700)
@@ -34,8 +43,13 @@ class Game(State.State):
         self.player = Player.Player(400, 300)
         self.all_sprites_list.add(self.player)
 
+        self.load_map()
+
+
+
     def render(self):
         G.Globals.SCREEN.fill(PC.Color("white"))
+        self.map_sprites_list.draw(G.Globals.SCREEN)
         self.all_sprites_list.draw(G.Globals.SCREEN)
 
     def update(self, time):
@@ -52,3 +66,18 @@ class Game(State.State):
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
             self.player.handle_events(event)
+
+    def load_map(self):
+        map_file = open("basic_map.txt")
+        i = 0
+        for line in map_file.readlines():
+            k = 0
+            for character in line:
+                if k == 16:
+                    continue
+                self.map.append(Tile.Tile(k*Game.TILE_WIDTH, i*Game.TILE_HEIGHT, int(character)))
+                self.map_sprites_list.add(self.map[-1])
+                if int(character) != 1:
+                    self.wall_sprites_list.add(self.map[-1])
+                k += 1
+            i += 1
