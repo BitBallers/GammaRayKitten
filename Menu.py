@@ -19,12 +19,12 @@ class Menu(State.State):
         if not Menu.FONT:
             Menu.FONT = PF.Font("Red October-Regular.ttf", 30)
         if not Menu.TITLEFONT:
-            Menu.TITLEFONT = PF.Font("Red October-Regular.ttf", 80)
+            Menu.TITLEFONT = PF.Font("Red October-Regular.ttf", 70)
 
         self.menu_strings = ["New Game", "Adjust Brightness", "Adjust Sound",
                              "Display Highscores", "Quit"]
         self.surfs = []
-        self.title_surf = Menu.TITLEFONT.render("Gamma Ray Cat",
+        self.title_surf = Menu.TITLEFONT.render("Gamma Ray Kitten",
                                                 True, (0, 255, 0))
         for i in range(5):
             self.surfs.append(Menu.FONT.render(self.menu_strings[i],
