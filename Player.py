@@ -8,14 +8,19 @@ import pygame.sprite as PS
 import pygame.mixer as PM
 import math
 import Globals as G
+import Tile
 
 
 class Player(PS.Sprite):
 
     FORWARD_IMAGES = None
+    FORWARD_R_IMAGES = None
     BACK_IMAGES = None
+    BACK_R_IMAGES = None
     LEFT_IMAGES = None
+    LEFT_R_IMAGES = None
     RIGHT_IMAGES = None
+    RIGHT_R_IMAGES = None
     SOUND = None
     WIDTH = 40
     HEIGHT = 50
@@ -56,22 +61,7 @@ class Player(PS.Sprite):
             #Remove the key from the array if
             #it is there
             self.key.remove(event.key)
-#            if event.key == PG.K_UP:
-#                if self.y_velocity < 0:
-#                    self.y_velocity = 0
-#                    self.image = Player.BACK_IMAGES[2]
-#            elif event.key == PG.K_DOWN:
-#                if self.y_velocity > 0:
-#                    self.y_velocity = 0
-#                    self.image = Player.FORWARD_IMAGES[2]
-#            elif event.key == PG.K_LEFT:
-#                if self.x_velocity < 0:
-#                    self.x_velocity = 0
-#                    self.image = Player.LEFT_IMAGES[2]
-#            elif event.key == PG.K_RIGHT:
-#                if self.x_velocity > 0:
-#                    self.x_velocity = 0
-#                    self.image = Player.RIGHT_IMAGES[2]
+
 
     # takes in the fixed time interval, dt
     def update(self, time):
@@ -106,25 +96,30 @@ class Player(PS.Sprite):
                 self.y_velocity -= self.accel
                 if self.y_velocity < 0:
                     self.y_velocity = 0
+                    self.image = Player.FORWARD_IMAGES[2]
             elif self.y_velocity < 0:
                 self.y_velocity += self.accel
                 if self.y_velocity > 0:
                     self.y_velocity = 0
+                    self.image = Player.BACK_IMAGES[2]
             if self.x_velocity > 0:
                 self.x_velocity -= self.accel
                 if self.x_velocity < 0:
                     self.x_velocity = 0
+                    self.image = Player.RIGHT_IMAGES[2]
             elif self.x_velocity < 0:
                 self.x_velocity += self.accel
                 if self.x_velocity > 0:
                     self.x_velocity = 0
+                    self.image = Player.LEFT_IMAGES[2]
 
 
 
         # update rect.x and rect.y
         self.rect.x += self.x_velocity
         self.rect.y += self.y_velocity
-        # check wall collisions, change directions
+
+        # check boundary collisions, change directions
         if self.rect.x > 800 - self.rect.width:
             self.x_velocity = 0
             self.rect.x = 800 - self.rect.width
@@ -150,21 +145,48 @@ class Player(PS.Sprite):
         index = math.floor(self.time/k)
         index = int(index)
         if self.y_velocity < 0:
-            self.image = Player.BACK_IMAGES[index]
+            if self.y_velocity == -self.speed:
+                self.image = Player.BACK_R_IMAGES[index]
+            else:
+                self.image = Player.BACK_IMAGES[index]
         if self.y_velocity > 0:
-            self.image = Player.FORWARD_IMAGES[index]
+            if self.y_velocity == self.speed:
+                self.image = Player.FORWARD_R_IMAGES[index]
+            else:
+                self.image = Player.FORWARD_IMAGES[index]
         if self.x_velocity < 0:
-            self.image = Player.LEFT_IMAGES[index]
+            if self.x_velocity == -self.speed:
+                self.image = Player.LEFT_R_IMAGES[index]
+            else:
+                self.image = Player.LEFT_IMAGES[index]
         if self.x_velocity > 0:
-            self.image = Player.RIGHT_IMAGES[index]
+            if self.x_velocity == self.speed:
+                self.image = Player.RIGHT_R_IMAGES[index]
+            else:
+                self.image = Player.RIGHT_IMAGES[index]
         self.time += time
         if self.time >= Player.CYCLE:
             self.time = 0
 
-    def load_images(self):
-        sheet = PI.load("cat_sprite_sheet_new.png").convert()
-        key = sheet.get_at((0, 0))
+    def wall_collision(self, tile):
+        if self.y_velocity > 0:
+            self.y_velocity = 0
+            self.rect.y = tile.rect.y  - Player.HEIGHT
+        elif self.y_velocity < 0:
+            self.y_velocity = 0
+            self.rect.y = tile.rect.y + Tile.Tile.HEIGHT
+        elif self.x_velocity > 0:
+            self.x_velocity = 0
+            self.rect.x = tile.rect.x - Player.WIDTH
+        elif self.x_velocity < 0:
+            self.x_velocity = 0
+            self.rect.x = tile.rect.x + Tile.Tile.WIDTH
 
+
+    def load_images(self):
+        sheet = PI.load("cat_sprite_sheet.png").convert()
+        key = sheet.get_at((0, 0))
+        #Get Forward Images
         Player.FORWARD_IMAGES = []
         for i in range(8):
 
@@ -173,7 +195,7 @@ class Player(PS.Sprite):
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, 0,
                          Player.WIDTH, Player.HEIGHT))
             Player.FORWARD_IMAGES.append(surface)
-
+        #Get Back Images
         Player.BACK_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
@@ -183,7 +205,7 @@ class Player(PS.Sprite):
                          Player.WIDTH, Player.HEIGHT))
             
             Player.BACK_IMAGES.append(surface)
-
+        #Get Left Images
         Player.LEFT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
@@ -192,7 +214,7 @@ class Player(PS.Sprite):
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2,
                          Player.WIDTH, Player.HEIGHT))
             Player.LEFT_IMAGES.append(surface)
-
+        #Get Right Images
         Player.RIGHT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
@@ -201,3 +223,39 @@ class Player(PS.Sprite):
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*3,
                          Player.WIDTH, Player.HEIGHT))
             Player.RIGHT_IMAGES.append(surface)
+        #Get Forward Running images
+        Player.FORWARD_R_IMAGES = []
+        for i in range(8):
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface.set_colorkey(key)
+            
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*4,
+                         Player.WIDTH, Player.HEIGHT))
+            Player.FORWARD_R_IMAGES.append(surface)
+        #Get Back Running Images
+        Player.BACK_R_IMAGES = []
+        for i in range(8):
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface.set_colorkey(key)
+            
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*5,
+                         Player.WIDTH, Player.HEIGHT))
+            Player.BACK_R_IMAGES.append(surface)
+        #Get Left Running Images
+        Player.LEFT_R_IMAGES = []
+        for i in range(8):
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface.set_colorkey(key)
+            
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*6,
+                         Player.WIDTH, Player.HEIGHT))
+            Player.LEFT_R_IMAGES.append(surface)
+        #Get Right Running Images
+        Player.RIGHT_R_IMAGES = []
+        for i in range(8):
+            surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
+            surface.set_colorkey(key)
+            
+            surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*7,
+                         Player.WIDTH, Player.HEIGHT))
+            Player.RIGHT_R_IMAGES.append(surface)
