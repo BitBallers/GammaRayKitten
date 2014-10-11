@@ -23,6 +23,7 @@ class Game(State.State):
         self.all_sprites_list = PS.Group()
         self.wall_sprites_list = PS.Group()
         self.map_sprites_list = PS.Group()
+        self.player_group = PS.Group()
         self.enemy_speed = 1
         self.time = 0.0
         self.enemies = []
@@ -41,8 +42,7 @@ class Game(State.State):
                 self.all_sprites_list.add(new_enemy)
                 self.enemies.append(new_enemy)
         self.player = Player.Player(400, 300)
-        self.all_sprites_list.add(self.player)
-
+        self.player_group.add(self.player)
         self.load_map()
 
 
@@ -51,6 +51,7 @@ class Game(State.State):
         G.Globals.SCREEN.fill(PC.Color("white"))
         self.map_sprites_list.draw(G.Globals.SCREEN)
         self.all_sprites_list.draw(G.Globals.SCREEN)
+        self.player_group.draw(G.Globals.SCREEN)
 
     def update(self, time):
         self.time += time
@@ -58,6 +59,11 @@ class Game(State.State):
             for e in self.enemies:
                 e.update()
             self.player.update(G.Globals.INTERVAL)
+            #Are there collisions
+            result = PS.groupcollide(self.player_group, self.wall_sprites_list,
+                                  False, False)
+            for key in result: 
+                self.player.wall_collision(result[key][0])
             self.time -= G.Globals.INTERVAL
 
     def event(self, event):
