@@ -11,41 +11,28 @@ import State
 import Menu
 import Globals as G
 import Tile
+import Camera
+import Map
+import math
 
 
 class Game(State.State):
 
     TILE_WIDTH = 50
     TILE_HEIGHT = 50
+    MAP_TILE_WIDTH = 16
+    MAP_TILE_HEIGHT = 12
 
     def __init__(self):
         State.State.__init__(self)
+        
+        self.map = Map.Map("Map for Assignment 5.txt")
+        self.camera = Camera.Camera(self.map.height*Map.TILE_HEIGHT-G.Globals.HEIGHT, 0)
         self.all_sprites_list = PS.Group()
-        self.wall_sprites_list = PS.Group()
-        self.map_sprites_list = PS.Group()
         self.player_group = PS.Group()
         self.enemy_speed = 1
         self.time = 0.0
         self.enemies = []
-
-        self.map = []
-
-        for i in range(13):
-                new_x = random.randint(30, 700)
-                new_y = random.randint(30, 500)
-                new_x_vel = random.randint(-2, 1) * self.enemy_speed
-                if new_x_vel == 0:
-                    new_y_vel = -self.enemy_speed
-                else:
-                    new_y_vel = 0
-                new_enemy = Enemy.Enemy(new_x, new_y, new_x_vel, new_y_vel)
-                self.all_sprites_list.add(new_enemy)
-                self.enemies.append(new_enemy)
-        self.player = Player.Player(400, 300)
-        self.player_group.add(self.player)
-        self.load_map()
-
-
 
     def render(self):
         G.Globals.SCREEN.fill(PC.Color("white"))
@@ -73,17 +60,19 @@ class Game(State.State):
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
             self.player.handle_events(event)
 
-    def load_map(self):
-        map_file = open("basic_map.txt")
-        i = 0
-        for line in map_file.readlines():
-            k = 0
-            for character in line:
-                if k == 16:
-                    continue
-                self.map.append(Tile.Tile(k*Game.TILE_WIDTH, i*Game.TILE_HEIGHT, int(character)))
-                self.map_sprites_list.add(self.map[-1])
-                if int(character) != 1:
-                    self.wall_sprites_list.add(self.map[-1])
-                k += 1
-            i += 1
+    def set_screen_coords_map(self):
+        self.wall_sprites_list = PS.Group()
+        self.floor_sprites_list = PS.Group()
+        self.special_sprites_list = PS.Group()
+
+        first_x = math.floor(self.camera.x/Main.TILE_WIDTH)*Main.TILE_WIDTH
+        first_y = math.floor(self.camera.y/Main.TILE_HEIGHT)*Main.TILE_HEIGHT
+        offset_x = first_x - self.camera.x
+        offset_y = first_y - self.camera.y
+        for i in range(Main.MAP_TILE_WIDTH+1):
+            for k in range(Main.MAP_TILE_HEIGHT+1):
+                x = first_x+(i*Main.TILE_WIDTH)
+                y = first_y*(k*Main.TILE_HEIGHT)
+                tile = self.map.tiles[(x, y)]
+                tile.rect.x = offset_x+(i*Main.TILE_WIDTH)
+                tile.rect.y = offset_y+(k*Main.TILE_HEIGHT)

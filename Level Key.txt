@@ -1,10 +1,9 @@
-Level Key:
-0 - boundary
-B - black tile
-D - door tile
-E - enemies
-F - floor tile
-K - key tile
-S - stairs tile
-X - wall tile
-W - wall with light tile
+07
+B7
+L0
+D1
+R2
+‘6
+S5
+X3
+W4
