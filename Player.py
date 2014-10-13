@@ -177,17 +177,20 @@ class Player(PS.Sprite):
             self.time = 0
 
     def wall_collision(self, tile):
+        val = 0
         #picking up a key
         if tile.is_key():
             self.keys = self.keys + 1
             tile.change_image(6)
+            val = 1
         #opening a door
         elif tile.is_door() and self.keys > 0:
             self.keys = self.keys - 1
             tile.change_image(6)
+            val = 1
         #GAMEOVER
         elif tile.is_stairs():
-            return 1
+            val = 2
         #regular wall stuff
         elif self.y_velocity > 0:
             self.y_velocity = 0
@@ -201,7 +204,7 @@ class Player(PS.Sprite):
         elif self.x_velocity < 0:
             self.x_velocity = 0
             self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
-        return 0
+        return val
 
 
     def load_images(self):

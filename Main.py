@@ -55,7 +55,12 @@ class Game(State.State):
                                   False, False)
             for key in result:
                 for wall in result[key]:
-                    self.player.wall_collision(wall)
+                    val = self.player.wall_collision(wall)
+                    if val == 1:
+                        self.wall_sprites_list.remove(wall)
+                    if val == 2:
+                        G.Globals.STATE = Menu.Menu()
+                        
             self.time -= G.Globals.INTERVAL
 
 
