@@ -56,13 +56,12 @@ class Game(State.State):
                 e.update()
             self.player.update(G.Globals.INTERVAL)
             # Are there collisions
+            self.set_screen_cords_player()
             result = PS.groupcollide(self.player_group, self.wall_sprites_list,
                                   False, False)
             for key in result: 
                 self.player.wall_collision(result[key][0])
-                break
             self.time -= G.Globals.INTERVAL
-            print self.player.world_coord_x, self.player.world_coord_y
 
 
     def event(self, event):
