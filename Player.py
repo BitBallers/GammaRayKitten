@@ -58,6 +58,7 @@ class Player(PS.Sprite):
         self.key = []
         self.time = 0
         self.camera = cam
+        self.keys = 0
         
 
     def handle_events(self, event):
@@ -176,7 +177,19 @@ class Player(PS.Sprite):
             self.time = 0
 
     def wall_collision(self, tile):
-        if self.y_velocity > 0:
+        #picking up a key
+        if tile.is_key():
+            self.keys = self.keys + 1
+            tile.change_image(6)
+        #opening a door
+        elif tile.is_door() and self.keys > 0:
+            self.keys = self.keys - 1
+            tile.change_image(6)
+        #GAMEOVER
+        elif tile.is_stairs():
+            return 1
+        #regular wall stuff
+        elif self.y_velocity > 0:
             self.y_velocity = 0
             self.world_coord_y = tile.world_y - Player.HEIGHT
         elif self.y_velocity < 0:
@@ -188,6 +201,7 @@ class Player(PS.Sprite):
         elif self.x_velocity < 0:
             self.x_velocity = 0
             self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
+        return 0
 
 
     def load_images(self):

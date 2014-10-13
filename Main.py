@@ -88,7 +88,7 @@ class Game(State.State):
                 tile = self.map.tiles[(x, y)]
                 tile.set_screen_coords(offset_x+(i*Game.TILE_WIDTH), offset_y+(k*Game.TILE_HEIGHT))
                 self.map_tiles.add(tile)
-                if tile.is_wall():
+                if tile.is_wall() or tile.is_key() or tile.is_door() or tile.is_stairs():
                     self.wall_sprites_list.add(tile)
 
     def set_screen_cords_player(self):
