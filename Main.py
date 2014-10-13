@@ -59,8 +59,9 @@ class Game(State.State):
             self.set_screen_cords_player()
             result = PS.groupcollide(self.player_group, self.wall_sprites_list,
                                   False, False)
-            for key in result: 
-                self.player.wall_collision(result[key][0])
+            for key in result:
+                for wall in result[key]:
+                    self.player.wall_collision(wall)
             self.time -= G.Globals.INTERVAL
 
 
