@@ -22,7 +22,7 @@ class Tile(PS.Sprite):
         self.world_x = x
         self.world_y = y
         self.type = type
-        
+
     def change_image(self, type):
         self.image = Tile.IMAGES[type]
         self.type = type
@@ -37,7 +37,7 @@ class Tile(PS.Sprite):
 
         for i in range(Tile.SPRITE_SHEET_LENGTH):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
-            
+
             surface.blit(sheet, (0, 0), (i*Tile.WIDTH, 0,
                          Tile.WIDTH, Tile.HEIGHT))
             Tile.IMAGES.append(surface)
@@ -50,8 +50,6 @@ class Tile(PS.Sprite):
         surface.set_colorkey(color_key)
         surface.blit(key, (15, 19))
         Tile.IMAGES.append(surface)
-        
-        
 
     def is_wall(self):
         if self.type in Tile.WALL_TILES:
@@ -76,5 +74,3 @@ class Tile(PS.Sprite):
             return True
         else:
             return False
-
-

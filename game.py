@@ -1,4 +1,4 @@
-#The main architecture of the game
+# The main architecture of the game
 
 import sys as SYS
 import pygame as PG
@@ -25,7 +25,7 @@ def main():
 
 def initialize():
     passed, failed = PG.init()
-    #make sure nothing weird is going on
+    # make sure nothing weird is going on
     if failed > 0:
         print "ERROR: %d Pygame modules failed to initialize" % failed
         PG.quit()

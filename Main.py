@@ -25,7 +25,7 @@ class Game(State.State):
 
     def __init__(self):
         State.State.__init__(self)
-        
+
         self.map = Map.Map("Map for Assignment 5.txt")
         self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
@@ -37,7 +37,7 @@ class Game(State.State):
         self.enemies = []
         self.set_screen_coords_map()
         self.set_screen_cords_player()
-        
+
     def render(self):
         G.Globals.SCREEN.fill(PC.Color("white"))
         self.map_tiles.draw(G.Globals.SCREEN)
@@ -52,7 +52,7 @@ class Game(State.State):
             # Are there collisions
             self.set_screen_cords_player()
             result = PS.groupcollide(self.player_group, self.wall_sprites_list,
-                                  False, False)
+                                     False, False)
             for key in result:
                 for wall in result[key]:
                     val = self.player.wall_collision(wall)
@@ -60,9 +60,8 @@ class Game(State.State):
                         self.wall_sprites_list.remove(wall)
                     if val == 2:
                         G.Globals.STATE = Menu.Menu()
-                        
-            self.time -= G.Globals.INTERVAL
 
+            self.time -= G.Globals.INTERVAL
 
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
@@ -85,9 +84,11 @@ class Game(State.State):
                 x = first_x+(i*Game.TILE_WIDTH)
                 y = first_y+(k*Game.TILE_HEIGHT)
                 tile = self.map.tiles[(x, y)]
-                tile.set_screen_coords(offset_x+(i*Game.TILE_WIDTH), offset_y+(k*Game.TILE_HEIGHT))
+                tile.set_screen_coords(offset_x+(i*Game.TILE_WIDTH),
+                                       offset_y+(k*Game.TILE_HEIGHT))
                 self.map_tiles.add(tile)
-                if tile.is_wall() or tile.is_key() or tile.is_door() or tile.is_stairs():
+                if tile.is_wall() or tile.is_key() or \
+                        tile.is_door() or tile.is_stairs():
                     self.wall_sprites_list.add(tile)
 
     def set_screen_cords_player(self):
