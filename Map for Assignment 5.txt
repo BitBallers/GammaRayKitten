@@ -7,7 +7,7 @@
 0~B~~~~~B~~~~B~~~~~~~~~~~~~~~~~0
 0~XB~~~~B~~~~B~~~~BBB~BBBBBBBBB0
 0~~X~~~~B~~~~B~~~~BXLDRXWXXWXXW0
-0~~~~~~~B~~~~BBBBBB~~~~~~~~~~~~0
+0~~~~~~~B~~~~BBBBBB~~~~k~~~~~~~0
 0~~~~~~~B~~~~XXWXXBBBBBBBBBBBB~0
 0~~B~~~~B~~~~~~~~~BXXWXXWXXWXB~0
 0~~B~~~~BBBBBBB~~~B~~~~~~~~~~B~0
