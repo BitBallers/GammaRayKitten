@@ -9,6 +9,8 @@ import pygame.mixer as PM
 import math
 import Globals as G
 import Tile
+import Camera
+import Map
 
 
 class Player(PS.Sprite):
@@ -26,8 +28,12 @@ class Player(PS.Sprite):
     HEIGHT = 50
     CYCLE = 1
     SPEED_TIME = .4
+    SCROLL_RIGHT_BOUND = 600
+    SCROLL_LEFT_BOUND = 200
+    SCROLL_UPPER_BOUND = 200
+    SCROLL_LOWER_BOUND = 400
 
-    def __init__(self, x_cord, y_cord):
+    def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
 
         if not Player.FORWARD_IMAGES:
@@ -35,12 +41,14 @@ class Player(PS.Sprite):
 
         if not Player.SOUND:
             Player.SOUND = PM.Sound("meow.wav")
-
-                
+       
         self.image = Player.FORWARD_IMAGES[2]
         self.rect = self.image.get_rect()
-        self.rect.x = x_cord
-        self.rect.y = y_cord
+        
+
+        self.world_coord_x = x_cord
+        self.world_coord_y = y_cord
+
         self.x_velocity = 0
         self.y_velocity = 0
         self.speed = 5
@@ -49,6 +57,8 @@ class Player(PS.Sprite):
         #are currently pressed
         self.key = []
         self.time = 0
+        self.camera = cam
+        
 
     def handle_events(self, event):
         if event.type == PG.KEYDOWN:
@@ -62,6 +72,9 @@ class Player(PS.Sprite):
             #it is there
             self.key.remove(event.key)
 
+    def set_screen_coords(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
 
     # takes in the fixed time interval, dt
     def update(self, time):
@@ -113,32 +126,26 @@ class Player(PS.Sprite):
                     self.x_velocity = 0
                     self.image = Player.LEFT_IMAGES[2]
 
+        # update world coords
+        self.world_coord_x += self.x_velocity
+        self.world_coord_y += self.y_velocity
 
+        # check collisions with scrolling boundary
+        if self.rect.x > Player.SCROLL_RIGHT_BOUND - self.rect.width and self.x_velocity > 0 and self.world_coord_x < Map.Map.WIDTH-Player.SCROLL_LEFT_BOUND:
+            self.camera.shift_camera(self.x_velocity, 0)
+            
 
-        # update rect.x and rect.y
-        self.rect.x += self.x_velocity
-        self.rect.y += self.y_velocity
+        if self.rect.x < Player.SCROLL_LEFT_BOUND and self.x_velocity < 0 and self.world_coord_x > Player.SCROLL_LEFT_BOUND:
+            self.camera.shift_camera(self.x_velocity, 0)
+            
 
-        # check boundary collisions, change directions
-        if self.rect.x > 800 - self.rect.width:
-            self.x_velocity = 0
-            self.rect.x = 800 - self.rect.width
-            Player.SOUND.play()
+        if self.rect.y > (Player.SCROLL_LOWER_BOUND - self.rect.height) and self.y_velocity > 0 and self.world_coord_y < Map.Map.HEIGHT-Player.SCROLL_UPPER_BOUND:
+            self.camera.shift_camera(0, self.y_velocity)
+            
 
-        if self.rect.x < 0:
-            self.x_velocity = 0
-            self.rect.x = 0
-            Player.SOUND.play()
-
-        if self.rect.y > 600 - self.rect.height:
-            self.y_velocity = 0
-            self.rect.y = 600 - self.rect.height
-            Player.SOUND.play()
-
-        if self.rect.y < 0:
-            self.y_velocity = 0
-            self.rect.y = 0
-            Player.SOUND.play()
+        if self.rect.y < Player.SCROLL_UPPER_BOUND and self.y_velocity < 0 and self.world_coord_y > Player.SCROLL_UPPER_BOUND:
+            self.camera.shift_camera(0, self.y_velocity)
+            
 
         # animations
         k = Player.CYCLE/8.0
@@ -171,16 +178,16 @@ class Player(PS.Sprite):
     def wall_collision(self, tile):
         if self.y_velocity > 0:
             self.y_velocity = 0
-            self.rect.y = tile.rect.y  - Player.HEIGHT
+            self.world_coord_y = tile.world_y - Player.HEIGHT
         elif self.y_velocity < 0:
             self.y_velocity = 0
-            self.rect.y = tile.rect.y + Tile.Tile.HEIGHT
+            self.world_coord_y = tile.world_y + Tile.Tile.HEIGHT
         elif self.x_velocity > 0:
             self.x_velocity = 0
-            self.rect.x = tile.rect.x - Player.WIDTH
+            self.world_coord_x = tile.world_x - Player.WIDTH
         elif self.x_velocity < 0:
             self.x_velocity = 0
-            self.rect.x = tile.rect.x + Tile.Tile.WIDTH
+            self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
 
 
     def load_images(self):

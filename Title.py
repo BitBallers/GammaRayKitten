@@ -1,3 +1,4 @@
+import pygame as PG
 import pygame.font as PF
 import Globals as G
 import Menu
@@ -31,6 +32,10 @@ class Title(State.State):
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
         G.Globals.SCREEN.blit(self.surf, (self.init_x, self.init_y))
+
+    def event(self, event):
+        if event.type == PG.KEYDOWN:
+            G.Globals.STATE = Menu.Menu()
 
     def update(self, time):
         self.time += time

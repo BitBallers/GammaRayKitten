@@ -35,7 +35,7 @@ class Tile(PS.Sprite):
         sheet = PI.load("texture_sprite_sheet.png").convert()
         Tile.IMAGES = []
 
-        for i in range(SPRITE_SHEET_LENGTH):
+        for i in range(Tile.SPRITE_SHEET_LENGTH):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
             
             surface.blit(sheet, (0, 0), (i*Tile.WIDTH, 0,

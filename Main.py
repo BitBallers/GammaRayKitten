@@ -27,17 +27,26 @@ class Game(State.State):
         State.State.__init__(self)
         
         self.map = Map.Map("Map for Assignment 5.txt")
-        self.camera = Camera.Camera(self.map.height*Map.TILE_HEIGHT-G.Globals.HEIGHT, 0)
+        self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT)
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
+        self.player = Player.Player(100, Map.Map.HEIGHT-50, self.camera)
+        self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
         self.enemies = []
+        self.map_tiles = PS.Group()
+        self.wall_sprites_list = PS.Group()
+        
 
     def render(self):
+        if self.camera.NEW_CAMERA:
+            self.set_screen_coords_map()
+
+        self.set_screen_cords_player()
+
         G.Globals.SCREEN.fill(PC.Color("white"))
-        self.map_sprites_list.draw(G.Globals.SCREEN)
-        self.all_sprites_list.draw(G.Globals.SCREEN)
+        self.map_tiles.draw(G.Globals.SCREEN)
         self.player_group.draw(G.Globals.SCREEN)
 
     def update(self, time):
@@ -46,12 +55,15 @@ class Game(State.State):
             for e in self.enemies:
                 e.update()
             self.player.update(G.Globals.INTERVAL)
-            #Are there collisions
+            # Are there collisions
             result = PS.groupcollide(self.player_group, self.wall_sprites_list,
                                   False, False)
             for key in result: 
                 self.player.wall_collision(result[key][0])
+                break
             self.time -= G.Globals.INTERVAL
+            print self.player.world_coord_x, self.player.world_coord_y
+
 
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
@@ -61,18 +73,25 @@ class Game(State.State):
             self.player.handle_events(event)
 
     def set_screen_coords_map(self):
+        self.map_tiles = PS.Group()
         self.wall_sprites_list = PS.Group()
-        self.floor_sprites_list = PS.Group()
-        self.special_sprites_list = PS.Group()
 
-        first_x = math.floor(self.camera.x/Main.TILE_WIDTH)*Main.TILE_WIDTH
-        first_y = math.floor(self.camera.y/Main.TILE_HEIGHT)*Main.TILE_HEIGHT
-        offset_x = first_x - self.camera.x
-        offset_y = first_y - self.camera.y
-        for i in range(Main.MAP_TILE_WIDTH+1):
-            for k in range(Main.MAP_TILE_HEIGHT+1):
-                x = first_x+(i*Main.TILE_WIDTH)
-                y = first_y*(k*Main.TILE_HEIGHT)
+        first_x = math.floor(self.camera.X/Game.TILE_WIDTH)*Game.TILE_WIDTH
+        first_y = math.floor(self.camera.Y/Game.TILE_HEIGHT)*Game.TILE_HEIGHT
+        offset_x = first_x - self.camera.X
+        offset_y = first_y - self.camera.Y
+
+        for i in range(Game.MAP_TILE_WIDTH+1):
+            for k in range(Game.MAP_TILE_HEIGHT+1):
+                x = first_x+(i*Game.TILE_WIDTH)
+                y = first_y+(k*Game.TILE_HEIGHT)
                 tile = self.map.tiles[(x, y)]
-                tile.rect.x = offset_x+(i*Main.TILE_WIDTH)
-                tile.rect.y = offset_y+(k*Main.TILE_HEIGHT)
+                tile.set_screen_coords(offset_x+(i*Game.TILE_WIDTH), offset_y+(k*Game.TILE_HEIGHT))
+                self.map_tiles.add(tile)
+                if tile.is_wall():
+                    self.wall_sprites_list.add(tile)
+
+    def set_screen_cords_player(self):
+        screen_x = self.player.world_coord_x-self.camera.X
+        screen_y = self.player.world_coord_y-self.camera.Y
+        self.player.set_screen_coords(screen_x, screen_y)
