@@ -42,6 +42,17 @@ class Tile(PS.Sprite):
                          Tile.WIDTH, Tile.HEIGHT))
             Tile.IMAGES.append(surface)
 
+        # create key tile
+        key = PI.load("20x12_key.png").convert()
+        color_key = key.get_at((19, 0))
+        key.set_colorkey(color_key)
+        surface = Tile.IMAGES[6].copy().convert()
+        surface.set_colorkey(color_key)
+        surface.blit(key, (15, 19))
+        Tile.IMAGES.append(surface)
+        
+        
+
     def is_wall(self):
         if self.type in Tile.WALL_TILES:
             return True
@@ -59,3 +70,11 @@ class Tile(PS.Sprite):
             return True
         else:
             return False
+
+    def is_key(self):
+        if self.type == 8:
+            return True
+        else:
+            return False
+
+
