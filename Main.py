@@ -27,7 +27,7 @@ class Game(State.State):
         State.State.__init__(self)
         
         self.map = Map.Map("Map for Assignment 5.txt")
-        self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT)
+        self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
         self.player = Player.Player(100, Map.Map.HEIGHT-50, self.camera)
@@ -35,16 +35,10 @@ class Game(State.State):
         self.enemy_speed = 1
         self.time = 0.0
         self.enemies = []
-        self.map_tiles = PS.Group()
-        self.wall_sprites_list = PS.Group()
-        
-
-    def render(self):
-        if self.camera.NEW_CAMERA:
-            self.set_screen_coords_map()
-
+        self.set_screen_coords_map()
         self.set_screen_cords_player()
-
+        
+    def render(self):
         G.Globals.SCREEN.fill(PC.Color("white"))
         self.map_tiles.draw(G.Globals.SCREEN)
         self.player_group.draw(G.Globals.SCREEN)
