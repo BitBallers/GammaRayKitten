@@ -69,7 +69,8 @@ class Player(PS.Sprite):
         elif event.type == PG.KEYUP:
             #Remove the key from the array if
             #it is there
-            self.key.remove(event.key)
+            if event.key in self.key:
+                self.key.remove(event.key)
 
     def set_screen_coords(self, x, y):
         self.rect.x = x
