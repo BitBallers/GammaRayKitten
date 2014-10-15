@@ -198,12 +198,15 @@ class Player(PS.Sprite):
         elif not tile.is_wall and not tile.is_door():
             val = 0
         #regular wall stuff
-        elif self.y_velocity > 0:
+        elif self.y_velocity > 0:    
             self.y_velocity = 0
             self.world_coord_y = tile.world_y - Player.HEIGHT
         elif self.y_velocity < 0:
             self.y_velocity = 0
-            self.world_coord_y = tile.world_y + Tile.Tile.HEIGHT
+            if tile.partial == True:
+                self.world_coord_y = tile.world_y + Player.HEIGHT/2
+            else:
+                self.world_coord_y = tile.world_y + Tile.Tile.HEIGHT
         elif self.x_velocity > 0:
             self.x_velocity = 0
             self.world_coord_x = tile.world_x - Player.WIDTH

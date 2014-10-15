@@ -12,6 +12,7 @@ class Tile(PS.Sprite):
     WALL_TILES = [7]
     DOOR_TILES = [1]
     STAIR_TILES = [5]
+    FORWARD_WALL_TILE = [0, 2, 3, 4]
 
     def __init__(self, x, y, type):
         PS.Sprite.__init__(self)
@@ -22,6 +23,7 @@ class Tile(PS.Sprite):
         self.world_x = x
         self.world_y = y
         self.type = type
+        self.partial = False
 
     def change_image(self, type):
         self.image = Tile.IMAGES[type]
@@ -74,3 +76,15 @@ class Tile(PS.Sprite):
             return True
         else:
             return False
+
+    def is_forward_wall(self):
+        if self.type in Tile.FORWARD_WALL_TILE:
+            return True
+        else:
+            return False
+
+    def get_wall_partial(self):
+        new_tile = Tile(self.world_x, self.world_y, 7)
+        new_tile.rect.height = Tile.HEIGHT/2
+        new_tile.partial = True
+        return new_tile      

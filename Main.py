@@ -90,6 +90,11 @@ class Game(State.State):
                 if tile.is_wall() or tile.is_key() or \
                         tile.is_door() or tile.is_stairs():
                     self.wall_sprites_list.add(tile)
+                if tile.is_forward_wall():
+                    partial_tile = tile.get_wall_partial()
+                    partial_tile.set_screen_coords(offset_x+(i*Game.TILE_WIDTH),
+                                                   offset_y+(k*Game.TILE_HEIGHT))
+                    self.wall_sprites_list.add(partial_tile)
 
     def set_screen_cords_player(self):
         screen_x = self.player.world_coord_x-self.camera.X
