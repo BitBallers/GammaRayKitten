@@ -9,7 +9,7 @@ class Tile(PS.Sprite):
     WIDTH = 50
     HEIGHT = 50
     SPRITE_SHEET_LENGTH = 8
-    WALL_TILES = [0, 2, 3, 4, 7]
+    WALL_TILES = [7]
     DOOR_TILES = [1]
     STAIR_TILES = [5]
 

@@ -41,10 +41,9 @@ class Player(PS.Sprite):
 
         if not Player.SOUND:
             Player.SOUND = PM.Sound("meow.wav")
-       
+
         self.image = Player.FORWARD_IMAGES[2]
         self.rect = self.image.get_rect()
-        
 
         self.world_coord_x = x_cord
         self.world_coord_y = y_cord
@@ -59,15 +58,14 @@ class Player(PS.Sprite):
         self.time = 0
         self.camera = cam
         self.keys = 0
-        
 
     def handle_events(self, event):
         if event.type == PG.KEYDOWN:
             #Adding the new key press to the end of
-            #the array 
+            #the array
             self.key.append(event.key)
             self.time = 0
-            
+
         elif event.type == PG.KEYUP:
             #Remove the key from the array if
             #it is there
@@ -132,21 +130,25 @@ class Player(PS.Sprite):
         self.world_coord_y += self.y_velocity
 
         # check collisions with scrolling boundary
-        if self.rect.x > Player.SCROLL_RIGHT_BOUND - self.rect.width and self.x_velocity > 0 and self.world_coord_x < Map.Map.WIDTH-Player.SCROLL_LEFT_BOUND:
+        if self.rect.x > Player.SCROLL_RIGHT_BOUND - self.rect.width and\
+           self.x_velocity > 0 and\
+           self.world_coord_x < Map.Map.WIDTH-Player.SCROLL_LEFT_BOUND:
             self.camera.shift_camera(self.x_velocity, 0)
-            
 
-        if self.rect.x < Player.SCROLL_LEFT_BOUND and self.x_velocity < 0 and self.world_coord_x > Player.SCROLL_LEFT_BOUND:
+        if self.rect.x < Player.SCROLL_LEFT_BOUND and\
+           self.x_velocity < 0 and\
+           self.world_coord_x > Player.SCROLL_LEFT_BOUND:
             self.camera.shift_camera(self.x_velocity, 0)
-            
 
-        if self.rect.y > (Player.SCROLL_LOWER_BOUND - self.rect.height) and self.y_velocity > 0 and self.world_coord_y < Map.Map.HEIGHT-Player.SCROLL_UPPER_BOUND:
+        if self.rect.y > (Player.SCROLL_LOWER_BOUND - self.rect.height) and\
+           self.y_velocity > 0 and\
+           self.world_coord_y < Map.Map.HEIGHT-Player.SCROLL_UPPER_BOUND:
             self.camera.shift_camera(0, self.y_velocity)
-            
 
-        if self.rect.y < Player.SCROLL_UPPER_BOUND and self.y_velocity < 0 and self.world_coord_y > Player.SCROLL_UPPER_BOUND:
+        if self.rect.y < Player.SCROLL_UPPER_BOUND and\
+           self.y_velocity < 0 and\
+           self.world_coord_y > Player.SCROLL_UPPER_BOUND:
             self.camera.shift_camera(0, self.y_velocity)
-            
 
         # animations
         k = Player.CYCLE/8.0
@@ -191,6 +193,9 @@ class Player(PS.Sprite):
         #GAMEOVER
         elif tile.is_stairs():
             val = 2
+        #In Case removing from wall list is slow
+        elif not tile.is_wall and not tile.is_door():
+            val = 0
         #regular wall stuff
         elif self.y_velocity > 0:
             self.y_velocity = 0
@@ -206,7 +211,6 @@ class Player(PS.Sprite):
             self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
         return val
 
-
     def load_images(self):
         sheet = PI.load("cat_sprite_sheet.png").convert()
         key = sheet.get_at((0, 0))
@@ -215,7 +219,7 @@ class Player(PS.Sprite):
         for i in range(8):
 
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
-            surface.set_colorkey(key)            
+            surface.set_colorkey(key)
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, 0,
                          Player.WIDTH, Player.HEIGHT))
             Player.FORWARD_IMAGES.append(surface)
@@ -224,17 +228,17 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT,
                          Player.WIDTH, Player.HEIGHT))
-            
+
             Player.BACK_IMAGES.append(surface)
         #Get Left Images
         Player.LEFT_IMAGES = []
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-           
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*2,
                          Player.WIDTH, Player.HEIGHT))
             Player.LEFT_IMAGES.append(surface)
@@ -243,7 +247,7 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*3,
                          Player.WIDTH, Player.HEIGHT))
             Player.RIGHT_IMAGES.append(surface)
@@ -252,7 +256,7 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*4,
                          Player.WIDTH, Player.HEIGHT))
             Player.FORWARD_R_IMAGES.append(surface)
@@ -261,7 +265,7 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*5,
                          Player.WIDTH, Player.HEIGHT))
             Player.BACK_R_IMAGES.append(surface)
@@ -270,7 +274,7 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*6,
                          Player.WIDTH, Player.HEIGHT))
             Player.LEFT_R_IMAGES.append(surface)
@@ -279,7 +283,7 @@ class Player(PS.Sprite):
         for i in range(8):
             surface = PG.Surface((Player.WIDTH, Player.HEIGHT)).convert()
             surface.set_colorkey(key)
-            
+
             surface.blit(sheet, (0, 0), (i*Player.WIDTH, Player.HEIGHT*7,
                          Player.WIDTH, Player.HEIGHT))
             Player.RIGHT_R_IMAGES.append(surface)

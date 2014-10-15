@@ -1,6 +1,7 @@
 import Globals as G
 import Tile
 
+
 class Map(object):
 
     TILE_WIDTH = 50
@@ -28,7 +29,7 @@ class Map(object):
                 new_x = k*Map.TILE_WIDTH
                 new_y = i*Map.TILE_HEIGHT
                 new_tile = Tile.Tile(new_x, new_y, Map.KEY_DICT[char])
-                self.tiles.update({(new_x, new_y):new_tile})
+                self.tiles.update({(new_x, new_y): new_tile})
                 if k > max_width:
                     Map.WIDTH = k
                     max_width = Map.WIDTH
@@ -45,7 +46,5 @@ class Map(object):
         Map.KEY_DICT = {}
         level_key_file = open(Map.KEY_FILENAME)
         for line in level_key_file.readlines():
-            Map.KEY_DICT.update({line[0]:int(line[1])})
-        
+            Map.KEY_DICT.update({line[0]: int(line[1])})
         level_key_file.close()
-
