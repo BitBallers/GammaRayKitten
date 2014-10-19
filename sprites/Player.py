@@ -39,7 +39,7 @@ class Player(PS.Sprite):
             self.load_images()
 
         if not Player.SOUND:
-            Player.SOUND = PM.Sound("meow.wav")
+            Player.SOUND = PM.Sound("sounds/meow.wav")
 
         self.image = None
         self.body_image = Player.WALKING_BODY_IMAGES[10]
