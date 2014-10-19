@@ -17,6 +17,7 @@ class Map(object):
 
         self.tiles = {}
         map_file = open(map_text_file)
+        self.enemy_coords = []
 
         max_width = 0
         max_height = 0
@@ -28,6 +29,8 @@ class Map(object):
                     continue
                 new_x = k*Map.TILE_WIDTH
                 new_y = i*Map.TILE_HEIGHT
+                if char == 'e':
+                    self.enemy_coords.append((new_x, new_y))
                 new_tile = Tile.Tile(new_x, new_y, Map.KEY_DICT[char])
                 self.tiles.update({(new_x, new_y): new_tile})
                 if k > max_width:

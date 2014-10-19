@@ -1,7 +1,8 @@
 import pygame as PG
 import pygame.image as PI
 import pygame.sprite as PS
-import Globals
+import Globals as G
+import maps.Camera as Camera
 
 
 class Enemy(PS.Sprite):
@@ -9,7 +10,7 @@ class Enemy(PS.Sprite):
     IMAGES = None
     CYCLE = 1.0
 
-    def __init__(self, x_cord, y_cord, x_vel, y_vel):
+    def __init__(self, (x, y)):
         PS.Sprite.__init__(self)
 
         if not Enemy.IMAGES:
@@ -19,44 +20,19 @@ class Enemy(PS.Sprite):
         self.b_index = 8
         self.c_index = 8
         self.rect = self.image.get_rect()
-        self.rect.x = x_cord
-        self.rect.y = y_cord
-        self.x = self.rect.x
-        self.y = self.rect.y
+        self.world_x = x
+        self.world_y = y
 
-        self.x_velocity = x_vel
-        self.y_velocity = y_vel
         self.time = 0.0
 
     def update(self):
-        self.rect.x += self.x_velocity
-        self.rect.y += self.y_velocity
-        # check wall collisions, change directions
-        if self.rect.x > 800 - self.rect.width:
-            self.x_velocity *= -1
-            self.rect.x = 800 - self.rect.width
+        pass
 
-        if self.rect.x < 0:
-            self.x_velocity *= -1
-            self.rect.x = 0
-
-        if self.rect.y > 600 - self.rect.height:
-            self.y_velocity *= -1
-            self.rect.y = 600 - self.rect.height
-
-        if self.rect.y < 0:
-            self.y_velocity *= -1
-            self.rect.y = 0
-        self.x = self.rect.x
-        self.y = self.rect.y
-
-        self.time += Globals.Globals.INTERVAL
-        if self.time > Enemy.CYCLE:
-            self.time = 0.0
-        index = int(self.time / (Enemy.CYCLE / 4))
-        if index != self.c_index:
-            self.c_index = index
-            self.update_image()
+    def render(self):
+        x = self.world_x-Camera.Camera.X
+        y = self.world_y-Camera.Camera.Y
+        if x >= self.rect.width*-1 and x <= G.Globals.WIDTH and y >= self.rect.height*-1 and y <= G.Globals.HEIGHT:
+            G.Globals.SCREEN.blit(self.image, (x,y))
 
     def load_images(self):
         Enemy.IMAGES = []

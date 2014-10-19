@@ -33,15 +33,22 @@ class Game(State.State):
         self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
-        self.enemies = []
         self.set_screen_coords_map()
         self.set_screen_cords_player()
+        self.spawn_enemies()
 
     def render(self):
         G.Globals.SCREEN.fill(PC.Color("white"))
         self.map_tiles.draw(G.Globals.SCREEN)
         self.player.render()
-        # self.player_group.draw(G.Globals.SCREEN)
+        for e in self.enemies:
+            e.render()
+
+    def spawn_enemies(self):
+        self.enemies = []
+        for coords in self.map.enemy_coords:
+            new_enemy = Enemy.Enemy(coords)
+            self.enemies.append(new_enemy)
 
     def update(self, time):
         self.time += time
