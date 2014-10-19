@@ -6,6 +6,7 @@ import pygame.sprite as PS
 import pygame.mixer as PX
 import sprites.Enemy as Enemy
 import sprites.Player as Player
+import pygame.image as PI
 import random
 import State
 import Menu
@@ -14,6 +15,7 @@ import sprites.Tile as Tile
 import maps.Camera as Camera
 import maps.Map as Map
 import math
+import pygame.font as PF
 
 
 class Game(State.State):
@@ -22,10 +24,20 @@ class Game(State.State):
     TILE_HEIGHT = 50
     MAP_TILE_WIDTH = 16
     MAP_TILE_HEIGHT = 12
+    SCORE = 0
+    SCORE_FONT = None
+    HEART_IMAGE = None
 
     def __init__(self):
         State.State.__init__(self)
+        Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
         self.map = Map.Map("maps/texts/Map for Assignment 5.txt")
+
+        heart_surf = PI.load("sprites/images/heart.png").convert()
+        Game.HEART_IMAGE = PG.Surface((25,25))
+        Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0,0)))
+        Game.HEART_IMAGE.blit(heart_surf, (0,0))
+        
         self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
@@ -43,6 +55,7 @@ class Game(State.State):
         self.player.render()
         for e in self.enemies:
             e.render()
+        self.render_HUD()
 
     def spawn_enemies(self):
         self.enemies = []
@@ -107,3 +120,17 @@ class Game(State.State):
         screen_x = self.player.world_coord_x-self.camera.X
         screen_y = self.player.world_coord_y-self.camera.Y
         self.player.set_screen_coords(screen_x, screen_y)
+
+    def render_HUD(self):
+        surface = PG.Surface((G.Globals.WIDTH, G.Globals.HUD_HEIGHT))
+        G.Globals.SCREEN.blit(surface, (0, G.Globals.HEIGHT))
+        score_string = "Score: " + str(Game.SCORE)
+        score_surf = Game.SCORE_FONT.render(score_string, True, (255, 255, 255))
+        G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT+10))
+        heart_x = G.Globals.WIDTH-Player.Player.MAX_HEALTH*25-5
+        heart_y = 25/2+G.Globals.HEIGHT
+        for i in range(Player.Player.HEALTH):
+            G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
+            heart_x += 25
+
+

@@ -29,10 +29,10 @@ def initialize():
     if failed > 0:
         print "ERROR: %d Pygame modules failed to initialize" % failed
         PG.quit()
-    G.Globals.SCREEN = PD.set_mode((800, 600))
+    G.Globals.SCREEN = PD.set_mode((800, 650))
     PD.set_caption("Gamma Ray Kitten")
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
-    G.Globals.HEIGHT = G.Globals.SCREEN.get_height()
+    G.Globals.HEIGHT = G.Globals.SCREEN.get_height()-G.Globals.HUD_HEIGHT
     G.Globals.STATE = Title.Title()
 
 

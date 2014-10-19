@@ -31,6 +31,8 @@ class Player(PS.Sprite):
     SCROLL_UPPER_BOUND = 200
     SCROLL_LOWER_BOUND = 400
     SPRITE_IMAGE_KEY = None
+    HEALTH = 5
+    MAX_HEALTH = 5
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
