@@ -76,6 +76,7 @@ class Game(State.State):
             for key in result:
                 for wall in result[key]:
                     val = self.player.wall_collision(wall)
+                    self.set_screen_cords_player()
                     if val == 1:
                         self.wall_sprites_list.remove(wall)
                     if val == 2:
