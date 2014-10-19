@@ -14,8 +14,8 @@ class Title(State.State):
 
     def __init__(self):
         State.State.__init__(self)
-        Title.FONT = PF.Font("Blox.ttf", 100)
-        Title.SECFONT = PF.Font("Red October-Regular.ttf", 60)
+        Title.FONT = PF.Font("fonts/Blox.ttf", 100)
+        Title.SECFONT = PF.Font("fonts/Red October-Regular.ttf", 60)
 
         temp_surf = Title.FONT.render("Bit Ballers", True, (255, 255, 255))
         self.init_x = G.Globals.WIDTH/2 - temp_surf.get_width()/2

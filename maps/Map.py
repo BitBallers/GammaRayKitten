@@ -1,5 +1,5 @@
 import Globals as G
-import Tile
+import sprites.Tile as Tile
 
 
 class Map(object):
@@ -7,7 +7,7 @@ class Map(object):
     TILE_WIDTH = 50
     TILE_HEIGHT = 50
     KEY_DICT = None
-    KEY_FILENAME = "Level Key.txt"
+    KEY_FILENAME = "maps/texts/Level Key.txt"
     WIDTH = 0
     HEIGHT = 0
 

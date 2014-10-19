@@ -17,9 +17,9 @@ class Menu(State.State):
     def __init__(self):
         State.State.__init__(self)
         if not Menu.FONT:
-            Menu.FONT = PF.Font("Red October-Regular.ttf", 30)
+            Menu.FONT = PF.Font("fonts/Red October-Regular.ttf", 30)
         if not Menu.TITLEFONT:
-            Menu.TITLEFONT = PF.Font("Red October-Regular.ttf", 70)
+            Menu.TITLEFONT = PF.Font("fonts/Red October-Regular.ttf", 70)
 
         self.menu_strings = ["New Game", "Adjust Brightness", "Adjust Sound",
                              "Display Highscores", "Quit"]

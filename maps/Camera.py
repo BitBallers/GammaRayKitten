@@ -1,5 +1,5 @@
 import Globals as G
-import Main
+import game_states.Main
 
 
 class Camera(object):

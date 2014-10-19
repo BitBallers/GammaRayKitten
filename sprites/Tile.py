@@ -34,7 +34,7 @@ class Tile(PS.Sprite):
         self.rect.y = y
 
     def load_images(self):
-        sheet = PI.load("texture_sprite_sheet.png").convert()
+        sheet = PI.load("sprites/images/texture_sprite_sheet.png").convert()
         Tile.IMAGES = []
 
         for i in range(Tile.SPRITE_SHEET_LENGTH):
@@ -45,7 +45,7 @@ class Tile(PS.Sprite):
             Tile.IMAGES.append(surface)
 
         # create key tile
-        key = PI.load("20x12_key.png").convert()
+        key = PI.load("sprites/images/20x12_key.png").convert()
         color_key = key.get_at((19, 0))
         key.set_colorkey(color_key)
         surface = Tile.IMAGES[6].copy().convert()
@@ -85,6 +85,6 @@ class Tile(PS.Sprite):
 
     def get_wall_partial(self):
         new_tile = Tile(self.world_x, self.world_y, 7)
-        new_tile.rect.height = Tile.HEIGHT/2
+        new_tile.rect.height = Tile.HEIGHT/3
         new_tile.partial = True
-        return new_tile      
+        return new_tile  

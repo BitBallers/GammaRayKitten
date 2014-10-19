@@ -60,7 +60,7 @@ class Enemy(PS.Sprite):
 
     def load_images(self):
         Enemy.IMAGES = []
-        sheet = PI.load("slime_sprite_sheet.png").convert_alpha()
+        sheet = PI.load("sprites/images/slime_sprite_sheet.png").convert_alpha()
         key = sheet.get_at((0, 0))
         for y in range(4):
             for x in range(4):

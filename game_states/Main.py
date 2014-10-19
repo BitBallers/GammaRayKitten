@@ -4,15 +4,15 @@ import pygame.event as PE
 import pygame.time as PT
 import pygame.sprite as PS
 import pygame.mixer as PX
-import Enemy
-import Player
+import sprites.Enemy as Enemy
+import sprites.Player as Player
 import random
 import State
 import Menu
 import Globals as G
-import Tile
-import Camera
-import Map
+import sprites.Tile as Tile
+import maps.Camera as Camera
+import maps.Map as Map
 import math
 
 
@@ -25,8 +25,7 @@ class Game(State.State):
 
     def __init__(self):
         State.State.__init__(self)
-
-        self.map = Map.Map("Map for Assignment 5.txt")
+        self.map = Map.Map("maps/texts/Map for Assignment 5.txt")
         self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
@@ -41,7 +40,8 @@ class Game(State.State):
     def render(self):
         G.Globals.SCREEN.fill(PC.Color("white"))
         self.map_tiles.draw(G.Globals.SCREEN)
-        self.player_group.draw(G.Globals.SCREEN)
+        self.player.render()
+        # self.player_group.draw(G.Globals.SCREEN)
 
     def update(self, time):
         self.time += time

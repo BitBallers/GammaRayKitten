@@ -10,10 +10,10 @@ import pygame.image as PI
 import pygame.time as PT
 import pygame.color as PC
 import pygame.mixer as PX
-import Menu
+import game_states.Menu as Menu
 import Globals as G
-import Title
-import Main
+import game_states.Title as Title
+import game_states.Main as Main
 
 
 def main():
