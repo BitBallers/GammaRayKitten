@@ -10,6 +10,7 @@ import random
 class Enemy(PS.Sprite):
 
     IMAGES = None
+    DEATH_IMAGES = None
     CYCLE = 0.5
     MAX_AI_DIST = 700
     SPEED = 1.5
@@ -32,6 +33,9 @@ class Enemy(PS.Sprite):
         self.y_velocity = 0
 
         self.time = 0.0
+        self.dying = False
+        self.dead = False
+
 
     def update(self, time, player, map, enemies_list):
         self.ai(player, map, enemies_list)
@@ -40,6 +44,7 @@ class Enemy(PS.Sprite):
         self.rect.x = self.world_x-Camera.Camera.X
         self.rect.y = self.world_y-Camera.Camera.Y
         self.animate(time)
+        return self.dead
 
     def render(self):
         x = self.world_x-Camera.Camera.X
@@ -58,8 +63,17 @@ class Enemy(PS.Sprite):
                 surface.blit(sheet, (0, 0), (x*30, y*20, 30, 20))
                 Enemy.IMAGES.append(surface)
 
+        Enemy.DEATH_IMAGES = []
+        sheet = PI.load("sprites/images/slime_sprite_sheet_death.png").convert_alpha()
+        key = sheet.get_at((0, 0))
+        for y in range(2):
+            for x in range(4):
+                surface = PG.Surface((30, 20)).convert()
+                surface.set_colorkey(key)
+                surface.blit(sheet, (0, 0), (x*30, y*20, 30, 20))
+                Enemy.DEATH_IMAGES.append(surface)
+
     def animate(self, time):
-        
         k = Enemy.CYCLE/5.0
         index = math.floor(self.time/k)
         index = int(index)
@@ -80,6 +94,12 @@ class Enemy(PS.Sprite):
         
         if update_image:
             self.image = Enemy.IMAGES[self.b_index+index]
+
+        if self.dying:
+            self.image = Enemy.DEATH_IMAGES[self.death_index+index]
+            if index == 3:
+                self.dead = True
+
         self.time += time
         if self.time >= Enemy.CYCLE:
             self.time = 0
@@ -170,6 +190,14 @@ class Enemy(PS.Sprite):
             return self.check_valid_tile(map, (map_x_left, map_y_up)) or self.check_valid_tile(map, (map_x_right, map_y_up))
 
         return False
+
+    def start_death(self):
+        if self.b_index == 15:
+            self.death_index = 4
+        else:
+            self.death_index = 0
+        self.dying = True
+        self.time = 0
 
 
     def check_valid_tile(self, map, tile_key):

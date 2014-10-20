@@ -55,29 +55,31 @@ class Game(State.State):
         G.Globals.SCREEN.fill(PC.Color("white"))
         self.map_tiles.draw(G.Globals.SCREEN)
         self.player.render()
-        for e in self.enemies:
+        for e in self.enemies.sprites():
             e.render()
         for b in self.bullets.sprites():
             b.render()
         self.render_HUD()
 
     def spawn_enemies(self):
-        self.enemies = []
+        self.enemies = PS.Group()
         for coords in self.map.enemy_coords:
             new_enemy = Enemy.Enemy(coords)
-            self.enemies.append(new_enemy)
+            self.enemies.add(new_enemy)
 
     def update(self, time):
         self.time += time
         while self.time > G.Globals.INTERVAL:
-            for e in self.enemies:
-                e.update(G.Globals.INTERVAL, self.player, self.map, self.enemies)
+            for e in self.enemies.sprites():
+                if e.update(G.Globals.INTERVAL, self.player, self.map, self.enemies.sprites()):
+                    self.enemies.remove(e)
             for b in self.bullets.sprites():
                 if b.update(G.Globals.INTERVAL):
                     self.bullets.remove(b)
             self.player.update(G.Globals.INTERVAL)
-            # Are there collisions
             self.set_screen_cords_player()
+            # Are there collisions
+            #Player Collision with walls
             result = PS.groupcollide(self.player_group, self.wall_sprites_list,
                                      False, False)
             for key in result:
@@ -88,7 +90,24 @@ class Game(State.State):
                         self.wall_sprites_list.remove(wall)
                     if val == 2:
                         G.Globals.STATE = Menu.Menu()
-
+            #Player Collision with Enemies
+            result = PS.groupcollide(self.player_group, self.enemies,
+                                     False, False)
+            for key in result:
+                for enemy in result[key]:
+                    if self.player.take_damage(1):
+                        G.Globals.STATE = Menu.Menu()
+            #Enemy Collision with Bullets
+            result = PS.groupcollide(self.enemies, self.bullets, False, False)
+            for enemy in result:
+                enemy.start_death()
+                Game.SCORE = Game.SCORE + 10
+                for bullet in result[enemy]:
+                    self.bullets.remove(bullet)
+            #Bullets Collide with Wall
+            result = PS.groupcollide(self.bullets, self.wall_sprites_list, False, False)
+            for bullet in result:
+                self.bullets.remove(bullet)
             self.time -= G.Globals.INTERVAL
 
     def event(self, event):
@@ -139,7 +158,7 @@ class Game(State.State):
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT+10))
         heart_x = G.Globals.WIDTH-Player.Player.MAX_HEALTH*25-5
         heart_y = 25/2+G.Globals.HEIGHT
-        for i in range(Player.Player.HEALTH):
+        for i in range(self.player.health):
             G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
             heart_x += 25
 

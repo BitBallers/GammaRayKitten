@@ -28,12 +28,12 @@ class Player(PS.Sprite):
     CYCLE = 1
     H_CYCLE = .4
     SPEED_TIME = .4
+    DMG_TIME = 1
     SCROLL_RIGHT_BOUND = 600
     SCROLL_LEFT_BOUND = 200
     SCROLL_UPPER_BOUND = 200
     SCROLL_LOWER_BOUND = 400
     SPRITE_IMAGE_KEY = None
-    HEALTH = 5
     MAX_HEALTH = 5
 
     def __init__(self, x_cord, y_cord, cam):
@@ -44,7 +44,7 @@ class Player(PS.Sprite):
 
         if not Player.SOUND:
             Player.SOUND = PM.Sound("sounds/meow.wav")
-
+        self.health = Player.MAX_HEALTH
         self.image = None
         self.body_image = Player.WALKING_BODY_IMAGES[10]
         self.head_image = Player.REG_HEAD_IMAGES[1]
@@ -72,6 +72,8 @@ class Player(PS.Sprite):
         #shooting vars
         self.b_speed = 10
         self.b_distance = 300
+        self.old_head = self.head_image
+        self.d_time = self.DMG_TIME
 
     def handle_events(self, event):
         if event.type == PG.KEYDOWN:
@@ -90,13 +92,13 @@ class Player(PS.Sprite):
                  if self.s_time >= self.fire_rate:
                     self.shot_dir = 3
                     self.s_time = 0.0
-                    return B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT/2 - B.Bullet.HEIGHT, self.b_speed, 0, self.b_distance)
+                    return B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, self.b_speed, 0, self.b_distance)
 
             elif event.key == PG.K_LEFT:
                  if self.s_time >= self.fire_rate:
                     self.shot_dir = 4
                     self.s_time = 0.0
-                    return B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT/2 - B.Bullet.HEIGHT, -self.b_speed, 0, self.b_distance)
+                    return B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -self.b_speed, 0, self.b_distance)
 
             #Adding the new key press to the end of
             #the array
@@ -120,8 +122,12 @@ class Player(PS.Sprite):
         k = Player.H_CYCLE/3.0
         index = math.floor(self.s_time/k)
         index = int(index)
+        #Store old head
+        if self.shot_dir == 0:
+            self.old_head = self.head_image
         if index >= 3:
             self.shot_dir = 0
+            self.head_image = self.old_head
         if self.shot_dir != 0:
             if self.shot_dir == 1:
                 self.head_image = Player.ATTACKING_HEAD_IMAGES[0 + index]
@@ -258,11 +264,13 @@ class Player(PS.Sprite):
         self.set_head_image()
         self.time += time
         self.s_time += time
+        self.d_time += time
         if self.time >= Player.CYCLE:
             self.time = 0
         #make sure shot time doesn't get too big
         if self.s_time > self.fire_rate and self.s_time > Player.H_CYCLE + time:
             self.s_time = self.fire_rate if self.fire_rate > Player.H_CYCLE + time else Player.H_CYCLE + time
+        self.d_time = self.d_time if self.d_time < Player.DMG_TIME else Player.DMG_TIME
 
 
     def wall_collision(self, tile):
@@ -301,6 +309,14 @@ class Player(PS.Sprite):
                 self.world_coord_y = tile.world_y + Tile.Tile.HEIGHT
         return val
 
+    def take_damage(self, h_lost):
+        if self.d_time >= Player.DMG_TIME:
+            self.health = self.health - h_lost
+            self.d_time = 0
+            if self.health <= 0:
+                return True
+        return False
+        
     def load_images(self):
         sheet = PI.load("sprites/images/cat_sprite_sheet_body.png").convert()
         key = sheet.get_at((0, 0))
