@@ -11,6 +11,7 @@ import Globals as G
 import Tile
 import maps.Camera as Camera
 import maps.Map as Map
+import Bullet as B
 
 
 class Player(PS.Sprite):
@@ -25,6 +26,7 @@ class Player(PS.Sprite):
     BODY_HEIGHT = 27
     HEAD_HEIGHT = 27
     CYCLE = 1
+    H_CYCLE = .4
     SPEED_TIME = .4
     SCROLL_RIGHT_BOUND = 600
     SCROLL_LEFT_BOUND = 200
@@ -51,7 +53,6 @@ class Player(PS.Sprite):
 
         self.world_coord_x = x_cord
         self.world_coord_y = y_cord
-
         self.x_velocity = 0
         self.y_velocity = 0
         self.speed = 5
@@ -62,26 +63,75 @@ class Player(PS.Sprite):
         self.time = 0
         self.camera = cam
         self.keys = 0
+        #The time (s) when you can fire
+        self.fire_rate = 1.0
+        #1 is up, 2 is down, 3 is right, 4 is left, 0 is not shooting
+        self.shot_dir = 0
+        #time value for shooting
+        self.s_time = 0.0
+        #shooting vars
+        self.b_speed = 10
+        self.b_distance = 300
 
     def handle_events(self, event):
         if event.type == PG.KEYDOWN:
+            if event.key == PG.K_UP:
+                if self.s_time >= self.fire_rate:
+                    self.shot_dir = 1
+                    self.s_time = 0.0
+                    return B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, 0, -self.b_speed, self.b_distance)
+            elif event.key == PG.K_DOWN:
+                 if self.s_time >= self.fire_rate:
+                    self.shot_dir = 2
+                    self.s_time = 0.0
+                    return B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, 0, self.b_speed, self.b_distance)
+
+            elif event.key == PG.K_RIGHT:
+                 if self.s_time >= self.fire_rate:
+                    self.shot_dir = 3
+                    self.s_time = 0.0
+                    return B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT/2 - B.Bullet.HEIGHT, self.b_speed, 0, self.b_distance)
+
+            elif event.key == PG.K_LEFT:
+                 if self.s_time >= self.fire_rate:
+                    self.shot_dir = 4
+                    self.s_time = 0.0
+                    return B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT/2 - B.Bullet.HEIGHT, -self.b_speed, 0, self.b_distance)
+
             #Adding the new key press to the end of
             #the array
-            self.key.append(event.key)
-            self.time = 0
+            else:
+                self.key.append(event.key)
+                self.time = 0
+                return None
 
         elif event.type == PG.KEYUP:
             #Remove the key from the array if
             #it is there
             if event.key in self.key:
                 self.key.remove(event.key)
+            return None
 
     def set_screen_coords(self, x, y):
         self.rect.x = x
         self.rect.y = y
 
     def set_head_image(self):
-        if self.y_velocity > 0:
+        k = Player.H_CYCLE/3.0
+        index = math.floor(self.s_time/k)
+        index = int(index)
+        if index >= 3:
+            self.shot_dir = 0
+        if self.shot_dir != 0:
+            if self.shot_dir == 1:
+                self.head_image = Player.ATTACKING_HEAD_IMAGES[0 + index]
+            elif self.shot_dir == 2:
+                self.head_image = Player.ATTACKING_HEAD_IMAGES[3 + index]
+            elif self.shot_dir == 3:
+                self.head_image = Player.ATTACKING_HEAD_IMAGES[9 + index]
+            elif self.shot_dir == 4:
+                self.head_image = Player.ATTACKING_HEAD_IMAGES[6 + index]
+        elif self.y_velocity > 0:
             self.head_image = Player.REG_HEAD_IMAGES[1]
         elif self.y_velocity < 0:
             self.head_image = Player.REG_HEAD_IMAGES[0]
@@ -99,6 +149,9 @@ class Player(PS.Sprite):
         #update velocities if a key is currently held down
         if len(self.key) > 0:
             if self.key[-1] == PG.K_w:
+                #turn on a dime!
+                if self.x_velocity != 0:
+                    self.y_velocity = -abs(self.x_velocity)
                 self.y_velocity -= self.accel
                 #Make sure they don't go too fast
                 if self.y_velocity < -self.speed:
@@ -106,16 +159,25 @@ class Player(PS.Sprite):
                 #To avoid drift
                 self.x_velocity = 0
             elif self.key[-1] == PG.K_s:
+                #turn on a dime!
+                if self.x_velocity != 0:
+                    self.y_velocity = abs(self.x_velocity)
                 self.y_velocity += self.accel
                 if self.y_velocity > self.speed:
                     self.y_velocity = self.speed
                 self.x_velocity = 0
             elif self.key[-1] == PG.K_d:
+                #turn on a dime!
+                if self.y_velocity != 0:
+                    self.x_velocity = abs(self.y_velocity)
                 self.x_velocity += self.accel
                 if self.x_velocity > self.speed:
                     self.x_velocity = self.speed
                 self.y_velocity = 0
             elif self.key[-1] == PG.K_a:
+                #turn on a dime!
+                if self.y_velocity != 0:
+                    self.x_velocity = -abs(self.y_velocity)
                 self.x_velocity -= self.accel
                 if self.x_velocity < -self.speed:
                     self.x_velocity = -self.speed
@@ -178,28 +240,29 @@ class Player(PS.Sprite):
                 self.body_image = Player.RUNNING_BODY_IMAGES[index+8]
             else:
                 self.body_image = Player.WALKING_BODY_IMAGES[index+8]
-            self.set_head_image()
         if self.y_velocity > 0:
             if self.y_velocity == self.speed:
                 self.body_image = Player.RUNNING_BODY_IMAGES[index]
             else:
                 self.body_image = Player.WALKING_BODY_IMAGES[index]
-            self.set_head_image()
         if self.x_velocity < 0:
             if self.x_velocity == -self.speed:
                 self.body_image = Player.RUNNING_BODY_IMAGES[index+16]
             else:
                 self.body_image = Player.WALKING_BODY_IMAGES[index+16]
-            self.set_head_image()
         if self.x_velocity > 0:
             if self.x_velocity == self.speed:
                 self.body_image = Player.RUNNING_BODY_IMAGES[index+24]
             else:
                 self.body_image = Player.WALKING_BODY_IMAGES[index+24]
-            self.set_head_image()
+        self.set_head_image()
         self.time += time
+        self.s_time += time
         if self.time >= Player.CYCLE:
             self.time = 0
+        #make sure shot time doesn't get too big
+        if self.s_time > self.fire_rate and self.s_time > Player.H_CYCLE + time:
+            self.s_time = self.fire_rate if self.fire_rate > Player.H_CYCLE + time else Player.H_CYCLE + time
 
 
     def wall_collision(self, tile):
@@ -221,6 +284,12 @@ class Player(PS.Sprite):
         elif not tile.is_wall and not tile.is_door():
             val = 0
         #regular wall stuff
+        elif self.x_velocity > 0:
+            self.x_velocity = 0
+            self.world_coord_x = tile.world_x - Player.WIDTH
+        elif self.x_velocity < 0:
+            self.x_velocity = 0
+            self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
         elif self.y_velocity > 0:    
             self.y_velocity = 0
             self.world_coord_y = tile.world_y - Player.HEIGHT
@@ -230,12 +299,6 @@ class Player(PS.Sprite):
                 self.world_coord_y = tile.world_y + tile.rect.height
             else:
                 self.world_coord_y = tile.world_y + Tile.Tile.HEIGHT
-        elif self.x_velocity > 0:
-            self.x_velocity = 0
-            self.world_coord_x = tile.world_x - Player.WIDTH
-        elif self.x_velocity < 0:
-            self.x_velocity = 0
-            self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
         return val
 
     def load_images(self):
@@ -271,7 +334,7 @@ class Player(PS.Sprite):
 
         Player.ATTACKING_HEAD_IMAGES = []
         for k in range(4):
-            for i in range(2):
+            for i in range(3):
                 surface = PG.Surface((Player.WIDTH, Player.HEAD_HEIGHT)).convert()
                 surface.set_colorkey(key)
                 surface.blit(sheet, (0,0), (Player.WIDTH+i*Player.WIDTH, k*Player.HEAD_HEIGHT, Player.WIDTH, Player.HEAD_HEIGHT))

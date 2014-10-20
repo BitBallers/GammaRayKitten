@@ -6,6 +6,7 @@ import pygame.sprite as PS
 import pygame.mixer as PX
 import sprites.Enemy as Enemy
 import sprites.Player as Player
+import sprites.Bullet as Bullet
 import pygame.image as PI
 import random
 import State
@@ -41,6 +42,7 @@ class Game(State.State):
         self.camera = Camera.Camera(0, Map.Map.HEIGHT-G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
+        self.bullets = PS.Group()
         self.player = Player.Player(100, Map.Map.HEIGHT-50, self.camera)
         self.player_group.add(self.player)
         self.enemy_speed = 1
@@ -55,6 +57,8 @@ class Game(State.State):
         self.player.render()
         for e in self.enemies:
             e.render()
+        for b in self.bullets.sprites():
+            b.render()
         self.render_HUD()
 
     def spawn_enemies(self):
@@ -68,6 +72,9 @@ class Game(State.State):
         while self.time > G.Globals.INTERVAL:
             for e in self.enemies:
                 e.update(G.Globals.INTERVAL, self.player, self.map)
+            for b in self.bullets.sprites():
+                if b.update(G.Globals.INTERVAL):
+                    self.bullets.remove(b)
             self.player.update(G.Globals.INTERVAL)
             # Are there collisions
             self.set_screen_cords_player()
@@ -89,7 +96,9 @@ class Game(State.State):
             G.Globals.STATE = Menu.Menu()
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
-            self.player.handle_events(event)
+            bull = self.player.handle_events(event)
+            if bull != None:
+                self.bullets.add(bull)
 
     def set_screen_coords_map(self):
         self.map_tiles = PS.Group()
