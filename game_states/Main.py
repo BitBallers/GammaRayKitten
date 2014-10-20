@@ -67,7 +67,7 @@ class Game(State.State):
         self.time += time
         while self.time > G.Globals.INTERVAL:
             for e in self.enemies:
-                e.update()
+                e.update(G.Globals.INTERVAL, self.player, self.map)
             self.player.update(G.Globals.INTERVAL)
             # Are there collisions
             self.set_screen_cords_player()
@@ -76,6 +76,7 @@ class Game(State.State):
             for key in result:
                 for wall in result[key]:
                     val = self.player.wall_collision(wall)
+                    self.set_screen_cords_player()
                     if val == 1:
                         self.wall_sprites_list.remove(wall)
                     if val == 2:
