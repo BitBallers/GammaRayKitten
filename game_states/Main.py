@@ -67,7 +67,7 @@ class Game(State.State):
         self.time += time
         while self.time > G.Globals.INTERVAL:
             for e in self.enemies:
-                e.update()
+                e.update(G.Globals.INTERVAL, self.player, self.map)
             self.player.update(G.Globals.INTERVAL)
             # Are there collisions
             self.set_screen_cords_player()
