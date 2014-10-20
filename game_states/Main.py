@@ -32,7 +32,7 @@ class Game(State.State):
     def __init__(self):
         State.State.__init__(self)
         Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
-        self.map = Map.Map("maps/texts/Map for Assignment 5.txt")
+        self.map = Map.Map("maps/texts/map2.txt")
 
         heart_surf = PI.load("sprites/images/heart.png").convert()
         Game.HEART_IMAGE = PG.Surface((25,25))
@@ -71,7 +71,7 @@ class Game(State.State):
         self.time += time
         while self.time > G.Globals.INTERVAL:
             for e in self.enemies:
-                e.update(G.Globals.INTERVAL, self.player, self.map)
+                e.update(G.Globals.INTERVAL, self.player, self.map, self.enemies)
             for b in self.bullets.sprites():
                 if b.update(G.Globals.INTERVAL):
                     self.bullets.remove(b)
