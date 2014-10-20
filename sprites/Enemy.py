@@ -97,8 +97,9 @@ class Enemy(PS.Sprite):
 
         if self.dying:
             self.image = Enemy.DEATH_IMAGES[self.death_index+index]
-            if index == 4:
+            if index == 3:
                 self.dead = True
+
         self.time += time
         if self.time >= Enemy.CYCLE:
             self.time = 0
