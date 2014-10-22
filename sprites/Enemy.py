@@ -6,6 +6,7 @@ import maps.Camera as Camera
 import maps.Map as Map
 import math
 import random
+import pygame.mixer as PM
 
 class Enemy(PS.Sprite):
 
@@ -16,10 +17,13 @@ class Enemy(PS.Sprite):
     SPEED = 1.5
     AI_PERCENTAGE = .9
     MIN_SEPERATION_DIST = 50
+    SOUND = None
 
     def __init__(self, (x, y)):
         PS.Sprite.__init__(self)
 
+        if Enemy.SOUND == None:
+            Enemy.SOUND = PM.Sound("sounds/slime_death.wav")
         if not Enemy.IMAGES:
             self.load_images()
 
@@ -192,6 +196,7 @@ class Enemy(PS.Sprite):
         return False
 
     def start_death(self):
+        Enemy.SOUND.play()
         if self.b_index == 15:
             self.death_index = 4
         else:

@@ -282,6 +282,7 @@ class Player(PS.Sprite):
             val = 1
         #opening a door
         elif tile.is_door() and self.keys > 0:
+
             self.keys = self.keys - 1
             tile.change_image(6)
             val = 1
@@ -311,6 +312,7 @@ class Player(PS.Sprite):
 
     def take_damage(self, h_lost):
         if self.d_time >= Player.DMG_TIME:
+            Player.SOUND.play()
             self.health = self.health - h_lost
             self.d_time = 0
             if self.health <= 0:
@@ -328,7 +330,6 @@ class Player(PS.Sprite):
                 surface.set_colorkey(key)
                 surface.blit(sheet, (0,0), (i*Player.WIDTH, k*Player.BODY_HEIGHT, Player.WIDTH, Player.BODY_HEIGHT))
                 Player.WALKING_BODY_IMAGES.append(surface)
-        print len(Player.WALKING_BODY_IMAGES)
 
         Player.RUNNING_BODY_IMAGES = []
         for k in range(4):

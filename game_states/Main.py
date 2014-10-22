@@ -17,6 +17,7 @@ import maps.Camera as Camera
 import maps.Map as Map
 import math
 import pygame.font as PF
+import GameOver
 
 
 class Game(State.State):
@@ -30,9 +31,10 @@ class Game(State.State):
     HEART_IMAGE = None
 
     def __init__(self):
+        Game.SCORE = 0
         State.State.__init__(self)
         Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
-        self.map = Map.Map("maps/texts/map2.txt")
+        self.map = Map.Map("maps/texts/Map For Assignment 5.txt")
 
         heart_surf = PI.load("sprites/images/heart.png").convert()
         Game.HEART_IMAGE = PG.Surface((25,25))
@@ -89,14 +91,15 @@ class Game(State.State):
                     if val == 1:
                         self.wall_sprites_list.remove(wall)
                     if val == 2:
-                        G.Globals.STATE = Menu.Menu()
+                        Game.SCORE += 100
+                        G.Globals.STATE = GameOver.GameOver(True, Game.SCORE)
             #Player Collision with Enemies
             result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)
             for key in result:
                 for enemy in result[key]:
                     if self.player.take_damage(1):
-                        G.Globals.STATE = Menu.Menu()
+                        G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
             #Enemy Collision with Bullets
             result = PS.groupcollide(self.enemies, self.bullets, False, False)
             for enemy in result:
@@ -161,5 +164,3 @@ class Game(State.State):
         for i in range(self.player.health):
             G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
             heart_x += 25
-
-
