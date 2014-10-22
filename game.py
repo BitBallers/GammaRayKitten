@@ -33,7 +33,7 @@ def initialize():
     PD.set_caption("Gamma Ray Kitten")
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
     G.Globals.HEIGHT = G.Globals.SCREEN.get_height()-G.Globals.HUD_HEIGHT
-    G.Globals.STATE = Menu.Menu()
+    G.Globals.STATE = Title.Title()
 
 
 def loop():
