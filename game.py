@@ -1,5 +1,5 @@
 # The main architecture of the game
-
+import os
 import sys as SYS
 import pygame as PG
 import pygame.display as PD

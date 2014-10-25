@@ -86,13 +86,14 @@ class Game(State.State):
                                      False, False)
             for key in result:
                 for wall in result[key]:
-                    val = self.player.wall_collision(wall)
-                    self.set_screen_cords_player()
-                    if val == 1:
-                        self.wall_sprites_list.remove(wall)
-                    if val == 2:
-                        Game.SCORE += 100
-                        G.Globals.STATE = GameOver.GameOver(True, Game.SCORE)
+                    if self.player.rect.colliderect(wall.rect):
+                        val = self.player.wall_collision(wall)
+                        self.set_screen_cords_player()
+                        if val == 1:
+                            self.wall_sprites_list.remove(wall)
+                        if val == 2:
+                            Game.SCORE += 100
+                            G.Globals.STATE = GameOver.GameOver(True, Game.SCORE)
             #Player Collision with Enemies
             result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)
