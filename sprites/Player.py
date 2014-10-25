@@ -25,7 +25,7 @@ class Player(PS.Sprite):
     HEIGHT = 50
     BODY_HEIGHT = 27
     HEAD_HEIGHT = 27
-    CYCLE = 1
+    CYCLE = .5
     H_CYCLE = .4
     SPEED_TIME = .4
     DMG_TIME = 1
