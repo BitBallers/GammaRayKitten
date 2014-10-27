@@ -152,8 +152,8 @@ class Game(State.State):
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
             bull = self.player.handle_events(event)
-            if bull is not None:
-                self.bullets.add(bull)
+            for b in bull:
+                self.bullets.add(b)
 
     def set_screen_coords_map(self):
         self.non_black_tiles = PS.Group()
@@ -182,7 +182,7 @@ class Game(State.State):
                     self.non_black_tiles.add(tile)
 
                 if tile.is_wall() or tile.is_key() or \
-                        tile.is_door() or tile.is_stairs():
+                        tile.is_door() or tile.is_stairs() or tile.is_item():
                     self.wall_sprites_list.add(tile)
                 if tile.is_forward_wall():
                     partial_tile = tile.get_wall_partial()

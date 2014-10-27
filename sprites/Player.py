@@ -12,6 +12,7 @@ import Tile
 import maps.Camera as Camera
 import maps.Map as Map
 import Bullet as B
+import math as m
 
 
 class Player(PS.Sprite):
@@ -37,6 +38,8 @@ class Player(PS.Sprite):
     SCROLL_LOWER_BOUND = 400
     SPRITE_IMAGE_KEY = None
     MAX_HEALTH = 5
+    MOVE_KEYS = [PG.K_w, PG.K_a, PG.K_s, PG.K_d]
+    SHOT_KEYS = [PG.K_UP, PG.K_DOWN, PG.K_RIGHT, PG.K_LEFT]
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
@@ -76,45 +79,60 @@ class Player(PS.Sprite):
         self.b_distance = 300
         self.old_head = self.head_image
         self.d_time = self.DMG_TIME
+        self.shot_type = 0
 
     def handle_events(self, event):
+        bull = []
+        adj_old = m.cos(m.pi/12)*self.b_speed
+        adj_new = m.sin(m.pi/12)*self.b_speed
         if event.type == PG.KEYDOWN:
             if event.key == PG.K_UP:
                 if self.s_time >= self.fire_rate:
                     self.shot_dir = 1
                     self.s_time = 0.0
-                    return B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, 0, -self.b_speed, self.b_distance)
+                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, 0, -self.b_speed, self.b_distance))
+                    if self.shot_type == 1:
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, adj_new, -adj_old, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, -adj_new, -adj_old, self.b_distance))
+
             elif event.key == PG.K_DOWN:
                  if self.s_time >= self.fire_rate:
                     self.shot_dir = 2
                     self.s_time = 0.0
-                    return B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, 0, self.b_speed, self.b_distance)
+                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, 0, self.b_speed, self.b_distance))
+                    if self.shot_type == 1:
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, adj_new, adj_old, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, -adj_new, adj_old, self.b_distance))
 
             elif event.key == PG.K_RIGHT:
                  if self.s_time >= self.fire_rate:
                     self.shot_dir = 3
                     self.s_time = 0.0
-                    return B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, self.b_speed, 0, self.b_distance)
+                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, self.b_speed, 0, self.b_distance))
+                    if self.shot_type == 1:
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, adj_old, -adj_new, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, adj_old, adj_new, self.b_distance))
 
             elif event.key == PG.K_LEFT:
                  if self.s_time >= self.fire_rate:
                     self.shot_dir = 4
                     self.s_time = 0.0
-                    return B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -self.b_speed, 0, self.b_distance)
-
+                    bull.append(B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -self.b_speed, 0, self.b_distance))
+                    if self.shot_type == 1:
+                        bull.append(B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -adj_old, adj_new, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -adj_old, -adj_new, self.b_distance))
             #Adding the new key press to the end of
             #the array
-            else:
+            elif event.key in Player.MOVE_KEYS:
                 self.key.append(event.key)
                 self.time = 0
-                return None
 
         elif event.type == PG.KEYUP:
             #Remove the key from the array if
             #it is there
             if event.key in self.key:
                 self.key.remove(event.key)
-            return None
+        return bull
 
     def set_screen_coords(self, x, y):
         self.rect.x = x
@@ -282,6 +300,12 @@ class Player(PS.Sprite):
         #picking up a key
         if tile.is_key():
             self.keys = self.keys + 1
+            tile.change_image(6)
+            val = 1
+        #picking up item
+        elif tile.is_item():
+            #TODO: make scalable
+            self.shot_type = 1
             tile.change_image(6)
             val = 1
         #opening a door

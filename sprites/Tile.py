@@ -69,6 +69,12 @@ class Tile(PS.Sprite):
         else:
             return False
 
+    def is_item(self):
+        if self.type in Tile.ITEM_TILES:
+            return True
+        else:
+            return False
+
     def is_door(self):
         if self.type in Tile.DOOR_TILES:
             return True
