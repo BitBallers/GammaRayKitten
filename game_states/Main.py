@@ -7,6 +7,7 @@ import pygame.mixer as PX
 import sprites.Enemy as Enemy
 import sprites.Player as Player
 import sprites.Bullet as Bullet
+import sprites.Heart as Heart
 import pygame.image as PI
 import random
 import State
@@ -31,6 +32,7 @@ class Game(State.State):
     SCORE = 0
     SCORE_FONT = None
     HEART_IMAGE = None
+    HEALTH_DROP_RATE = .1
 
     def __init__(self):
         Game.SCORE = 0
@@ -48,7 +50,6 @@ class Game(State.State):
         self.player_group = PS.Group()
         self.bullets = PS.Group()
         self.player = Player.Player(400, Map.Map.HEIGHT - 300, self.camera)
-        print Map.Map.HEIGHT
         self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
@@ -63,11 +64,15 @@ class Game(State.State):
         self.black_tiles = None
         self.set_screen_coords_map()
 
+        self.hearts_group = PS.Group()
+
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
         self.non_black_tiles.draw(G.Globals.SCREEN)
         for stain in self.blood_stains:
             stain.render()
+        for heart in self.hearts_group.sprites():
+            heart.render()
         self.player.render()
         for e in self.enemies.sprites():
             e.render()
@@ -100,6 +105,8 @@ class Game(State.State):
                     self.blood.remove(blood)
             for stain in self.blood_stains:
                 stain.update()
+            for heart in self.hearts_group.sprites():
+                heart.update()
 
             self.player.update(G.Globals.INTERVAL)
             self.set_screen_cords_player()
@@ -139,12 +146,23 @@ class Game(State.State):
                 Game.SCORE = Game.SCORE + 10
                 for bullet in result[enemy]:
                     self.bullets.remove(bullet)
+                if random.random() < Game.HEALTH_DROP_RATE:
+                    self.hearts_group.add(Heart.Heart(enemy.world_x, 
+                                                      enemy.world_y))
+
             # Bullets Collide with Wall
             result = PS.groupcollide(
                 self.bullets, self.wall_sprites_list, False, False)
             for bullet in result:
                 self.bullets.remove(bullet)
             self.time -= G.Globals.INTERVAL
+
+            # Player picking up hearts
+            if self.player.health < Player.Player.MAX_HEALTH:
+                heart = PS.spritecollideany(self.player, self.hearts_group)
+                if heart is not None:
+                    self.hearts_group.remove(heart)
+                    self.player.health += 1
 
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
