@@ -33,7 +33,6 @@ class Bullet(PS.Sprite):
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
 
-
     def render(self):
         x = self.world_x - Camera.Camera.X
         y = self.world_y - Camera.Camera.Y

@@ -36,7 +36,7 @@ class Game(State.State):
         Game.SCORE = 0
         State.State.__init__(self)
         Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
-        self.map = Map.Map("maps/texts/map2.txt")
+        self.map = Map.Map(3)
 
         heart_surf = PI.load("sprites/images/heart.png").convert()
         Game.HEART_IMAGE = PG.Surface((25, 25))
@@ -47,7 +47,8 @@ class Game(State.State):
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
         self.bullets = PS.Group()
-        self.player = Player.Player(100, Map.Map.HEIGHT - 50, self.camera)
+        self.player = Player.Player(400, Map.Map.HEIGHT - 300, self.camera)
+        print Map.Map.HEIGHT
         self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
@@ -169,6 +170,9 @@ class Game(State.State):
             for k in range(Game.MAP_TILE_HEIGHT + 1):
                 x = first_x + (i * Game.TILE_WIDTH)
                 y = first_y + (k * Game.TILE_HEIGHT)
+                if x >= Map.Map.WIDTH or y >= Map.Map.HEIGHT:
+                    continue
+
                 tile = self.map.tiles[(x, y)]
                 tile.set_screen_coords(offset_x + (i * Game.TILE_WIDTH),
                                        offset_y + (k * Game.TILE_HEIGHT))
