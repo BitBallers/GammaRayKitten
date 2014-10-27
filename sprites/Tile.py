@@ -13,6 +13,7 @@ class Tile(PS.Sprite):
     DOOR_TILES = [1]
     STAIR_TILES = [5]
     FORWARD_WALL_TILE = [0, 2, 3, 4]
+    ITEM_TILES = [9]
 
     def __init__(self, x, y, type):
         PS.Sprite.__init__(self)
@@ -52,6 +53,15 @@ class Tile(PS.Sprite):
         surface.set_colorkey(color_key)
         surface.blit(key, (15, 19))
         Tile.IMAGES.append(surface)
+
+        # create syringe tile
+        syringe = PI.load("sprites/images/syringe_sprite.png").convert()
+        color_key = syringe.get_at((0, 0))
+        syringe.set_colorkey(color_key)
+        surface2 = Tile.IMAGES[6].copy().convert()
+        surface2.set_colorkey(color_key)
+        surface2.blit(syringe, (0, 0))
+        Tile.IMAGES.append(surface2)
 
     def is_wall(self):
         if self.type in Tile.WALL_TILES:

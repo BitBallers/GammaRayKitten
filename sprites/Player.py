@@ -23,6 +23,8 @@ class Player(PS.Sprite):
     SOUND = None
     WIDTH = 40
     HEIGHT = 50
+    ACTUAL_WIDTH = 30
+    ACTUAL_HEIGHT = 43
     BODY_HEIGHT = 27
     HEAD_HEIGHT = 27
     CYCLE = .5
@@ -49,7 +51,7 @@ class Player(PS.Sprite):
         self.body_image = Player.WALKING_BODY_IMAGES[10]
         self.head_image = Player.REG_HEAD_IMAGES[1]
 
-        self.rect = PG.Rect(0,0,Player.WIDTH, Player.HEIGHT)
+        self.rect = PG.Rect(0,0,Player.WIDTH-10, Player.HEIGHT-7)
 
         self.world_coord_x = x_cord
         self.world_coord_y = y_cord
@@ -147,8 +149,10 @@ class Player(PS.Sprite):
             self.head_image = Player.REG_HEAD_IMAGES[3]
 
     def render(self):
-        G.Globals.SCREEN.blit(self.body_image, (self.rect.x, self.rect.y+Player.HEAD_HEIGHT-4))
-        G.Globals.SCREEN.blit(self.head_image, (self.rect.x, self.rect.y))
+        # surf = PG.Surface((self.rect.width, self.rect.height)).convert()
+        # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
+        G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5, self.rect.y+Player.HEAD_HEIGHT-4-3.5))
+        G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5, self.rect.y-3.5))
 
     # takes in the fixed time interval, dt
     def update(self, time):
@@ -273,7 +277,7 @@ class Player(PS.Sprite):
         self.d_time = self.d_time if self.d_time < Player.DMG_TIME else Player.DMG_TIME
 
 
-    def wall_collision(self, tile):
+    def wall_collision(self, tile, map):
         val = 0
         #picking up a key
         if tile.is_key():
@@ -290,24 +294,49 @@ class Player(PS.Sprite):
         elif tile.is_stairs():
             val = 2
         #In Case removing from wall list is slow
-        elif not tile.is_wall and not tile.is_door():
+        elif not tile.is_wall() and not tile.is_door():
             val = 0
         #regular wall stuff
         elif self.x_velocity > 0:
-            self.x_velocity = 0
-            self.world_coord_x = tile.world_x - Player.WIDTH
-        elif self.x_velocity < 0:
-            self.x_velocity = 0
-            self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
-        elif self.y_velocity > 0:    
-            self.y_velocity = 0
-            self.world_coord_y = tile.world_y - Player.HEIGHT
-        elif self.y_velocity < 0:
-            self.y_velocity = 0
-            if tile.partial == True:
-                self.world_coord_y = tile.world_y + tile.rect.height
+            if tile.partial and self.world_coord_y >= tile.world_y:
+                self.world_coord_y = tile.world_y+tile.rect.height
+            elif tile.world_y - self.world_coord_y >= self.rect.height-15 \
+             and not map.tiles[(tile.world_x, tile.world_y-50)].is_wall():
+                self.world_coord_y = tile.world_y-self.rect.height
             else:
-                self.world_coord_y = tile.world_y + Tile.Tile.HEIGHT
+                self.x_velocity = 0
+                self.world_coord_x = tile.world_x - Player.ACTUAL_WIDTH
+        elif self.x_velocity < 0:
+            if tile.partial and self.world_coord_y >= tile.world_y:
+                self.world_coord_y = tile.world_y+tile.rect.height
+            elif tile.world_y - self.world_coord_y >= self.rect.height-15 \
+             and not map.tiles[(tile.world_x, tile.world_y-50)].is_wall():
+                self.world_coord_y = tile.world_y-self.rect.height
+            else:
+                self.x_velocity = 0
+                self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
+        elif self.y_velocity > 0:
+            if tile.world_x + Tile.Tile.WIDTH - self.world_coord_x <= 15 \
+             and not map.tiles[(tile.world_x+50, tile.world_y)].is_wall():
+                self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
+            elif tile.world_x - self.world_coord_x >= self.rect.width-15 \
+             and not map.tiles[(tile.world_x-50, tile.world_y)].is_wall():
+                self.world_coord_x = tile.world_x - self.rect.width
+            else:   
+                self.y_velocity = 0
+                self.world_coord_y = tile.world_y - Player.ACTUAL_HEIGHT
+        elif self.y_velocity < 0:
+            if tile.world_x + tile.rect.width - self.world_coord_x <= 15 \
+             and not map.tiles[(tile.world_x+50, tile.world_y)].partial:
+                self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
+            elif tile.world_x - self.world_coord_x >= self.rect.width-15 \
+             and not map.tiles[(tile.world_x-50, tile.world_y)].partial:
+                self.world_coord_x = tile.world_x - self.rect.width
+            else:
+                self.y_velocity = 0
+                self.world_coord_y = tile.world_y + tile.rect.height
+            
+            
         return val
 
     def take_damage(self, h_lost):

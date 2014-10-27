@@ -80,9 +80,9 @@ class Game(State.State):
 
     def spawn_enemies(self):
         self.enemies = PS.Group()
-        for coords in self.map.enemy_coords:
+        '''for coords in self.map.enemy_coords:
             new_enemy = Enemy.Enemy(coords)
-            self.enemies.add(new_enemy)
+            self.enemies.add(new_enemy)'''
 
     def update(self, time):
         self.time += time
@@ -110,7 +110,7 @@ class Game(State.State):
             for key in result:
                 for wall in result[key]:
                     if self.player.rect.colliderect(wall.rect):
-                        val = self.player.wall_collision(wall)
+                        val = self.player.wall_collision(wall, self.map)
                         self.set_screen_cords_player()
                         if val == 1:
                             self.wall_sprites_list.remove(wall)
