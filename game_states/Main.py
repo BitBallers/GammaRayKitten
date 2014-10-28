@@ -135,7 +135,8 @@ class Game(State.State):
                             self.wall_sprites_list.remove(wall)
                         if val == 2:
                             Game.SCORE += 100
-                            G.Globals.STATE = GameOver.GameOver(True, Game.SCORE)
+                            G.Globals.STATE = GameOver.GameOver(
+                                True, Game.SCORE)
             result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)
             for key in result:
@@ -159,7 +160,7 @@ class Game(State.State):
                 for bullet in result[enemy]:
                     self.bullets.remove(bullet)
                 if random.random() < Game.HEALTH_DROP_RATE:
-                    self.hearts_group.add(Heart.Heart(enemy.world_x, 
+                    self.hearts_group.add(Heart.Heart(enemy.world_x,
                                                       enemy.world_y))
 
             # Bullets Collide with Wall
@@ -237,11 +238,12 @@ class Game(State.State):
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT + 10))
         heart_x = G.Globals.WIDTH - Player.Player.MAX_HEALTH * 25 - 5
         heart_y = 25 / 2 + G.Globals.HEIGHT
-        key_x = heart_x-40
+        key_x = heart_x - 40
         for i in range(self.player.health):
             G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
             heart_x += 25
         if self.player.keys > 0:
-            G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, heart_y+7))
+            G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, heart_y + 7))
         if self.player.shot_type == 1:
-            G.Globals.SCREEN.blit(Game.SYRINGE_IMAGE, (key_x-25, heart_y+5))
+            G.Globals.SCREEN.blit(
+                Game.SYRINGE_IMAGE, (key_x - 25, heart_y + 5))

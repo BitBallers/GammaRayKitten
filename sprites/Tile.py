@@ -41,8 +41,8 @@ class Tile(PS.Sprite):
         for i in range(Tile.SPRITE_SHEET_LENGTH):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
 
-            surface.blit(sheet, (0, 0), (i*Tile.WIDTH, 0,
-                         Tile.WIDTH, Tile.HEIGHT))
+            surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,
+                                         Tile.WIDTH, Tile.HEIGHT))
             Tile.IMAGES.append(surface)
 
         # create key tile
@@ -101,6 +101,6 @@ class Tile(PS.Sprite):
 
     def get_wall_partial(self):
         new_tile = Tile(self.world_x, self.world_y, 7)
-        new_tile.rect.height = Tile.HEIGHT/3
+        new_tile.rect.height = Tile.HEIGHT / 3
         new_tile.partial = True
-        return new_tile  
+        return new_tile

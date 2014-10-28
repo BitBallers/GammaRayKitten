@@ -16,7 +16,7 @@ class Heart(PS.Sprite):
             img = PI.load("sprites/images/heart.png").convert()
             Heart.IMAGE = PG.Surface(img.get_size()).convert()
             Heart.IMAGE.set_colorkey(img.get_at((0, 0)))
-            Heart.IMAGE.blit(img, (0,0))
+            Heart.IMAGE.blit(img, (0, 0))
 
         self.world_x = x
         self.world_y = y
@@ -31,7 +31,7 @@ class Heart(PS.Sprite):
         x = self.world_x - Camera.Camera.X
         y = self.world_y - Camera.Camera.Y
         if x >= -self.rect.width and x <= G.Globals.WIDTH and \
-         y >= -self.rect.height and y <= G.Globals.HEIGHT:
+                y >= -self.rect.height and y <= G.Globals.HEIGHT:
             G.Globals.SCREEN.blit(self.image, (x, y))
 
     def update(self):
