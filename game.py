@@ -14,6 +14,7 @@ import game_states.Menu as Menu
 import Globals as G
 import game_states.Title as Title
 import game_states.Main as Main
+import game_states.Intro as Intro
 
 
 def main():
