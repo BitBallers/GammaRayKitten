@@ -32,7 +32,8 @@ class Game(State.State):
     SCORE = 0
     SCORE_FONT = None
     HEART_IMAGE = None
-    HEALTH_DROP_RATE = .1
+    HEALTH_DROP_RATE = .2
+    KEY_IMAGE = None
 
     def __init__(self):
         Game.SCORE = 0
@@ -44,6 +45,11 @@ class Game(State.State):
         Game.HEART_IMAGE = PG.Surface((25, 25))
         Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0, 0)))
         Game.HEART_IMAGE.blit(heart_surf, (0, 0))
+
+        key_surf = PI.load("sprites/images/20x12_key.png")
+        Game.KEY_IMAGE = PG.Surface((20, 12))
+        Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
+        Game.KEY_IMAGE.blit(key_surf, (0, 0))
 
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
@@ -217,6 +223,7 @@ class Game(State.State):
 
     def render_HUD(self):
         surface = PG.Surface((G.Globals.WIDTH, G.Globals.HUD_HEIGHT))
+        surface.fill((80, 0, 0))
         G.Globals.SCREEN.blit(surface, (0, G.Globals.HEIGHT))
         score_string = "Score: " + str(Game.SCORE)
         score_surf = Game.SCORE_FONT.render(
@@ -224,6 +231,9 @@ class Game(State.State):
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT + 10))
         heart_x = G.Globals.WIDTH - Player.Player.MAX_HEALTH * 25 - 5
         heart_y = 25 / 2 + G.Globals.HEIGHT
+        key_x = heart_x-40
         for i in range(self.player.health):
             G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
             heart_x += 25
+        if self.player.keys > 0:
+            G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, heart_y+7))
