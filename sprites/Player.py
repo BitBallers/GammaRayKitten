@@ -54,7 +54,7 @@ class Player(PS.Sprite):
         self.body_image = Player.WALKING_BODY_IMAGES[10]
         self.head_image = Player.REG_HEAD_IMAGES[1]
 
-        self.rect = PG.Rect(0,0,Player.WIDTH-10, Player.HEIGHT-7)
+        self.rect = PG.Rect(0, 0, Player.WIDTH-10, Player.HEIGHT-7)
 
         self.world_coord_x = x_cord
         self.world_coord_y = y_cord
@@ -90,37 +90,71 @@ class Player(PS.Sprite):
                 if self.s_time >= self.fire_rate:
                     self.shot_dir = 1
                     self.s_time = 0.0
-                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, 0, -self.b_speed, self.b_distance))
+                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
+                                - B.Bullet.WIDTH, self.world_coord_y, 0,
+                                - self.b_speed, self.b_distance))
                     if self.shot_type == 1:
-                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, adj_new, -adj_old, self.b_distance))
-                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y, -adj_new, -adj_old, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x +
+                                    Player.WIDTH/2 - B.Bullet.WIDTH,
+                                    self.world_coord_y, adj_new, -adj_old,
+                                    self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x +
+                                    Player.WIDTH/2 - B.Bullet.WIDTH,
+                                    self.world_coord_y, -adj_new, -adj_old,
+                                    self.b_distance))
 
             elif event.key == PG.K_DOWN:
-                 if self.s_time >= self.fire_rate:
+                if self.s_time >= self.fire_rate:
                     self.shot_dir = 2
                     self.s_time = 0.0
-                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, 0, self.b_speed, self.b_distance))
+                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
+                                - B.Bullet.WIDTH, self.world_coord_y +
+                                Player.HEAD_HEIGHT, 0, self.b_speed,
+                                self.b_distance))
                     if self.shot_type == 1:
-                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, adj_new, adj_old, self.b_distance))
-                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2 - B.Bullet.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT, -adj_new, adj_old, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x +
+                                    Player.WIDTH/2 - B.Bullet.WIDTH,
+                                    self.world_coord_y + Player.HEAD_HEIGHT,
+                                    adj_new, adj_old, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x +
+                                    Player.WIDTH/2 - B.Bullet.WIDTH,
+                                    self.world_coord_y + Player.HEAD_HEIGHT,
+                                    -adj_new, adj_old, self.b_distance))
 
             elif event.key == PG.K_RIGHT:
-                 if self.s_time >= self.fire_rate:
+                if self.s_time >= self.fire_rate:
                     self.shot_dir = 3
                     self.s_time = 0.0
-                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, self.b_speed, 0, self.b_distance))
+                    bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
+                                self.world_coord_y + Player.HEAD_HEIGHT -
+                                B.Bullet.HEIGHT, self.b_speed, 0,
+                                self.b_distance))
                     if self.shot_type == 1:
-                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, adj_old, -adj_new, self.b_distance))
-                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, adj_old, adj_new, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
+                                    self.world_coord_y + Player.HEAD_HEIGHT
+                                    - B.Bullet.HEIGHT, adj_old, -adj_new,
+                                    self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
+                                    self.world_coord_y + Player.HEAD_HEIGHT -
+                                    B.Bullet.HEIGHT, adj_old, adj_new,
+                                    self.b_distance))
 
             elif event.key == PG.K_LEFT:
-                 if self.s_time >= self.fire_rate:
+                if self.s_time >= self.fire_rate:
                     self.shot_dir = 4
                     self.s_time = 0.0
-                    bull.append(B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -self.b_speed, 0, self.b_distance))
+                    bull.append(B.Bullet(self.world_coord_x, self.world_coord_y
+                                + Player.HEAD_HEIGHT - B.Bullet.HEIGHT,
+                                -self.b_speed, 0, self.b_distance))
                     if self.shot_type == 1:
-                        bull.append(B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -adj_old, adj_new, self.b_distance))
-                        bull.append(B.Bullet(self.world_coord_x, self.world_coord_y + Player.HEAD_HEIGHT - B.Bullet.HEIGHT, -adj_old, -adj_new, self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x,
+                                    self.world_coord_y + Player.HEAD_HEIGHT
+                                    - B.Bullet.HEIGHT, -adj_old, adj_new,
+                                    self.b_distance))
+                        bull.append(B.Bullet(self.world_coord_x,
+                                    self.world_coord_y + Player.HEAD_HEIGHT
+                                    - B.Bullet.HEIGHT, -adj_old, -adj_new,
+                                    self.b_distance))
             #Adding the new key press to the end of
             #the array
             elif event.key in Player.MOVE_KEYS:
@@ -169,8 +203,10 @@ class Player(PS.Sprite):
     def render(self):
         # surf = PG.Surface((self.rect.width, self.rect.height)).convert()
         # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
-        G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5, self.rect.y+Player.HEAD_HEIGHT-4-3.5))
-        G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5, self.rect.y-3.5))
+        G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5,
+                              self.rect.y+Player.HEAD_HEIGHT-4-3.5))
+        G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5,
+                              self.rect.y-3.5))
 
     # takes in the fixed time interval, dt
     def update(self, time):
@@ -290,10 +326,12 @@ class Player(PS.Sprite):
         if self.time >= Player.CYCLE:
             self.time = 0
         #make sure shot time doesn't get too big
-        if self.s_time > self.fire_rate and self.s_time > Player.H_CYCLE + time:
-            self.s_time = self.fire_rate if self.fire_rate > Player.H_CYCLE + time else Player.H_CYCLE + time
-        self.d_time = self.d_time if self.d_time < Player.DMG_TIME else Player.DMG_TIME
-
+        if self.s_time > self.fire_rate \
+                and self.s_time > Player.H_CYCLE + time:
+            self.s_time = (self.fire_rate if self.fire_rate >
+                           Player.H_CYCLE + time else Player.H_CYCLE + time)
+        self.d_time = (self.d_time if self.d_time < Player.DMG_TIME
+                       else Player.DMG_TIME)
 
     def wall_collision(self, tile, map):
         val = 0
@@ -325,7 +363,8 @@ class Player(PS.Sprite):
             if tile.partial and self.world_coord_y >= tile.world_y:
                 self.world_coord_y = tile.world_y+tile.rect.height
             elif tile.world_y - self.world_coord_y >= self.rect.height-15 \
-             and not map.tiles[(tile.world_x, tile.world_y-50)].is_wall():
+                    and not map.tiles[(tile.world_x,
+                                      tile.world_y-50)].is_wall():
                 self.world_coord_y = tile.world_y-self.rect.height
             else:
                 self.x_velocity = 0
@@ -334,33 +373,36 @@ class Player(PS.Sprite):
             if tile.partial and self.world_coord_y >= tile.world_y:
                 self.world_coord_y = tile.world_y+tile.rect.height
             elif tile.world_y - self.world_coord_y >= self.rect.height-15 \
-             and not map.tiles[(tile.world_x, tile.world_y-50)].is_wall():
+                    and not map.tiles[(tile.world_x,
+                                      tile.world_y-50)].is_wall():
                 self.world_coord_y = tile.world_y-self.rect.height
             else:
                 self.x_velocity = 0
                 self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
         elif self.y_velocity > 0:
             if tile.world_x + Tile.Tile.WIDTH - self.world_coord_x <= 15 \
-             and not map.tiles[(tile.world_x+50, tile.world_y)].is_wall():
+                    and not map.tiles[(tile.world_x+50,
+                                      tile.world_y)].is_wall():
                 self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
             elif tile.world_x - self.world_coord_x >= self.rect.width-15 \
-             and not map.tiles[(tile.world_x-50, tile.world_y)].is_wall():
+                    and not map.tiles[(tile.world_x-50,
+                                      tile.world_y)].is_wall():
                 self.world_coord_x = tile.world_x - self.rect.width
-            else:   
+            else:
                 self.y_velocity = 0
                 self.world_coord_y = tile.world_y - Player.ACTUAL_HEIGHT
         elif self.y_velocity < 0:
             if tile.world_x + tile.rect.width - self.world_coord_x <= 15 \
-             and not map.tiles[(tile.world_x+50, tile.world_y)].partial:
+                    and not map.tiles[(tile.world_x+50,
+                                      tile.world_y)].partial:
                 self.world_coord_x = tile.world_x + Tile.Tile.WIDTH
             elif tile.world_x - self.world_coord_x >= self.rect.width-15 \
-             and not map.tiles[(tile.world_x-50, tile.world_y)].partial:
+                    and not map.tiles[(tile.world_x-50,
+                                      tile.world_y)].partial:
                 self.world_coord_x = tile.world_x - self.rect.width
             else:
                 self.y_velocity = 0
                 self.world_coord_y = tile.world_y + tile.rect.height
-            
-            
         return val
 
     def take_damage(self, h_lost):
@@ -371,7 +413,7 @@ class Player(PS.Sprite):
             if self.health <= 0:
                 return True
         return False
-        
+
     def load_images(self):
         sheet = PI.load("sprites/images/cat_sprite_sheet_body.png").convert()
         key = sheet.get_at((0, 0))
@@ -379,17 +421,23 @@ class Player(PS.Sprite):
         Player.WALKING_BODY_IMAGES = []
         for k in range(4):
             for i in range(8):
-                surface = PG.Surface((Player.WIDTH, Player.BODY_HEIGHT)).convert()
+                surface = PG.Surface((Player.WIDTH,
+                                     Player.BODY_HEIGHT)).convert()
                 surface.set_colorkey(key)
-                surface.blit(sheet, (0,0), (i*Player.WIDTH, k*Player.BODY_HEIGHT, Player.WIDTH, Player.BODY_HEIGHT))
+                surface.blit(sheet, (0, 0), (i * Player.WIDTH,
+                             k*Player.BODY_HEIGHT, Player.WIDTH,
+                             Player.BODY_HEIGHT))
                 Player.WALKING_BODY_IMAGES.append(surface)
 
         Player.RUNNING_BODY_IMAGES = []
         for k in range(4):
             for i in range(8):
-                surface = PG.Surface((Player.WIDTH, Player.BODY_HEIGHT)).convert()
+                surface = PG.Surface((Player.WIDTH,
+                                     Player.BODY_HEIGHT)).convert()
                 surface.set_colorkey(key)
-                surface.blit(sheet, (0,0), (i*Player.WIDTH, 4*Player.BODY_HEIGHT+k*Player.BODY_HEIGHT, Player.WIDTH, Player.BODY_HEIGHT))
+                surface.blit(sheet, (0, 0), (i*Player.WIDTH,
+                             4 * Player.BODY_HEIGHT + k * Player.BODY_HEIGHT,
+                             Player.WIDTH, Player.BODY_HEIGHT))
                 Player.RUNNING_BODY_IMAGES.append(surface)
 
         sheet = PI.load("sprites/images/cat_sprite_sheet_head.png").convert()
@@ -399,14 +447,17 @@ class Player(PS.Sprite):
         for k in range(4):
             surface = PG.Surface((Player.WIDTH, Player.HEAD_HEIGHT)).convert()
             surface.set_colorkey(key)
-            surface.blit(sheet, (0,0), (0, k*Player.HEAD_HEIGHT, Player.WIDTH, Player.HEAD_HEIGHT))
+            surface.blit(sheet, (0, 0), (0, k*Player.HEAD_HEIGHT, Player.WIDTH,
+                         Player.HEAD_HEIGHT))
             Player.REG_HEAD_IMAGES.append(surface)
 
         Player.ATTACKING_HEAD_IMAGES = []
         for k in range(4):
             for i in range(3):
-                surface = PG.Surface((Player.WIDTH, Player.HEAD_HEIGHT)).convert()
+                surface = PG.Surface((Player.WIDTH,
+                                     Player.HEAD_HEIGHT)).convert()
                 surface.set_colorkey(key)
-                surface.blit(sheet, (0,0), (Player.WIDTH+i*Player.WIDTH, k*Player.HEAD_HEIGHT, Player.WIDTH, Player.HEAD_HEIGHT))
+                surface.blit(sheet, (0, 0), (Player.WIDTH+i*Player.WIDTH,
+                             k*Player.HEAD_HEIGHT, Player.WIDTH,
+                             Player.HEAD_HEIGHT))
                 Player.ATTACKING_HEAD_IMAGES.append(surface)
-
