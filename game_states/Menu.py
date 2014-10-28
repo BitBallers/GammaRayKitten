@@ -5,6 +5,7 @@ import Globals as G
 import State
 import Score
 import Main
+import Intro
 
 
 class Menu(State.State):
@@ -64,7 +65,7 @@ class Menu(State.State):
     def event(self, event):
         if event.type == PG.MOUSEBUTTONDOWN:
             if self.selected[0]:
-                G.Globals.STATE = Main.Game()
+                G.Globals.STATE = Intro.Intro()
             if self.selected[4]:
                 G.Globals.RUNNING = False
             if self.selected[3]:
