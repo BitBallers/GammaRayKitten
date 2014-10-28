@@ -55,8 +55,7 @@ class Enemy(PS.Sprite):
     def render(self):
         x = self.world_x - Camera.Camera.X
         y = self.world_y - Camera.Camera.Y
-        if x >= -self.rect.width and x <= G.Globals.WIDTH and \
-                y >= -self.rect.height and y <= G.Globals.HEIGHT:
+        if x >= -self.rect.width and x <= G.Globals.WIDTH and y >= -self.rect.height and y <= G.Globals.HEIGHT:
             G.Globals.SCREEN.blit(self.image, (x, y))
 
     def load_images(self):
@@ -114,7 +113,7 @@ class Enemy(PS.Sprite):
             self.time = 0
 
     def ai(self, player, map, enemies_list):
-        sight_vector = ((player.world_coord_x - self.world_x),
+        sight_vector = ((player.world_coord_x - self.world_x), 
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
         if dist >= Enemy.MAX_AI_DIST:
@@ -125,7 +124,7 @@ class Enemy(PS.Sprite):
         # full AI is only run certain percentage of the time
         if random.random() >= (Enemy.AI_PERCENTAGE):
             # check if our direction is still ok
-            if self.is_good_direction(self.x_velocity, self.y_velocity,
+            if self.is_good_direction(self.x_velocity, self.y_velocity, 
                                       map, enemies_list):
                 return
             else:
@@ -152,17 +151,14 @@ class Enemy(PS.Sprite):
                 suggested_y = 0
 
         # check if next tile in that direction is a wall
-        if self.is_good_direction(suggested_x, suggested_y, map,
-                                  enemies_list):
+        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
             return
 
         # check next best direction, swap x y values and copy their signs from
         # original sight vector
-        suggested_x, suggested_y = math.copysign(
-            suggested_y, sight_vector[0]),
-        math.copysign(suggested_x, sight_vector[1])
+        suggested_x, suggested_y = math.copysign(suggested_y, sight_vector[0]), math.copysign(suggested_x, sight_vector[1])
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
@@ -181,8 +177,7 @@ class Enemy(PS.Sprite):
             coord = (e.world_x, e.world_y)
             new_x = self.world_x + x
             new_y = self.world_y + y
-            if math.sqrt((new_x - coord[0]) ** 2 +
-                         (new_y - coord[1]) ** 2) <= Enemy.MIN_SEPERATION_DIST:
+            if math.sqrt((new_x - coord[0]) ** 2 + (new_y - coord[1]) ** 2) <= Enemy.MIN_SEPERATION_DIST:
                 return False
 
         width = Map.Map.TILE_WIDTH
@@ -202,33 +197,25 @@ class Enemy(PS.Sprite):
             tly = math.ceil((top_left[1] - height) / height) * height
             bly = math.ceil((bottom_left[1] - height) / height) * height
             x = math.floor((top_left[0] + width) / width) * width
-            return x - top_right[0] >= padding or \
-                (self.check_valid_tile(map, (x, tly)) and
-                 self.check_valid_tile(map, (x, bly)))
+            return x - top_right[0] >= padding or (self.check_valid_tile(map, (x, tly)) and self.check_valid_tile(map, (x, bly)))
 
         elif x < 0:
             tly = math.ceil((top_left[1] - height) / height) * height
             bly = math.ceil((bottom_left[1] - height) / height) * height
             x = math.floor((top_left[0] - width) / width) * width
-            return top_left[0] - (x + width) >= padding or \
-                (self.check_valid_tile(map, (x, tly)) and
-                 self.check_valid_tile(map, (x, bly)))
+            return top_left[0] - (x + width) >= padding or (self.check_valid_tile(map, (x, tly)) and self.check_valid_tile(map, (x, bly)))
 
         elif y > 0:
             blx = math.ceil((bottom_left[0] - width) / width) * width
             brx = math.ceil((bottom_right[0] - width) / width) * width
             y = math.floor((top_left[1] + height) / height) * height
-            return y - bottom_left[1] >= padding or \
-                (self.check_valid_tile(map, (blx, y)) and
-                 self.check_valid_tile(map, (brx, y)))
-
+            return y - bottom_left[1] >= padding or (self.check_valid_tile(map, (blx, y)) and self.check_valid_tile(map, (brx, y)))
+        
         elif y < 0:
             tlx = math.ceil((top_left[0] - width) / width) * width
             trx = math.ceil((top_right[0] - width) / width) * width
             y = math.floor((top_left[1] - height) / height) * height
-            return top_left[1] - (y + width) >= padding or \
-                (self.check_valid_tile(map, (tlx, y)) and
-                    self.check_valid_tile(map, (trx, y)))
+            return top_left[1] - (y + width) >= padding or (self.check_valid_tile(map, (tlx, y)) and self.check_valid_tile(map, (trx, y)))
 
         return False
 
