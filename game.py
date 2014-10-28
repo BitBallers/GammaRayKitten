@@ -22,7 +22,6 @@ def main():
     loop()
     finalize()
 
-
 def initialize():
     passed, failed = PG.init()
     # make sure nothing weird is going on
@@ -33,8 +32,7 @@ def initialize():
     PD.set_caption("Gamma Ray Kitten")
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
     G.Globals.HEIGHT = G.Globals.SCREEN.get_height()-G.Globals.HUD_HEIGHT
-    G.Globals.STATE = Main.Game()
-
+    G.Globals.STATE = Title.Title()
 
 def loop():
     while G.Globals.RUNNING:
@@ -48,7 +46,6 @@ def loop():
                 G.Globals.RUNNING = False
             else:
                 G.Globals.STATE.event(event)
-
 
 def finalize():
     PG.quit()

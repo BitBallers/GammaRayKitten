@@ -34,6 +34,7 @@ class Game(State.State):
     HEART_IMAGE = None
     HEALTH_DROP_RATE = .2
     KEY_IMAGE = None
+    SYRINGE_IMAGE = None
 
     def __init__(self):
         Game.SCORE = 0
@@ -50,6 +51,11 @@ class Game(State.State):
         Game.KEY_IMAGE = PG.Surface((20, 12))
         Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
         Game.KEY_IMAGE.blit(key_surf, (0, 0))
+
+        s_surf = PI.load("sprites/images/syringe_sprite.png")
+        Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
+        Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
+        Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
 
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
         self.all_sprites_list = PS.Group()
@@ -237,3 +243,5 @@ class Game(State.State):
             heart_x += 25
         if self.player.keys > 0:
             G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, heart_y+7))
+        if self.player.shot_type == 1:
+            G.Globals.SCREEN.blit(Game.SYRINGE_IMAGE, (key_x-25, heart_y+5))

@@ -15,7 +15,7 @@ class Enemy(PS.Sprite):
     DEATH_IMAGES = None
     CYCLE = 0.5
     MAX_AI_DIST = 700
-    SPEED = 1.5
+    SPEED = 2
     AI_PERCENTAGE = .3
     MIN_SEPERATION_DIST = 50
     SOUND = None
