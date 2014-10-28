@@ -1,2 +1,5 @@
 right shiftts - Score: 570
 right shiftts - Score: 630
+upupup - Score: 140
+spacespacespace - Score: 20
+spacebackspacem - Score: 520

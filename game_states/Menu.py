@@ -8,6 +8,7 @@ import Main
 
 
 class Menu(State.State):
+
     FONT = None
     TITLEFONT = None
     INIT_X = 10
@@ -71,11 +72,11 @@ class Menu(State.State):
 
     def check_mouse(self, x, y, width, height):
         pos = PM.get_pos()
-        if pos[0] >= x and pos[0] <= (x+width):
+        if pos[0] >= x and pos[0] <= (x + width):
             pass
         else:
             return False
-        if pos[1] >= y and pos[1] <= (y+height):
+        if pos[1] >= y and pos[1] <= (y + height):
             return True
         else:
             return False

@@ -18,8 +18,8 @@ class Title(State.State):
         Title.SECFONT = PF.Font("fonts/Red October-Regular.ttf", 60)
 
         temp_surf = Title.FONT.render("Bit Ballers", True, (255, 255, 255))
-        self.init_x = G.Globals.WIDTH/2 - temp_surf.get_width()/2
-        self.init_y = G.Globals.HEIGHT/2 - temp_surf.get_height()/2
+        self.init_x = G.Globals.WIDTH / 2 - temp_surf.get_width() / 2
+        self.init_y = G.Globals.HEIGHT / 2 - temp_surf.get_height() / 2
         self.strings = [" ", "B", "Bi", "Bit ", "Bit B", "Bit Ba",
                         "Bit Bal", "Bit Ball", "Bit Balle", "Bit Baller",
                         "Bit Ballers", "Bit Ballers"]
@@ -48,8 +48,8 @@ class Title(State.State):
                                                  True, (0, self.value, 0))
         elif self.index == len(self.strings):
             lsurf = Title.SECFONT.render("Gamma Ray Kitten", True, (0, 255, 0))
-            l_x = G.Globals.WIDTH/2 - lsurf.get_width()/2
-            l_y = G.Globals.HEIGHT/2 - lsurf.get_height()/2
+            l_x = G.Globals.WIDTH / 2 - lsurf.get_width() / 2
+            l_y = G.Globals.HEIGHT / 2 - lsurf.get_height() / 2
             self.surf = lsurf
             self.init_x = l_x
             self.init_y = l_y

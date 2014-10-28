@@ -37,13 +37,13 @@ class Score(State.State):
         G.Globals.SCREEN.fill(PC.Color("black"))
         width, height = self.title_surf.get_size()
         G.Globals.SCREEN.blit(self.title_surf,
-                              (G.Globals.WIDTH/2 - width/2, height))
+                              (G.Globals.WIDTH / 2 - width / 2, height))
         G.Globals.SCREEN.blit(self.back_surf, (0, 0))
-        c_height = 3*height
+        c_height = 3 * height
         for score in self.score_surf:
             width, height = score.get_size()
             G.Globals.SCREEN.blit(score,
-                                  (G.Globals.WIDTH/2 - width/2, c_height))
+                                  (G.Globals.WIDTH / 2 - width / 2, c_height))
             c_height += height * 1.5
             if c_height > G.Globals.HEIGHT:
                 break
