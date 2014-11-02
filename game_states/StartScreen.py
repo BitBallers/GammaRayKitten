@@ -61,6 +61,7 @@ class StartScreen(State.State):
 		self.fade_out_value = 255
 		self.fade_value = 75 # adjust this value to get desired fade effect
 
+		# play music
 		self.music = PX.Sound("music.wav")
 		self.music.play(-1)
 
