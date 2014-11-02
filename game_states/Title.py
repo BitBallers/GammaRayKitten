@@ -39,23 +39,6 @@ class Title(State.State):
 
     def update(self, time):
         self.time += time 
-    #    if self.index < 0: # if all letters of title have been rendered
-    #        self.value -= self.time # letters start at 255(green) but decrement to get fadeout effect
-    #        if self.value <= 0: # if the letters have faded all the way to black (0)
-    #            G.Globals.STATE = StartScreen.StartScreen() # go to start screen state
-    #        else:
-    #            # otherwise, continue to render image with new value
-    #            self.surf = Title.SECFONT.render("Gamma Ray Kit         ten",
-    #                                             True, (0, self.value, 0)) 
-    #    elif self.index == len(self.strings): # checks to see if all letters have been rendered
-    #        lsurf = Title.SECFONT.render("Gamma Ray Kitten", True, (0, 255, 0)) # create new temp surface of rendered text
-    #        l_x = G.Globals.WIDTH / 2 - lsurf.get_width() / 2 # set temp x coordinate for the text
-    #        l_y = G.Globals.HEIGHT / 2 - lsurf.get_height() / 2 # set temp y coordinate for text
-    #        self.surf = lsurf # set the main surface to the text surface
-    #        self.init_x = l_x # set the initial x coordinate to temp x coordinate
-    #        self.init_y = l_y # set the initial y coordinate to temp y coordinate
-    #        self.index = -1 # set the index to -1
-    #        self.time = 0 # set the time of the state to 0
         if self.time >= self.index * Title.INTERVAL: # checks to see if time is >= index * interval of state
             self.surf = Title.FONT.render(self.strings[self.index],
                                           True, (255, 255, 255)) # render the string in the string array with the given index
