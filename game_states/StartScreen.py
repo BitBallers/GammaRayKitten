@@ -41,7 +41,7 @@ class StartScreen(State.State):
 		self.strings1.append("   HIT SPACE TO CONTINUE") # will have to change when joystick implemented
 		self.strings2.append("")
 		self.strings2.append("")
-		self.strings2.append("GAMMA RAY KITTEN")
+		self.strings2.append(" GAMMA RAY KITTEN")
 		# render surfaces for the strings
 		self.surf1 = StartScreen.FONT.render(self.strings1[self.index], True,
 											 (255, 0, 0))
@@ -89,7 +89,7 @@ class StartScreen(State.State):
 			<= 255/self.fade_value + 1:
 			self.fade_out_value -= time * self.fade_value # controls the fade out time
 			if self.fade_out_value >= 0:
-				if self.index != 2: # if not the last image, fade out
+				if self.index != len(self.images)-1: # if not the last image, fade out
 					self.images[self.index].set_alpha(self.fade_out_value)
 
 		# decides whether or not it is time to change the image
