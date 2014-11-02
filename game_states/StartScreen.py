@@ -4,6 +4,7 @@ import pygame.font as PF
 import Globals as G
 import pygame.image as PI
 import pygame.time as PT
+import pygame.mixer as PX
 import random as r
 import Menu 
 import State
@@ -59,6 +60,9 @@ class StartScreen(State.State):
 		self.fade_in_value = 0
 		self.fade_out_value = 255
 		self.fade_value = 75 # adjust this value to get desired fade effect
+
+		self.music = PX.Sound("music.wav")
+		self.music.play(-1)
 
 	def render(self):
 		G.Globals.SCREEN.fill((0, 0, 0))		

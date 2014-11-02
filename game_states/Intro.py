@@ -1,6 +1,7 @@
 import pygame as PG
 import pygame.font as PF
 import pygame.image as PI
+import pygame.mixer as PX
 import Globals as G
 import State
 import Main
@@ -13,6 +14,7 @@ class Intro(State.State):
 
     def __init__(self):
         State.State.__init__(self)
+        PX.stop()
         Intro.FONT = PF.Font("fonts/FEAS.ttf", 25)
         img_1 = PI.load("sprites/images/cat1.jpg").convert() # change when at arrives
         img_2 = PI.load("sprites/images/cat2.jpg").convert() # change when art arrives
