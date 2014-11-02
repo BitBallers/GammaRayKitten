@@ -17,7 +17,7 @@ class GameOver(State.State):
 
     def __init__(self, hasWon, score):
         State.State.__init__(self)
-        GameOver.FONT = PF.Font("fonts/Red October-Regular.ttf", 60)
+        GameOver.FONT = PF.Font("fonts/red_october.ttf", 60)
         # determines whether player has won or lost
         self.hasWon = hasWon
         self.score = score
