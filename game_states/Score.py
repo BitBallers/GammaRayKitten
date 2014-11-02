@@ -18,7 +18,7 @@ class Score(State.State):
 
     def __init__(self):
         State.State.__init__(self)
-        title_font = PF.Font("fonts/Red October-Regular.ttf", 42)
+        title_font = PF.Font("fonts/red_october.ttf", 42)
         main_font = PF.Font(None, 22)
         scores = []
         with open('scores.txt') as open_file:

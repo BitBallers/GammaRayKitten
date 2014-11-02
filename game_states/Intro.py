@@ -1,5 +1,7 @@
 import pygame as PG
 import pygame.font as PF
+import pygame.image as PI
+import pygame.mixer as PX
 import Globals as G
 import State
 import Main
@@ -12,9 +14,18 @@ class Intro(State.State):
 
     def __init__(self):
         State.State.__init__(self)
-        Intro.FONT = PF.Font("fonts/Red October-Regular.ttf", 18)
+        PX.stop()
+        """self.sound = PX.Sound("music/march.wav")
+        self.sound.play()"""
+        Intro.FONT = PF.Font("fonts/red_october.ttf", 18)
+        """img_1 = PI.load("sprites/images/cat1.jpg").convert() # change when at arrives
+        img_2 = PI.load("sprites/images/cat2.jpg").convert() # change when art arrives
+        img_3 = PI.load("sprites/images/cat3.jpg").convert() # change when art arrives
+        img_4 = img_1 # change when art arrives
+        img_5 = img_2 # change when art arrives"""
         self.strings1 = []
         self.strings2 = []
+        self.images = []
         self.index = 0
         self.time = 0
 
@@ -33,16 +44,22 @@ class Intro(State.State):
 
         self.strings1.append("Make your way down the building by " +
                              "locating the keys on each floor.")
-        self.strings2.append("Then, use the key to unlock the doors to the " +
+        self.strings2.append("Then, unlock the doors to the " +
                              "next level of the building!")
 
         self.strings1.append("Move Gamma Ray Kitten with WASD.")
         self.strings2.append("Attack directionally with the arrow keys.")
 
+        """self.images.append(img_1)
+        self.images.append(img_2)
+        self.images.append(img_3)
+        self.images.append(img_4)
+        self.images.append(img_5)"""
+
         self.surf1 = Intro.FONT.render(self.strings1[self.index], True,
-                                       (0, 0, 0))
+                                       (255, 0, 0))
         self.surf2 = Intro.FONT.render(self.strings2[self.index], True,
-                                       (0, 0, 0))
+                                       (255, 0, 0))
         self.xy1 = ((400 - self.surf1.get_width() / 2,
                      300 - self.surf1.get_height()))
         self.xy2 = ((400 - self.surf2.get_width() / 2,
@@ -52,6 +69,7 @@ class Intro(State.State):
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
+        # G.Globals.SCREEN.blit(self.images[self.index], (0, 0))
         G.Globals.SCREEN.blit(self.surf1, self.xy1)
         G.Globals.SCREEN.blit(self.surf2, self.xy2)
 
@@ -64,11 +82,10 @@ class Intro(State.State):
                 G.Globals.STATE = Main.Game()
             self.time = 0
 
-
         self.surf1 = Intro.FONT.render(self.strings1[self.index], True,
-                                       (255, 255, 255))
+                                       (255, 0, 0))
         self.surf2 = Intro.FONT.render(self.strings2[self.index], True,
-                                       (255, 255, 255))
+                                       (255, 0, 0))
         self.xy1 = ((400 - self.surf1.get_width() / 2,
                      300 - self.surf1.get_height()))
         self.xy2 = ((400 - self.surf2.get_width() / 2,
