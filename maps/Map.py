@@ -19,7 +19,8 @@ class Map(object):
     MAPS = None
     MAP_FILE = "maps/texts/map_collection.txt"
 
-    def __init__(self, size):
+    def __init__(self, size, level):
+        self.level = level
         self.size = size
         if not Map.KEY_DICT:
             self.load_key_dict()
@@ -43,34 +44,34 @@ class Map(object):
         for k in range(size):
             x = 7 * 50 + k * Map.SUB_WIDTH + 50
             y = 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'], level)})
             x += 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'], level)})
             y = Map.HEIGHT - 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             x -= 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
 
             x = 50
             y = 4 * 50 + k * Map.SUB_HEIGHT + 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y += 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y += 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             x = Map.WIDTH - 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y -= 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y -= 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
         x = 0
         while x < Map.WIDTH:
-            self.tiles.update({(x, 0): Tile.Tile(x, 0, Map.KEY_DICT['0'])})
+            self.tiles.update({(x, 0): Tile.Tile(x, 0, Map.KEY_DICT['0'], level)})
             x += Map.TILE_WIDTH
         y = 0
         while y < Map.HEIGHT:
-            self.tiles.update({(0, y): Tile.Tile(0, y, Map.KEY_DICT['0'])})
+            self.tiles.update({(0, y): Tile.Tile(0, y, Map.KEY_DICT['0'], level)})
             y += Map.TILE_HEIGHT
 
     def load_key_dict(self):
@@ -89,14 +90,14 @@ class Map(object):
                     Map.SUB_HEIGHT + Map.TILE_WIDTH
 
                 if char not in Map.KEY_DICT:
-                    new_tile = Tile.Tile(x, y, Map.KEY_DICT['~'])
+                    new_tile = Tile.Tile(x, y, Map.KEY_DICT['~'], self.level)
                     self.tiles.update({(x, y): new_tile})
                     continue
 
                 if char in Map.ENEMIES:
                     self.enemy_coords.append((x, y))
 
-                new_tile = Tile.Tile(x, y, Map.KEY_DICT[char])
+                new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)
                 self.tiles.update({(x, y): new_tile})
 
     def create_map(self, size):

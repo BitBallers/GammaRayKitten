@@ -40,7 +40,7 @@ class Game(State.State):
         Game.SCORE = 0
         State.State.__init__(self)
         Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
-        self.map = Map.Map(3)
+        self.map = Map.Map(3, 1)
 
         heart_surf = PI.load("sprites/images/heart.png").convert()
         Game.HEART_IMAGE = PG.Surface((25, 25))
