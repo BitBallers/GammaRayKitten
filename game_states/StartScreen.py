@@ -18,29 +18,29 @@ class StartScreen(State.State):
 	def __init__(self):
 		State.State.__init__(self)
 		# load fonts
-		StartScreen.FONT = PF.Font("fonts/GUEVARA.ttf", 40)
-		StartScreen.SECFONT = PF.Font("fonts/mrsmonster.ttf", 75)
+		StartScreen.FONT = PF.Font("fonts/red_october.ttf", 40)
+		StartScreen.SECFONT = PF.Font("fonts/red_october.ttf", 65)
 		# load images
-		img_1 = PI.load("sprites/images/cat1.jpg").convert()
+		"""img_1 = PI.load("sprites/images/cat1.jpg").convert()
 		img_2 = PI.load("sprites/images/cat2.jpg").convert()
-		img_3 = PI.load("sprites/images/cat3.jpg").convert()
+		img_3 = PI.load("sprites/images/cat3.jpg").convert()"""
 
 		self.index = 0
 
 		# create image list and append images
-		self.images = []
+		"""self.images = []
 		self.images.append(img_1)
 		self.images.append(img_2)
-		self.images.append(img_3)
+		self.images.append(img_3)"""
 
 		# create string lists and append strings
 		self.strings1 = []
 		self.strings2 = []
-		self.strings1.append("AN ULTRAVIOLET STUDIOS GAME")
-		self.strings1.append("  A BITBALLERS PRODUCTION")
-		self.strings1.append("   HIT SPACE TO CONTINUE") # will have to change when joystick implemented
-		self.strings2.append("")
-		self.strings2.append("")
+		"""self.strings1.append("AN ULTRAVIOLET STUDIOS GAME")
+		self.strings1.append("  A BITBALLERS PRODUCTION")"""
+		self.strings1.append("HIT SPACE TO CONTINUE") # will have to change when joystick implemented
+		"""self.strings2.append("")
+		self.strings2.append("")"""
 		self.strings2.append(" GAMMA RAY KITTEN")
 		# render surfaces for the strings
 		self.surf1 = StartScreen.FONT.render(self.strings1[self.index], True,
@@ -51,7 +51,7 @@ class StartScreen(State.State):
 		self.xy1 = ((G.Globals.WIDTH / 2 - self.surf1.get_width() / 2,
 					  (G.Globals.HEIGHT / 2 + G.Globals.HEIGHT / 4) 
 					  + self.surf1.get_height()))
-		self.xy2 = ((G.Globals.WIDTH / 10 - self.surf2.get_width() / 2,
+		self.xy2 = ((G.Globals.WIDTH / 2 - self.surf2.get_width() / 2,
 					  (G.Globals.HEIGHT / 10) 
 					  - self.surf1.get_height()))
 
@@ -62,12 +62,12 @@ class StartScreen(State.State):
 		self.fade_value = 75 # adjust this value to get desired fade effect
 
 		# play music
-		self.music = PX.Sound("music/music.wav")
-		self.music.play(-1)
+		"""self.music = PX.Sound("music/music.wav")
+		self.music.play(-1)"""
 
 	def render(self):
 		G.Globals.SCREEN.fill((0, 0, 0))		
-		G.Globals.SCREEN.blit(self.images[self.index], (0, 0))
+		# G.Globals.SCREEN.blit(self.images[self.index], (0, 0))
 		G.Globals.SCREEN.blit(self.surf1, self.xy1)
 		if r.random() <= .80:
 			G.Globals.SCREEN.blit(self.surf2, self.xy2)
@@ -79,10 +79,10 @@ class StartScreen(State.State):
 				G.Globals.STATE = Menu.Menu()
 
 	def update(self, time):
-		self.time += time
+		"""self.time += time
 		self.fade_in_value += time * self.fade_value # controls fade in time
 		if self.fade_in_value <= 255: # values over 255 do not matter
-			self.images[self.index].set_alpha(self.fade_in_value)
+			# self.images[self.index].set_alpha(self.fade_in_value)
 
 		# begin to fade out if time has reached point that is >= the fade in time
 		if StartScreen.INTERVAL - (self.time % StartScreen.INTERVAL) \
@@ -99,15 +99,9 @@ class StartScreen(State.State):
 				# we changed images so we reset values
 				self.fade_in_value = 0
 				self.fade_out_value = 255
-				self.images[self.index].set_alpha(self.fade_in_value)
-				G.Globals.SCREEN.blit(self.images[self.index], (0, 0)) # for good measure, but render also handles this
+				# self.images[self.index].set_alpha(self.fade_in_value)
+				# G.Globals.SCREEN.blit(self.images[self.index], (0, 0)) # for good measure, but render also handles this
 				self.surf1 = StartScreen.FONT.render(self.strings1[self.index], True,
 											 (255, 0, 0))
 				self.surf2 = StartScreen.SECFONT.render(self.strings2[self.index], True,
-											 (255, 0, 0))	
-		
-
-
-
-
-
+											 (255, 0, 0))"""	
