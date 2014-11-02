@@ -15,6 +15,8 @@ class Intro(State.State):
     def __init__(self):
         State.State.__init__(self)
         PX.stop()
+        self.sound = PX.Sound("music/march.wav")
+        self.sound.play()
         Intro.FONT = PF.Font("fonts/FEAS.ttf", 25)
         img_1 = PI.load("sprites/images/cat1.jpg").convert() # change when at arrives
         img_2 = PI.load("sprites/images/cat2.jpg").convert() # change when art arrives
