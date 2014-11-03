@@ -170,7 +170,8 @@ class Game(State.State):
 
                 Game.SCORE = Game.SCORE + 10
                 for bullet in result[enemy]:
-                    self.bullets.remove(bullet)
+                    if self.player.piercing is False:
+                        self.bullets.remove(bullet)
                 if random.random() < Game.HEALTH_DROP_RATE:
                     self.hearts_group.add(Heart.Heart(enemy.world_x,
                                                       enemy.world_y))
@@ -260,6 +261,4 @@ class Game(State.State):
             heart_x += 25
         if self.player.keys > 0:
             G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, heart_y + 7))
-        if self.player.shot_type == 1:
-            G.Globals.SCREEN.blit(
-                Game.SYRINGE_IMAGE, (key_x - 25, heart_y + 5))
+        self.player.render_items_on_hud(key_x-20, heart_y +7)

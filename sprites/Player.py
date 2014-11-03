@@ -40,6 +40,9 @@ class Player(PS.Sprite):
     MAX_HEALTH = 5
     MOVE_KEYS = [PG.K_w, PG.K_a, PG.K_s, PG.K_d]
     SHOT_KEYS = [PG.K_UP, PG.K_DOWN, PG.K_RIGHT, PG.K_LEFT]
+    SYRINGE_IMAGE = None
+    SHAMPOO_IMAGE = None
+    PILL_IMAGE = None
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
@@ -81,6 +84,28 @@ class Player(PS.Sprite):
         self.d_time = self.DMG_TIME
         self.shot_type = 0
         self.piercing = False
+
+        self.item_images = []
+
+        s_surf = PI.load("sprites/images/syringe_sprite.png")
+        Player.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
+        Player.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
+        Player.SYRINGE_IMAGE.blit(s_surf, (0, 0))
+
+        shampoo = PI.load("sprites/images/shampoo_sprite.png").convert()
+        color_key = shampoo.get_at((0, 0))
+        shampoo.set_colorkey(color_key)
+        Player.SHAMPOO_IMAGE = PG.Surface(shampoo.get_size())
+        Player.SHAMPOO_IMAGE.set_colorkey(color_key)
+        Player.SHAMPOO_IMAGE.blit(shampoo, (0, 0))
+
+        pill = PI.load("sprites/images/pill_sprite.png").convert()
+        color_key = pill.get_at((0, 0))
+        pill.set_colorkey(color_key)
+        Player.PILL_IMAGE = PG.Surface(pill.get_size())
+        Player.PILL_IMAGE.set_colorkey(color_key)
+        Player.PILL_IMAGE.blit(pill, (0, 0))
+
 
     def handle_events(self, event):
         bull = []
@@ -347,12 +372,18 @@ class Player(PS.Sprite):
             val = 1
         #picking up item
         elif tile.is_item():
+            # syringe
             if tile.type == 11:
                 self.shot_type = 1
+                self.item_images.append(Player.SYRINGE_IMAGE)
+            # shampoo
             elif tile.type == 12:
                 self.fire_rate = .5
+                self.item_images.append(Player.SHAMPOO_IMAGE)
+            # pill   
             elif tile.type == 13:
                 self.piercing = True
+                self.item_images.append(Player.PILL_IMAGE)
             tile.change_image(6)
             val = 1
         #opening a door
@@ -470,3 +501,11 @@ class Player(PS.Sprite):
                              k*Player.HEAD_HEIGHT, Player.WIDTH,
                              Player.HEAD_HEIGHT))
                 Player.ATTACKING_HEAD_IMAGES.append(surface)
+
+    def render_items_on_hud(self, x, y):
+
+        for i,image in enumerate(self.item_images):
+            G.Globals.SCREEN.blit(image, (x, y))
+            if i+1 < len(self.item_images):
+                x -= self.item_images[i+1].get_width()
+                x -= 10
