@@ -172,6 +172,10 @@ class Player(PS.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+    def set_bottom_left(self):
+        self.world_coord_x = 500
+        self.world_coord_y = Map.Map.HEIGHT - 300
+
     def set_head_image(self):
         k = Player.H_CYCLE/3.0
         index = math.floor(self.s_time/k)

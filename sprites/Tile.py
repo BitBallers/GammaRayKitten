@@ -29,7 +29,7 @@ class Tile(PS.Sprite):
         self.partial = False
 
     def change_image(self, type):
-        self.image = Tile.IMAGES[type]
+        self.image = Tile.IMAGES[self.level-1][type]
         self.type = type
 
     def set_screen_coords(self, x, y):
@@ -56,7 +56,7 @@ class Tile(PS.Sprite):
         sheet = PI.load("sprites/images/lvl2_texture_sprite_sheet.png").convert()
         level_2_images = []
 
-        for i in range(8):
+        for i in range(10):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
 
             surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,

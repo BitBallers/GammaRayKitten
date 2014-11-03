@@ -3,3 +3,4 @@ spacespacespace - Score: 130
 right shifttr - Score: 330
 right shifttbackspace - Score: 490
 right shiftright shiftt - Score: 420
+spacespacespace - Score: 90

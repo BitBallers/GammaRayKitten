@@ -21,6 +21,7 @@ import pygame.font as PF
 import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
+import game_states.Game2 as Game2
 
 
 class Game(State.State):
@@ -32,45 +33,57 @@ class Game(State.State):
     SCORE = 0
     SCORE_FONT = None
     HEART_IMAGE = None
-    HEALTH_DROP_RATE = .2
+    HEALTH_DROP_RATE = .1
     KEY_IMAGE = None
     SYRINGE_IMAGE = None
 
-    def __init__(self):
-        Game.SCORE = 0
+    def __init__(self, level, size = 3, player = None):
         State.State.__init__(self)
-        Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
-        self.map = Map.Map(3, 1)
 
-        heart_surf = PI.load("sprites/images/heart.png").convert()
-        Game.HEART_IMAGE = PG.Surface((25, 25))
-        Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0, 0)))
-        Game.HEART_IMAGE.blit(heart_surf, (0, 0))
-
-        key_surf = PI.load("sprites/images/20x12_key.png")
-        Game.KEY_IMAGE = PG.Surface((20, 12))
-        Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
-        Game.KEY_IMAGE.blit(key_surf, (0, 0))
-
-        s_surf = PI.load("sprites/images/syringe_sprite.png")
-        Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
-        Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
-        Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
-
+        Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
+        self.map = Map.Map(size, level)
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
-        self.all_sprites_list = PS.Group()
-        self.player_group = PS.Group()
-        self.bullets = PS.Group()
-        self.player = Player.Player(400, Map.Map.HEIGHT - 300, self.camera)
-        self.player_group.add(self.player)
-        self.enemy_speed = 1
-        self.time = 0.0
-        self.set_screen_coords_map()
-        self.set_screen_cords_player()
-        self.spawn_enemies()
+        
+
         self.blood = []
         self.blood_stains = []
 
+        if Game.HEART_IMAGE is None:
+            heart_surf = PI.load("sprites/images/heart.png").convert()
+            Game.HEART_IMAGE = PG.Surface((25, 25))
+            Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0, 0)))
+            Game.HEART_IMAGE.blit(heart_surf, (0, 0))
+
+        if Game.KEY_IMAGE is None:
+            key_surf = PI.load("sprites/images/20x12_key.png")
+            Game.KEY_IMAGE = PG.Surface((20, 12))
+            Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
+            Game.KEY_IMAGE.blit(key_surf, (0, 0))
+
+        if Game.SYRINGE_IMAGE is None:
+            s_surf = PI.load("sprites/images/syringe_sprite.png")
+            Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
+            Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
+            Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
+        
+        if player is None:
+            self.player = Player.Player(500, Map.Map.HEIGHT - 300, self.camera)
+        else:
+            self.player = player
+            self.player.camera = self.camera
+            self.player.world_coord_x = 500
+            self.player.world_coord_y = Map.Map.HEIGHT - 300
+            
+        self.set_screen_cords_player()
+
+        self.spawn_enemies()
+        self.all_sprites_list = PS.Group()
+        self.player_group = PS.Group()
+        self.bullets = PS.Group()
+        self.player_group.add(self.player)
+        self.enemy_speed = 1
+        self.time = 0.0
+        
         self.non_black_tiles = None
         self.wall_sprites_list = None
         self.black_tiles = None
@@ -180,6 +193,10 @@ class Game(State.State):
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
             G.Globals.STATE = Menu.Menu()
+
+        if event.type == PG.KEYDOWN and event.key == PG.K_0:
+            G.new_level(self.player)
+            # G.Globals.STATE = Game2.Game2()
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
             bull = self.player.handle_events(event)

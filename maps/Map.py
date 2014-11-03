@@ -74,11 +74,18 @@ class Map(object):
             self.tiles.update({(0, y): Tile.Tile(0, y, Map.KEY_DICT['0'], level)})
             y += Map.TILE_HEIGHT
 
+
+
     def load_key_dict(self):
         Map.KEY_DICT = {}
         level_key_file = open(Map.KEY_FILENAME)
         for line in level_key_file.readlines():
-            Map.KEY_DICT.update({line[0]: int(line[1])})
+            int_key = int(line[1])
+            if line[2].isdigit():
+                int_key *= 10
+                int_key += int(line[2])
+            Map.KEY_DICT.update({line[0]: int_key})
+        print Map.KEY_DICT
         level_key_file.close()
 
     def load_sub_map(self, sub_matrix, row_number, col_number):
@@ -101,7 +108,6 @@ class Map(object):
                 self.tiles.update({(x, y): new_tile})
 
     def create_map(self, size):
-
         m = [["v" for x in range(size)] for x in range(size)]
         # Add blank room
         m[size - 1][0] = Map.MAPS[0]
