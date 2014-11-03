@@ -17,11 +17,11 @@ class Scientist(PS.Sprite):
     CYCLE = 0.5
     MAX_AI_DIST = 700
     SHOT_DIST = 300
-    SPEED = 2
+    SPEED = 1
     AI_PERCENTAGE = .3
     MIN_SEPERATION_DIST = 50
     SOUND = None
-    SHOT_TIME = .8
+    SHOT_TIME = 1.0
     B_SPEED = 5
 
     def __init__(self, (x, y)):

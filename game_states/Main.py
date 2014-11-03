@@ -80,10 +80,10 @@ class Game(State.State):
         self.player_group = PS.Group()
         self.bullets = PS.Group()
         self.e_bullets = PS.Group()
-        self.player = Player.Player(400, Map.Map.HEIGHT - 300, self.camera)
         self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
+        self.level = level
         
         self.non_black_tiles = None
         self.wall_sprites_list = None
@@ -100,7 +100,7 @@ class Game(State.State):
         for heart in self.hearts_group.sprites():
             heart.render()
         self.player.render()
-        for e in self.enemies.sprites():
+        for e in self.all_enemies.sprites():
             e.render()
         for b in self.bullets.sprites():
             b.render()
@@ -171,8 +171,11 @@ class Game(State.State):
                             self.wall_sprites_list.remove(wall)
                         if val == 2:
                             Game.SCORE += 100
-                            G.Globals.STATE = GameOver.GameOver(
+                            if self.level >= 2:
+                                G.Globals.STATE = GameOver.GameOver(
                                 True, Game.SCORE)
+                            else:
+                                G.new_level(self.player)
             #Player collision with enemies
             result = PS.groupcollide(self.player_group, self.all_enemies,
                                      False, False)

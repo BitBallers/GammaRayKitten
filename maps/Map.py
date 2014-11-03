@@ -14,6 +14,7 @@ class Map(object):
     SUB_WIDTH = 800
     SUB_HEIGHT = 600
     ENEMIES = ['e']
+    SCIENTISTS = ['s']
 
     # Blank Room is Maps[0],  Stairs, Item, key
     MAPS = None
@@ -30,6 +31,7 @@ class Map(object):
 
         self.tiles = {}
         self.enemy_coords = []
+        self.sci_coords = []
 
         map_matrix = self.create_map(size)
 
@@ -85,7 +87,6 @@ class Map(object):
                 int_key *= 10
                 int_key += int(line[2])
             Map.KEY_DICT.update({line[0]: int_key})
-        print Map.KEY_DICT
         level_key_file.close()
 
     def load_sub_map(self, sub_matrix, row_number, col_number):
@@ -108,8 +109,15 @@ class Map(object):
                     continue
 
                 if char in Map.ENEMIES:
-                    self.enemy_coords.append((x, y))
-
+                    if self.level is 1:
+                        self.enemy_coords.append((x, y))
+                    else:
+                        self.sci_coords.append((x, y))
+                if char in Map.SCIENTISTS:
+                    if self.level is 1:
+                        self.enemy_coords.append((x, y))
+                    else:
+                        self.sci_coords.append((x, y))
                 new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)
                 self.tiles.update({(x, y): new_tile})
 
