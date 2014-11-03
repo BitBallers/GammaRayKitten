@@ -4,7 +4,7 @@ import pygame.event as PE
 import pygame.time as PT
 import pygame.sprite as PS
 import pygame.mixer as PX
-import sprites.Enemy as Enemy
+import sprites.Scientist as Scientist
 import sprites.Player as Player
 import sprites.Bullet as Bullet
 import sprites.Heart as Heart
@@ -21,7 +21,6 @@ import pygame.font as PF
 import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
-
 
 class Game(State.State):
 
@@ -61,6 +60,7 @@ class Game(State.State):
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
         self.bullets = PS.Group()
+        self.e_bullets = PS.Group()
         self.player = Player.Player(400, Map.Map.HEIGHT - 300, self.camera)
         self.player_group.add(self.player)
         self.enemy_speed = 1
@@ -90,6 +90,8 @@ class Game(State.State):
             e.render()
         for b in self.bullets.sprites():
             b.render()
+        for b in self.e_bullets.sprites():
+            b.render()
         for blood in self.blood:
             blood.render()
         self.black_tiles.draw(G.Globals.SCREEN)
@@ -98,19 +100,26 @@ class Game(State.State):
     def spawn_enemies(self):
         self.enemies = PS.Group()
         for coords in self.map.enemy_coords:
-            new_enemy = Enemy.Enemy(coords)
+            new_enemy = Scientist.Scientist(coords)
             self.enemies.add(new_enemy)
 
     def update(self, time):
         self.time += time
         while self.time > G.Globals.INTERVAL:
+            self.time -= G.Globals.INTERVAL
             for e in self.enemies.sprites():
-                if e.update(G.Globals.INTERVAL, self.player, self.map,
-                            self.enemies.sprites()):
+                dead, bull = e.update(G.Globals.INTERVAL, self.player, 
+                                      self.map, self.enemies.sprites())
+                if dead:
                     self.enemies.remove(e)
+                if bull is not None:
+                    self.e_bullets.add(bull)
             for b in self.bullets.sprites():
                 if b.update(G.Globals.INTERVAL):
                     self.bullets.remove(b)
+            for b in self.e_bullets.sprites():
+                if b.update(G.Globals.INTERVAL):
+                    self.e_bullets.remove(b)
             for blood in self.blood:
                 blood.update(G.Globals.INTERVAL)
                 if blood.gone:
@@ -137,12 +146,31 @@ class Game(State.State):
                             Game.SCORE += 100
                             G.Globals.STATE = GameOver.GameOver(
                                 True, Game.SCORE)
+            #Player collision with enemies
             result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)
             for key in result:
                 for enemy in result[key]:
                     if self.player.take_damage(1):
                         G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
+            #Player collision with enemy bullets
+            result = PS.groupcollide(self.player_group, self.e_bullets, False, 
+                                     False)
+            for player in result:
+                if self.player.take_damage(1):
+                    G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
+                blood_x = player.world_coord_x + Player.Player.WIDTH / 2
+                blood_y = player.world_coord_y + Player.Player.HEIGHT / 2
+                self.blood.append(Blood.Blood(blood_x,
+                                              blood_y, .8))
+                self.blood_stains.append(BloodStain.BloodStain(blood_x,
+                                                               blood_y,
+                                                               Player.Player.WIDTH,
+                                                               Player.Player.HEIGHT))
+
+                for bullet in result[player]:
+                    self.e_bullets.remove(bullet)
+
             # Enemy Collision with Bullets
             result = PS.groupcollide(self.enemies, self.bullets, False, False)
             for enemy in result:
@@ -168,7 +196,11 @@ class Game(State.State):
                 self.bullets, self.wall_sprites_list, False, False)
             for bullet in result:
                 self.bullets.remove(bullet)
-            self.time -= G.Globals.INTERVAL
+            #Enemy Bullets Collide with Wall
+            result = PS.groupcollide(
+                self.e_bullets, self.wall_sprites_list, False, False)
+            for bullet in result:
+                self.e_bullets.remove(bullet)
 
             # Player picking up hearts
             if self.player.health < Player.Player.MAX_HEALTH:

@@ -7,24 +7,29 @@ import maps.Map as Map
 import math
 import random
 import pygame.mixer as PM
+import Bullet as B
 
 
 class Scientist(PS.Sprite):
 
     IMAGES = None
+    SHOT_IMAGES = None
     CYCLE = 0.5
     MAX_AI_DIST = 700
+    SHOT_DIST = 300
     SPEED = 2
     AI_PERCENTAGE = .3
     MIN_SEPERATION_DIST = 50
     SOUND = None
+    SHOT_TIME = .8
+    B_SPEED = 5
 
     def __init__(self, (x, y)):
         PS.Sprite.__init__(self)
 
-        if Enemy.SOUND is None:
-            Enemy.SOUND = PM.Sound("sounds/wilhelmscream.wav")
-        if not Enemy.IMAGES:
+        if Scientist.SOUND is None:
+            Scientist.SOUND = PM.Sound("sounds/wilhelmscream.wav")
+        if not Scientist.IMAGES:
             self.load_images()
 
         self.image = Scientist.IMAGES[8]
@@ -39,17 +44,23 @@ class Scientist(PS.Sprite):
         self.y_velocity = 0
 
         self.time = 0.0
+        self.cur_shot_time = 0
         self.dying = False
         self.dead = False
+        self.shooting = False
 
     def update(self, time, player, map, enemies_list):
-        self.ai(player, map, enemies_list)
+        self.cur_shot_time += time
+        if self.cur_shot_time > Scientist.SHOT_TIME:
+            self.cur_shot_time = Scientist.SHOT_TIME
+            self.shooting = False
+        b = self.ai(player, map, enemies_list)
         self.world_x += self.x_velocity
         self.world_y += self.y_velocity
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
         self.animate(time)
-        return self.dead
+        return (self.dead, b)
 
     def render(self):
         x = self.world_x - Camera.Camera.X
@@ -58,79 +69,130 @@ class Scientist(PS.Sprite):
             G.Globals.SCREEN.blit(self.image, (x, y))
 
     def load_images(self):
-        Enemy.IMAGES = []
+        Scientist.IMAGES = []
+        Scientist.SHOT_IMAGES = []
         sheet = PI.load(
-            "sprites/images/slime_sprite_sheet.png").convert_alpha()
+            "sprites/images/scientist_sprite_sheet.png").convert_alpha()
         key = sheet.get_at((0, 0))
         for y in range(4):
-            for x in range(5):
-                surface = PG.Surface((30, 20)).convert()
-                surface.set_colorkey(key)
-                surface.blit(sheet, (0, 0), (x * 30, y * 20, 30, 20))
-                Enemy.IMAGES.append(surface)
-
-        Enemy.DEATH_IMAGES = []
-        sheet = PI.load(
-            "sprites/images/slime_sprite_sheet_death.png").convert_alpha()
-        key = sheet.get_at((0, 0))
-        for y in range(2):
             for x in range(4):
-                surface = PG.Surface((30, 20)).convert()
+                surface = PG.Surface((25, 50)).convert()
                 surface.set_colorkey(key)
-                surface.blit(sheet, (0, 0), (x * 30, y * 20, 30, 20))
-                Enemy.DEATH_IMAGES.append(surface)
+                surface.blit(sheet, (0, 0), (x * 25, y * 50, 25, 50))
+                Scientist.IMAGES.append(surface)
+
+        Scientist.DEATH_IMAGES = []
+        for y in range(4):
+            surface = PG.Surface((25, 50)).convert()
+            surface.set_colorkey(key)
+            surface.blit(sheet, (0, 0), (100, y * 50, 25, 50))
+            Scientist.SHOT_IMAGES.append(surface)
 
     def animate(self, time):
-        k = Enemy.CYCLE / 5.0
+        k = Scientist.CYCLE / 4.0
         index = math.floor(self.time / k)
         index = int(index)
 
         update_image = False
         if self.y_velocity > 0:
-            self.b_index = 10
-            update_image = True
-        elif self.y_velocity < 0:
-            self.b_index = 15
-            update_image = True
-        if self.x_velocity > 0:
             self.b_index = 0
             update_image = True
+        elif self.y_velocity < 0:
+            self.b_index = 4
+            update_image = True
+        if self.x_velocity > 0:
+            self.b_index = 12
+            update_image = True
         elif self.x_velocity < 0:
-            self.b_index = 5
+            self.b_index = 8
             update_image = True
 
-        if update_image:
-            self.image = Enemy.IMAGES[self.b_index + index]
-
-        if self.dying:
-            self.image = Enemy.DEATH_IMAGES[self.death_index + index]
-            if index == 3:
-                self.dead = True
+        if update_image and not self.shooting:
+            self.image = Scientist.IMAGES[self.b_index + index]
 
         self.time += time
-        if self.time >= Enemy.CYCLE:
+        if self.time >= Scientist.CYCLE:
             self.time = 0
 
     def ai(self, player, map, enemies_list):
+        #Don't do anything if shooting 
+        if self.shooting:
+            return None
         sight_vector = ((player.world_coord_x - self.world_x), 
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
-        if dist >= Enemy.MAX_AI_DIST:
+        if dist >= Scientist.MAX_AI_DIST:
             x_velocity = 0
             y_velocity = 0
-            return
-
+            return None
+        #Shot AI
+        if dist < Scientist.SHOT_DIST:
+            #Can we shoot in the Y-DIR?
+            if player.world_coord_x + 50 >= self.world_x \
+             and player.world_coord_x - 50 <= self.world_x:
+                self.shooting = True
+                self.cur_shot_time = 0
+                shot_speed = Scientist.B_SPEED
+                self.x_velocity = 0
+                self.y_velocity = 0
+                if player.world_coord_y <= self.world_y:
+                    shot_speed = shot_speed * (-1)
+                    self.image = Scientist.SHOT_IMAGES[1]
+                else:
+                    self.image = Scientist.SHOT_IMAGES[0]
+                return B.Bullet(self.world_x + 12, self.world_y + 25, 0,
+                                shot_speed, Scientist.SHOT_DIST) 
+            #Can we shoot in the X-DIR?
+            if player.world_coord_y + 50 >= self.world_y \
+             and player.world_coord_y - 50 <= self.world_y:
+                self.shooting = True
+                self.cur_shot_time = 0
+                shot_speed = Scientist.B_SPEED
+                self.x_velocity = 0
+                self.y_velocity = 0
+                if player.world_coord_x <= self.world_x:
+                    shot_speed = shot_speed * (-1)
+                    self.image = Scientist.SHOT_IMAGES[2]
+                else:
+                    self.image = Scientist.SHOT_IMAGES[3]
+                return B.Bullet(self.world_x + 12, self.world_y + 25, 
+                                shot_speed, 0, Scientist.SHOT_DIST)
+            #Which way should we move then?
+            '''dist_x = abs(self.world_x - player.world_coord_x)
+            dist_y = abs(self.world_y - player.world_coord_y)
+            if dist_x < dist_y:
+                suggested_y = 0
+                if player.world_coord_x < self.world_x:
+                    suggested_x = Scientist.SPEED * (-1)
+                else:
+                    suggested_x = Scientist.SPEED
+                if self.is_good_direction(suggested_x, suggested_y,
+                                          map, enemies_list):
+                    self.x_velocity = suggested_x
+                    self.y_velocity = suggested_y
+            else:
+                suggested_x = 0
+                if player.world_coord_y < self.world_y:
+                    suggested_y = Scientist.SPEED * (-1)
+                else:
+                    suggested_y = Scientist.SPEED
+                if self.is_good_direction(suggested_x, suggested_y,
+                                          map, enemies_list):
+                    self.x_velocity = suggested_x
+                    self.y_velocity = suggested_y
+            return None '''
+ 
         # full AI is only run certain percentage of the time
-        if random.random() >= (Enemy.AI_PERCENTAGE):
+        if random.random() >= (Scientist.AI_PERCENTAGE):
             # check if our direction is still ok
             if self.is_good_direction(self.x_velocity, self.y_velocity, 
                                       map, enemies_list):
-                return
+                return None
             else:
                 # else set it to 0
                 self.x_velocity = 0
                 self.y_velocity = 0
-                return
+                return None
 
         # full AI here
 
@@ -138,22 +200,22 @@ class Scientist(PS.Sprite):
         # avoid division by zero
         if sight_vector[0] == 0:
             suggested_x = 0
-            suggested_y = math.copysign(Enemy.SPEED, sight_vector[1])
+            suggested_y = math.copysign(Scientist.SPEED, sight_vector[1])
 
         else:
             sight_slope = sight_vector[1] / sight_vector[0]
             if math.fabs(sight_slope) >= 1:
                 suggested_x = 0
-                suggested_y = math.copysign(Enemy.SPEED, sight_vector[1])
+                suggested_y = math.copysign(Scientist.SPEED, sight_vector[1])
             else:
-                suggested_x = math.copysign(Enemy.SPEED, sight_vector[0])
+                suggested_x = math.copysign(Scientist.SPEED, sight_vector[0])
                 suggested_y = 0
 
         # check if next tile in that direction is a wall
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
-            return
+            return None
 
         # check next best direction, swap x y values and copy their signs from
         # original sight vector
@@ -161,7 +223,7 @@ class Scientist(PS.Sprite):
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
-            return
+            return None
 
         # else don't move
         self.x_velocity = 0
@@ -176,7 +238,7 @@ class Scientist(PS.Sprite):
             coord = (e.world_x, e.world_y)
             new_x = self.world_x + x
             new_y = self.world_y + y
-            if math.sqrt((new_x - coord[0]) ** 2 + (new_y - coord[1]) ** 2) <= Enemy.MIN_SEPERATION_DIST:
+            if math.sqrt((new_x - coord[0]) ** 2 + (new_y - coord[1]) ** 2) <= Scientist.MIN_SEPERATION_DIST:
                 return False
 
         width = Map.Map.TILE_WIDTH
@@ -219,13 +281,8 @@ class Scientist(PS.Sprite):
         return False
 
     def start_death(self):
-        Enemy.SOUND.play()
-        if self.b_index == 15:
-            self.death_index = 4
-        else:
-            self.death_index = 0
-        self.dying = True
-        self.time = 0
+        Scientist.SOUND.play()
+        self.dead = True
 
     def check_valid_tile(self, map, tile_key):
         if tile_key in map.tiles:
