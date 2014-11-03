@@ -21,7 +21,6 @@ import pygame.font as PF
 import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
-import game_states.Game2 as Game2
 
 
 class Game(State.State):
@@ -110,9 +109,9 @@ class Game(State.State):
 
     def spawn_enemies(self):
         self.enemies = PS.Group()
-        for coords in self.map.enemy_coords:
+        """for coords in self.map.enemy_coords:
             new_enemy = Enemy.Enemy(coords)
-            self.enemies.add(new_enemy)
+            self.enemies.add(new_enemy)"""
 
     def update(self, time):
         self.time += time

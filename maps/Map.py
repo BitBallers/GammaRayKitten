@@ -101,6 +101,12 @@ class Map(object):
                     self.tiles.update({(x, y): new_tile})
                     continue
 
+                if char == 'I':
+                    k = randint(11,13)
+                    new_tile = Tile.Tile(x, y, k, self.level)
+                    self.tiles.update({(x, y): new_tile})
+                    continue
+
                 if char in Map.ENEMIES:
                     self.enemy_coords.append((x, y))
 
