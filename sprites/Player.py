@@ -80,6 +80,7 @@ class Player(PS.Sprite):
         self.old_head = self.head_image
         self.d_time = self.DMG_TIME
         self.shot_type = 0
+        self.piercing = False
 
     def handle_events(self, event):
         bull = []
@@ -171,6 +172,10 @@ class Player(PS.Sprite):
     def set_screen_coords(self, x, y):
         self.rect.x = x
         self.rect.y = y
+
+    def set_bottom_left(self):
+        self.world_coord_x = 500
+        self.world_coord_y = Map.Map.HEIGHT - 300
 
     def set_head_image(self):
         k = Player.H_CYCLE/3.0
@@ -342,8 +347,12 @@ class Player(PS.Sprite):
             val = 1
         #picking up item
         elif tile.is_item():
-            #TODO: make scalable
-            self.shot_type = 1
+            if tile.type == 11:
+                self.shot_type = 1
+            elif tile.type == 12:
+                self.fire_rate = .5
+            elif tile.type == 13:
+                self.piercing = True
             tile.change_image(6)
             val = 1
         #opening a door

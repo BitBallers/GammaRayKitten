@@ -79,7 +79,7 @@ class Intro(State.State):
             if self.index < len(self.strings1)-1:
                 self.index += 1
             elif self.index == len(self.strings1)-1:
-                G.Globals.STATE = Main.Game()
+                G.Globals.STATE = Main.Game(1)
             self.time = 0
 
         self.surf1 = Intro.FONT.render(self.strings1[self.index], True,
@@ -93,4 +93,4 @@ class Intro(State.State):
 
     def event(self, event):
         if event.type == PG.KEYDOWN:
-            G.Globals.STATE = Main.Game()
+            G.Globals.STATE = Main.Game(1)

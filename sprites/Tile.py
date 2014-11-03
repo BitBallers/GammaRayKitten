@@ -13,7 +13,7 @@ class Tile(PS.Sprite):
     DOOR_TILES = [1]
     STAIR_TILES = [5]
     FORWARD_WALL_TILE = [0, 2, 3, 4, 8]
-    ITEM_TILES = [12]
+    ITEM_TILES = [11, 12, 13]
     KEY_TILES = [10]
 
     def __init__(self, x, y, type, level):
@@ -29,7 +29,7 @@ class Tile(PS.Sprite):
         self.partial = False
 
     def change_image(self, type):
-        self.image = Tile.IMAGES[type]
+        self.image = Tile.IMAGES[self.level-1][type]
         self.type = type
 
     def set_screen_coords(self, x, y):
@@ -56,7 +56,7 @@ class Tile(PS.Sprite):
         sheet = PI.load("sprites/images/lvl2_texture_sprite_sheet.png").convert()
         level_2_images = []
 
-        for i in range(8):
+        for i in range(10):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
 
             surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,
@@ -76,7 +76,6 @@ class Tile(PS.Sprite):
         surface12 = level_2_images[6].copy().convert()
         surface12.set_colorkey(color_key)
         surface12.blit(key, (15, 19))
-        
         level_2_images.append(surface12)
 
         # create syringe tile
@@ -93,6 +92,37 @@ class Tile(PS.Sprite):
         surface22.set_colorkey(color_key)
         surface22.blit(syringe, (0, 0))
         level_2_images.append(surface22)
+
+        # create shampoo tile
+        shampoo = PI.load("sprites/images/shampoo_sprite.png").convert()
+        color_key = shampoo.get_at((0, 0))
+        shampoo.set_colorkey(color_key)
+
+        surface31 = level_1_images[6].copy().convert()
+        surface31.set_colorkey(color_key)
+        surface31.blit(shampoo, (0, 0))
+        level_1_images.append(surface31)
+
+        surface32 = level_2_images[6].copy().convert()
+        surface32.set_colorkey(color_key)
+        surface32.blit(shampoo, (0, 0))
+        level_2_images.append(surface32)
+
+        # create pill tile
+        pill = PI.load("sprites/images/pill_sprite.png").convert()
+        color_key = pill.get_at((0, 0))
+        pill.set_colorkey(color_key)
+
+        surface41 = level_1_images[6].copy().convert()
+        surface41.set_colorkey(color_key)
+        surface41.blit(pill, (0, 0))
+        level_1_images.append(surface41)
+
+        surface42 = level_2_images[6].copy().convert()
+        surface42.set_colorkey(color_key)
+        surface42.blit(pill, (0, 0))
+        level_2_images.append(surface42)
+
 
         Tile.IMAGES.append(level_1_images)
         Tile.IMAGES.append(level_2_images)

@@ -3,6 +3,7 @@ import game_states.Main
 
 
 class Camera(object):
+
     X = None
     Y = None
 

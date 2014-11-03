@@ -5,6 +5,7 @@ import pygame.time as PT
 import pygame.sprite as PS
 import pygame.mixer as PX
 import sprites.Scientist as Scientist
+import sprites.Enemy as Enemy
 import sprites.Player as Player
 import sprites.Bullet as Bullet
 import sprites.Heart as Heart
@@ -31,32 +32,50 @@ class Game(State.State):
     SCORE = 0
     SCORE_FONT = None
     HEART_IMAGE = None
-    HEALTH_DROP_RATE = .2
+    HEALTH_DROP_RATE = .1
     KEY_IMAGE = None
     SYRINGE_IMAGE = None
 
-    def __init__(self):
-        Game.SCORE = 0
+    def __init__(self, level, size = 3, player = None):
         State.State.__init__(self)
-        Game.SCORE_FONT = PF.Font("fonts/Red October-Regular.ttf", 16)
-        self.map = Map.Map(3, 1)
 
-        heart_surf = PI.load("sprites/images/heart.png").convert()
-        Game.HEART_IMAGE = PG.Surface((25, 25))
-        Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0, 0)))
-        Game.HEART_IMAGE.blit(heart_surf, (0, 0))
-
-        key_surf = PI.load("sprites/images/20x12_key.png")
-        Game.KEY_IMAGE = PG.Surface((20, 12))
-        Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
-        Game.KEY_IMAGE.blit(key_surf, (0, 0))
-
-        s_surf = PI.load("sprites/images/syringe_sprite.png")
-        Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
-        Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
-        Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
-
+        Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
+        self.map = Map.Map(size, level)
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
+        
+
+        self.blood = []
+        self.blood_stains = []
+
+        if Game.HEART_IMAGE is None:
+            heart_surf = PI.load("sprites/images/heart.png").convert()
+            Game.HEART_IMAGE = PG.Surface((25, 25))
+            Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0, 0)))
+            Game.HEART_IMAGE.blit(heart_surf, (0, 0))
+
+        if Game.KEY_IMAGE is None:
+            key_surf = PI.load("sprites/images/20x12_key.png")
+            Game.KEY_IMAGE = PG.Surface((20, 12))
+            Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
+            Game.KEY_IMAGE.blit(key_surf, (0, 0))
+
+        if Game.SYRINGE_IMAGE is None:
+            s_surf = PI.load("sprites/images/syringe_sprite.png")
+            Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
+            Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
+            Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
+        
+        if player is None:
+            self.player = Player.Player(500, Map.Map.HEIGHT - 300, self.camera)
+        else:
+            self.player = player
+            self.player.camera = self.camera
+            self.player.world_coord_x = 500
+            self.player.world_coord_y = Map.Map.HEIGHT - 300
+            
+        self.set_screen_cords_player()
+
+        self.spawn_enemies()
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
         self.bullets = PS.Group()
@@ -65,12 +84,7 @@ class Game(State.State):
         self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
-        self.set_screen_coords_map()
-        self.set_screen_cords_player()
-        self.spawn_enemies()
-        self.blood = []
-        self.blood_stains = []
-
+        
         self.non_black_tiles = None
         self.wall_sprites_list = None
         self.black_tiles = None
@@ -99,21 +113,34 @@ class Game(State.State):
 
     def spawn_enemies(self):
         self.enemies = PS.Group()
-        for coords in self.map.enemy_coords:
+        self.scientists = PS.Group()
+        self.all_enemies = PS.Group()
+        for coords in self.map.sci_coords:
             new_enemy = Scientist.Scientist(coords)
+            self.scientists.add(new_enemy)
+            self.all_enemies.add(new_enemy)
+        for coords in self.map.enemy_coords:
+            new_enemy = Enemy.Enemy(coords)
             self.enemies.add(new_enemy)
+            self.all_enemies.add(new_enemy)
 
     def update(self, time):
         self.time += time
         while self.time > G.Globals.INTERVAL:
             self.time -= G.Globals.INTERVAL
-            for e in self.enemies.sprites():
+            for e in self.scientists.sprites():
                 dead, bull = e.update(G.Globals.INTERVAL, self.player, 
                                       self.map, self.enemies.sprites())
                 if dead:
-                    self.enemies.remove(e)
+                    self.scientists.remove(e)
+                    self.all_enemies.remove(e)
                 if bull is not None:
                     self.e_bullets.add(bull)
+            for e in self.enemies.sprites():
+                if e.update(G.Globals.INTERVAL, self.player, 
+                                      self.map, self.enemies.sprites()):
+                    self.enemies.remove(e) 
+                    self.all_enemies.remove(e)
             for b in self.bullets.sprites():
                 if b.update(G.Globals.INTERVAL):
                     self.bullets.remove(b)
@@ -147,7 +174,7 @@ class Game(State.State):
                             G.Globals.STATE = GameOver.GameOver(
                                 True, Game.SCORE)
             #Player collision with enemies
-            result = PS.groupcollide(self.player_group, self.enemies,
+            result = PS.groupcollide(self.player_group, self.all_enemies,
                                      False, False)
             for key in result:
                 for enemy in result[key]:
@@ -172,7 +199,7 @@ class Game(State.State):
                     self.e_bullets.remove(bullet)
 
             # Enemy Collision with Bullets
-            result = PS.groupcollide(self.enemies, self.bullets, False, False)
+            result = PS.groupcollide(self.all_enemies, self.bullets, False, False)
             for enemy in result:
                 enemy.start_death()
                 blood_x = enemy.world_x + enemy.width / 2
@@ -212,6 +239,10 @@ class Game(State.State):
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
             G.Globals.STATE = Menu.Menu()
+
+        if event.type == PG.KEYDOWN and event.key == PG.K_0:
+            G.new_level(self.player)
+            # G.Globals.STATE = Game2.Game2()
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
             bull = self.player.handle_events(event)
