@@ -130,7 +130,7 @@ class Game(State.State):
             self.time -= G.Globals.INTERVAL
             for e in self.scientists.sprites():
                 dead, bull = e.update(G.Globals.INTERVAL, self.player, 
-                                      self.map, self.enemies.sprites())
+                                      self.map, self.scientists.sprites())
                 if dead:
                     self.scientists.remove(e)
                     self.all_enemies.remove(e)
@@ -176,6 +176,10 @@ class Game(State.State):
                                 True, Game.SCORE)
                             else:
                                 G.new_level(self.player)
+            """for enemy in self.scientists.sprites():
+                result = PS.spritecollideany(enemy, self.wall_sprites_list)                                       
+                if result is not None:
+                    enemy.move_back()"""
             #Player collision with enemies
             result = PS.groupcollide(self.player_group, self.all_enemies,
                                      False, False)

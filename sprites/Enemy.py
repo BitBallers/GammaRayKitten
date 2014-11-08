@@ -43,10 +43,18 @@ class Enemy(PS.Sprite):
         self.dying = False
         self.dead = False
 
+        self.last_x = self.world_x
+        self.last_y = self.world_y
+
     def update(self, time, player, map, enemies_list):
         self.ai(player, map, enemies_list)
         self.world_x += self.x_velocity
         self.world_y += self.y_velocity
+        if self.in_wall(map):
+            self.move_back()
+
+        self.last_x = self.world_x
+        self.last_y = self.world_y
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
         self.animate(time)
@@ -237,3 +245,38 @@ class Enemy(PS.Sprite):
                 return True
         else:
             return False
+
+    def in_wall(self, map):
+        top_left = (self.world_x, self.world_y)
+        top_right = (self.world_x + self.rect.width, self.world_y)
+        bottom_left = (self.world_x, self.world_y + self.rect.height)
+        bottom_right = (
+            self.world_x + self.rect.width, self.world_y + self.rect.height)
+
+        tlx = math.floor(top_left[0]/50)*50
+        tly = math.floor(top_left[1]/50)*50
+
+        blx = math.floor(bottom_left[0]/50)*50
+        bly = math.floor(bottom_left[1]/50)*50
+
+        trx = math.floor(top_right[0]/50)*50
+        try_ = math.floor(top_right[1]/50)*50
+
+        brx = math.floor(bottom_right[0]/50)*50
+        bry = math.floor(bottom_right[1]/50)*50
+
+        if self.check_valid_tile(map, (tlx, tly)) is False:
+            return True
+        if self.check_valid_tile(map, (blx, bly)) is False:
+            return True
+        if self.check_valid_tile(map, (trx, try_)) is False:
+            return True
+        if self.check_valid_tile(map, (brx, bry)) is False:
+            return True
+        return False
+
+    def move_back(self):
+        self.world_x = self.last_x
+        self.world_y = self.last_y
+        self.rect.x = self.world_x - Camera.Camera.X
+        self.rect.y = self.world_y - Camera.Camera.Y

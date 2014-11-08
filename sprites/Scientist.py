@@ -19,7 +19,7 @@ class Scientist(PS.Sprite):
     SHOT_DIST = 300
     SPEED = 1
     AI_PERCENTAGE = .3
-    MIN_SEPERATION_DIST = 50
+    MIN_SEPERATION_DIST = 25
     SOUND = None
     SHOT_TIME = 1.0
     B_SPEED = 5
@@ -48,6 +48,8 @@ class Scientist(PS.Sprite):
         self.dying = False
         self.dead = False
         self.shooting = False
+        self.last_x = self.world_x
+        self.last_y = self.world_y
 
     def update(self, time, player, map, enemies_list):
         self.cur_shot_time += time
@@ -57,9 +59,14 @@ class Scientist(PS.Sprite):
         b = self.ai(player, map, enemies_list)
         self.world_x += self.x_velocity
         self.world_y += self.y_velocity
+        if self.in_wall(map):
+            self.move_back()
+
+        self.animate(time)
+        self.last_x = self.world_x
+        self.last_y = self.world_y
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
-        self.animate(time)
         return (self.dead, b)
 
     def render(self):
@@ -181,7 +188,7 @@ class Scientist(PS.Sprite):
                     self.x_velocity = suggested_x
                     self.y_velocity = suggested_y
             return None '''
- 
+        
         # full AI is only run certain percentage of the time
         if random.random() >= (Scientist.AI_PERCENTAGE):
             # check if our direction is still ok
@@ -264,7 +271,7 @@ class Scientist(PS.Sprite):
             tly = math.ceil((top_left[1] - height) / height) * height
             bly = math.ceil((bottom_left[1] - height) / height) * height
             x = math.floor((top_left[0] - width) / width) * width
-            return top_left[0] - (x + width) >= padding or (self.check_valid_tile(map, (x, tly)) and self.check_valid_tile(map, (x, bly)))
+            return x - top_right[0] >= padding or (self.check_valid_tile(map, (x, tly)) and self.check_valid_tile(map, (x, bly)))
 
         elif y > 0:
             blx = math.ceil((bottom_left[0] - width) / width) * width
@@ -276,9 +283,10 @@ class Scientist(PS.Sprite):
             tlx = math.ceil((top_left[0] - width) / width) * width
             trx = math.ceil((top_right[0] - width) / width) * width
             y = math.floor((top_left[1] - height) / height) * height
-            return top_left[1] - (y + width) >= padding or (self.check_valid_tile(map, (tlx, y)) and self.check_valid_tile(map, (trx, y)))
+            return y - bottom_left[1] >= padding or (self.check_valid_tile(map, (tlx, y)) and self.check_valid_tile(map, (trx, y)))
 
         return False
+
 
     def start_death(self):
         Scientist.SOUND.play()
@@ -293,3 +301,38 @@ class Scientist(PS.Sprite):
                 return True
         else:
             return False
+
+    def in_wall(self, map):
+        top_left = (self.world_x, self.world_y)
+        top_right = (self.world_x + self.rect.width, self.world_y)
+        bottom_left = (self.world_x, self.world_y + self.rect.height)
+        bottom_right = (
+            self.world_x + self.rect.width, self.world_y + self.rect.height)
+
+        tlx = math.floor(top_left[0]/50)*50
+        tly = math.floor(top_left[1]/50)*50
+
+        blx = math.floor(bottom_left[0]/50)*50
+        bly = math.floor(bottom_left[1]/50)*50
+
+        trx = math.floor(top_right[0]/50)*50
+        try_ = math.floor(top_right[1]/50)*50
+
+        brx = math.floor(bottom_right[0]/50)*50
+        bry = math.floor(bottom_right[1]/50)*50
+
+        if self.check_valid_tile(map, (tlx, tly)) is False:
+            return True
+        if self.check_valid_tile(map, (blx, bly)) is False:
+            return True
+        if self.check_valid_tile(map, (trx, try_)) is False:
+            return True
+        if self.check_valid_tile(map, (brx, bry)) is False:
+            return True
+        return False
+
+    def move_back(self):
+        self.world_x = self.last_x
+        self.world_y = self.last_y
+        self.rect.x = self.world_x - Camera.Camera.X
+        self.rect.y = self.world_y - Camera.Camera.Y

@@ -27,3 +27,9 @@ tsa - Score: 460
 aaa - Score: 200
 tsa - Score: 200
 spacespacespace - Score: 100
+spacespacespace - Score: 290
+spacespacespace - Score: 350
+jay - Score: 1690
+jay - Score: 580
+jay - Score: 1620
+shi - Score: 840
