@@ -86,26 +86,9 @@ class Player(PS.Sprite):
         self.shot_type = 0
         self.piercing = False
 
-        self.item_images = []
-
-        s_surf = PI.load("sprites/images/syringe_sprite.png")
-        Player.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
-        Player.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
-        Player.SYRINGE_IMAGE.blit(s_surf, (0, 0))
-
-        shampoo = PI.load("sprites/images/shampoo_sprite.png").convert()
-        color_key = shampoo.get_at((0, 0))
-        shampoo.set_colorkey(color_key)
-        Player.SHAMPOO_IMAGE = PG.Surface(shampoo.get_size())
-        Player.SHAMPOO_IMAGE.set_colorkey(color_key)
-        Player.SHAMPOO_IMAGE.blit(shampoo, (0, 0))
-
-        pill = PI.load("sprites/images/pill_sprite.png").convert()
-        color_key = pill.get_at((0, 0))
-        pill.set_colorkey(color_key)
-        Player.PILL_IMAGE = PG.Surface(pill.get_size())
-        Player.PILL_IMAGE.set_colorkey(color_key)
-        Player.PILL_IMAGE.blit(pill, (0, 0))
+        self.items = []
+        
+        self.dont_render = False
 
 
     def handle_events(self, event):
@@ -232,12 +215,15 @@ class Player(PS.Sprite):
             self.head_image = Player.REG_HEAD_IMAGES[3]
 
     def render(self):
+        if self.dont_render:
+            return
         # surf = PG.Surface((self.rect.width, self.rect.height)).convert()
         # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
         G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5,
                               self.rect.y+Player.HEAD_HEIGHT-4-3.5))
         G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5,
                               self.rect.y-3.5))
+
 
     # takes in the fixed time interval, dt
     def update(self, time):
@@ -363,6 +349,10 @@ class Player(PS.Sprite):
                            Player.H_CYCLE + time else Player.H_CYCLE + time)
         self.d_time = (self.d_time if self.d_time < Player.DMG_TIME
                        else Player.DMG_TIME)
+        if self.d_time < Player.DMG_TIME and math.floor(self.d_time/.1) % 2 == 0:
+            self.dont_render = True
+        else:
+            self.dont_render = False
 
     def wall_collision(self, tile, map):
         val = 0
@@ -374,17 +364,20 @@ class Player(PS.Sprite):
         #picking up item
         elif tile.is_item():
             # syringe
-            if tile.type == 11:
+            if tile.type == 12:
                 self.shot_type = 1
-                self.item_images.append(Player.SYRINGE_IMAGE)
+                if 0 not in self.items:
+                    self.items.append(0)
             # shampoo
-            elif tile.type == 12:
-                self.fire_rate = .5
-                self.item_images.append(Player.SHAMPOO_IMAGE)
-            # pill   
             elif tile.type == 13:
+                self.fire_rate = .5
+                if 1 not in self.items:
+                    self.items.append(1)
+            # pill   
+            elif tile.type == 14:
                 self.piercing = True
-                self.item_images.append(Player.PILL_IMAGE)
+                if 2 not in self.items:
+                    self.items.append(2)
             tile.change_image(6)
             val = 1
         #opening a door
@@ -457,8 +450,8 @@ class Player(PS.Sprite):
 
     def load_images(self):
         sheet = PI.load("sprites/images/cat_glow.png").convert()
-        surface = PG.Surface((50, 50)).convert()
-        surface.blit(sheet, (0, 0), (0, 0, 50, 50))
+        surface = PG.Surface((40, 50)).convert()
+        surface.blit(sheet, (0, 0), (0, 0, 40, 50))
         Player.GLOW = surface
         sheet = PI.load("sprites/images/cat_sprite_sheet_body.png").convert()
         key = sheet.get_at((0, 0))
