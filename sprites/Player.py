@@ -43,6 +43,7 @@ class Player(PS.Sprite):
     SYRINGE_IMAGE = None
     SHAMPOO_IMAGE = None
     PILL_IMAGE = None
+    GLOW = None
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
@@ -455,6 +456,10 @@ class Player(PS.Sprite):
         return False
 
     def load_images(self):
+        sheet = PI.load("sprites/images/cat_glow.png").convert()
+        surface = PG.Surface((50, 50)).convert()
+        surface.blit(sheet, (0, 0), (0, 0, 50, 50))
+        Player.GLOW = surface
         sheet = PI.load("sprites/images/cat_sprite_sheet_body.png").convert()
         key = sheet.get_at((0, 0))
 

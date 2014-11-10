@@ -6,20 +6,23 @@ import pygame.image as PI
 class Tile(PS.Sprite):
 
     IMAGES = None
+    LIGHT_IMG = None
     WIDTH = 50
     HEIGHT = 50
-    SPRITE_SHEET_LENGTH = 8
+    SPRITE_SHEET_LENGTH = 11
     WALL_TILES = [7]
     DOOR_TILES = [1]
     STAIR_TILES = [5]
-    FORWARD_WALL_TILE = [0, 2, 3, 4, 8]
-    ITEM_TILES = [11, 12, 13]
-    KEY_TILES = [10]
+    FORWARD_WALL_TILE = [0, 2, 3, 4, 8, 9, 10]
+    ITEM_TILES = [12, 13, 14]
+    KEY_TILES = [11]
 
     def __init__(self, x, y, type, level):
         PS.Sprite.__init__(self)
         if not Tile.IMAGES:
             self.load_images()
+        if not Tile.LIGHT_IMG:
+            self.load_light()
         self.image = Tile.IMAGES[level-1][type]
         self.rect = self.image.get_rect()
         self.world_x = x
@@ -27,6 +30,12 @@ class Tile(PS.Sprite):
         self.type = type
         self.level = level
         self.partial = False
+        self.light_img = None
+        if type is 4:
+            self.light_img = Tile.LIGHT_IMG
+
+    def get_light(self):
+        return self.light_img
 
     def change_image(self, type):
         self.image = Tile.IMAGES[self.level-1][type]
@@ -35,6 +44,13 @@ class Tile(PS.Sprite):
     def set_screen_coords(self, x, y):
         self.rect.x = x
         self.rect.y = y
+    def load_light(self):
+        sheet = PI.load("sprites/images/wall_light.png").convert()
+        key = sheet.get_at((0,0))
+        surf = PG.Surface((50, 75))
+        surf.set_colorkey(key) 
+        surf.blit(sheet, (0, 0), (0, 0, 50, 75))
+        Tile.LIGHT_IMG = surf
 
     def load_images(self):
         
@@ -43,20 +59,19 @@ class Tile(PS.Sprite):
         sheet = PI.load("sprites/images/lvl1_texture_sprite_sheet.png").convert()
         level_1_images = []
 
-        for i in range(8):
+        for i in range(Tile.SPRITE_SHEET_LENGTH):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
 
             surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,
                                          Tile.WIDTH, Tile.HEIGHT))
             level_1_images.append(surface)
 
-        level_1_images.append(None)
-        level_1_images.append(None)
+        
 
         sheet = PI.load("sprites/images/lvl2_texture_sprite_sheet.png").convert()
         level_2_images = []
 
-        for i in range(10):
+        for i in range(Tile.SPRITE_SHEET_LENGTH):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
 
             surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,
@@ -152,7 +167,7 @@ class Tile(PS.Sprite):
             return False
 
     def is_key(self):
-        if self.type == 10:
+        if self.type in Tile.KEY_TILES:
             return True
         else:
             return False
