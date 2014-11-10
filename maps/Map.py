@@ -1,6 +1,7 @@
 import Globals as G
 import sprites.Tile as Tile
 from random import randint
+from random import random
 
 
 class Map(object):
@@ -136,17 +137,23 @@ class Map(object):
         while m[x][y] is not "v":
             x = randint(0, size - 1)
             y = randint(0, size - 1)
-        m[x][y] = Map.MAPS[2]
+        if random() < .3:
+            # locked item room
+            m[x][y] = Map.MAPS[2]
+        else:
+            # unlocked item room
+            m[x][y] = Map.MAPS[3]
         # Add key room
         while m[x][y] is not "v":
             x = randint(0, size - 1)
             y = randint(0, size - 1)
-        m[x][y] = Map.MAPS[3]
+        m[x][y] = Map.MAPS[4]
 
         for i in range(size):
             for j in range(size):
                 if m[i][j] is "v":
-                    m[i][j] = Map.MAPS[11]
+                    k = randint(5, len(Map.MAPS)-1)
+                    m[i][j] = Map.MAPS[k]
         return m
 
     def read_maps(self):
