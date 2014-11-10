@@ -91,15 +91,18 @@ class Game(State.State):
         self.set_screen_coords_map()
 
         self.hearts_group = PS.Group()
+        self.l_interval = 0.0
 
     def render(self):
+        self.l_interval = self.l_interval + .01
+        if self.l_interval >= 4 * math.pi:
+            self.l_interval = 0.0
         G.Globals.SCREEN.fill((0, 0, 0))
         self.non_black_tiles.draw(G.Globals.SCREEN)
         for stain in self.blood_stains:
             stain.render()
         for heart in self.hearts_group.sprites():
             heart.render()
-        self.player.render()
         for e in self.all_enemies.sprites():
             e.render()
         for b in self.bullets.sprites():
@@ -108,6 +111,22 @@ class Game(State.State):
             b.render()
         for blood in self.blood:
             blood.render()
+        #Cat Glow
+        G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
+                              self.player.rect.y), None, PG.BLEND_ADD)
+        self.player.render()
+        #Render Tile lighting
+        for tile in self.non_black_tiles.sprites():
+            light = tile.get_light()
+            if light is not None:
+                coords = (tile.rect.x, tile.rect.y)
+                G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
+        #Siren
+        if self.level is 2:
+            surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
+            c = int(100 + 50 * math.sin(self.l_interval))
+            surface.fill((255, c, c))
+            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT)
         self.black_tiles.draw(G.Globals.SCREEN)
         self.render_HUD()
 
