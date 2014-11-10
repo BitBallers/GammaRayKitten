@@ -151,7 +151,7 @@ class Tile(PS.Sprite):
             return False
 
     def is_key(self):
-        if self.type == 10:
+        if self.type in Tile.KEY_TILES:
             return True
         else:
             return False
