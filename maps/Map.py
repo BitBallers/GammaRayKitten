@@ -104,7 +104,7 @@ class Map(object):
                     continue
 
                 if char == 'I':
-                    k = randint(11,13)
+                    k = randint(12,14)
                     new_tile = Tile.Tile(x, y, k, self.level)
                     self.tiles.update({(x, y): new_tile})
                     continue

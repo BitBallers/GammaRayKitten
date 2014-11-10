@@ -35,6 +35,9 @@ class Game(State.State):
     HEALTH_DROP_RATE = .1
     KEY_IMAGE = None
     SYRINGE_IMAGE = None
+    PILL_IMAGE = None
+    SHAMPOO_IMAGE = None
+    ITEM_IMAGES = None
 
     def __init__(self, level, size = 3, player = None):
         State.State.__init__(self)
@@ -53,17 +56,14 @@ class Game(State.State):
             Game.HEART_IMAGE.set_colorkey(heart_surf.get_at((0, 0)))
             Game.HEART_IMAGE.blit(heart_surf, (0, 0))
 
+        if Game.ITEM_IMAGES is None:
+            self.load_item_images()
+
         if Game.KEY_IMAGE is None:
             key_surf = PI.load("sprites/images/20x12_key.png")
             Game.KEY_IMAGE = PG.Surface((20, 12))
             Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
             Game.KEY_IMAGE.blit(key_surf, (0, 0))
-
-        if Game.SYRINGE_IMAGE is None:
-            s_surf = PI.load("sprites/images/syringe_sprite.png")
-            Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
-            Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
-            Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
         
         if player is None:
             self.player = Player.Player(500, Map.Map.HEIGHT - 300, self.camera)
@@ -204,7 +204,7 @@ class Game(State.State):
                                      False, False)
             for key in result:
                 for enemy in result[key]:
-                    if self.player.take_damage(1):
+                    if enemy.dying is False and self.player.take_damage(1):
                         G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
             #Player collision with enemy bullets
             result = PS.groupcollide(self.player_group, self.e_bullets, False, 
@@ -319,6 +319,7 @@ class Game(State.State):
         self.player.set_screen_coords(screen_x, screen_y)
 
     def render_HUD(self):
+        item_box_dimension = 30
         surface = PG.Surface((G.Globals.WIDTH, G.Globals.HUD_HEIGHT))
         surface.fill((80, 0, 0))
         G.Globals.SCREEN.blit(surface, (0, G.Globals.HEIGHT))
@@ -327,11 +328,47 @@ class Game(State.State):
             score_string, True, (255, 255, 255))
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT + 10))
         heart_x = G.Globals.WIDTH - Player.Player.MAX_HEALTH * 25 - 5
-        heart_y = 25 / 2 + G.Globals.HEIGHT
-        key_x = heart_x - 40
+        hud_y = 25 / 2 + G.Globals.HEIGHT
+        heart_y = hud_y+item_box_dimension/2-Game.HEART_IMAGE.get_height()/2
+        key_x = heart_x - item_box_dimension/2
+        key_x -= Game.KEY_IMAGE.get_width()/2
+        key_y = hud_y + item_box_dimension/2-Game.KEY_IMAGE.get_height()/2
         for i in range(self.player.health):
             G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
             heart_x += 25
         if self.player.keys > 0:
-            G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, heart_y + 7))
-        self.player.render_items_on_hud(key_x-20, heart_y +7)
+            G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, key_y))
+        init_x = key_x - 30
+        for index, image in enumerate(self.player.items):
+            x = init_x - index*item_box_dimension
+            item_image = Game.ITEM_IMAGES[image]
+            x += item_box_dimension/2
+            x -= item_image.get_width()/2
+            y = hud_y + item_box_dimension/2 - item_image.get_height()/2
+            G.Globals.SCREEN.blit(item_image, (x, y))
+
+    def load_item_images(self):
+        s_surf = PI.load("sprites/images/syringe_sprite.png")
+        Game.SYRINGE_IMAGE = PG.Surface(s_surf.get_size())
+        Game.SYRINGE_IMAGE.set_colorkey(s_surf.get_at((0, 0)))
+        Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
+
+        shampoo = PI.load("sprites/images/shampoo_sprite.png").convert()
+        color_key = shampoo.get_at((0, 0))
+        shampoo.set_colorkey(color_key)
+        Game.SHAMPOO_IMAGE = PG.Surface(shampoo.get_size())
+        Game.SHAMPOO_IMAGE.set_colorkey(color_key)
+        Game.SHAMPOO_IMAGE.blit(shampoo, (0, 0))
+
+        pill = PI.load("sprites/images/pill_sprite.png").convert()
+        color_key = pill.get_at((0, 0))
+        pill.set_colorkey(color_key)
+        Game.PILL_IMAGE = PG.Surface(pill.get_size())
+        Game.PILL_IMAGE.set_colorkey(color_key)
+        Game.PILL_IMAGE.blit(pill, (0, 0))
+
+        Game.ITEM_IMAGES = []
+        Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
+        Game.ITEM_IMAGES.append(Game.SHAMPOO_IMAGE)
+        Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
+
