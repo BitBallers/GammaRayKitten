@@ -59,7 +59,3 @@ class CutScene(State.State):
 		self.slide_surface = PG.Surface((self.dx, G.Globals.HEIGHT + 
 										G.Globals.HUD_HEIGHT))
 		G.Globals.SCREEN.blit(self.slide_surface, (self.x, self.y))	
-
-
-
-
