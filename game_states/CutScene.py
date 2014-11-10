@@ -14,7 +14,7 @@ class CutScene(State.State):
 		State.State.__init__(self)
 		# loads image if not already
 		if not CutScene.IMAGE:
-			CutScene.IMAGE = PI.load("sampleImage.jpg").convert()
+			CutScene.IMAGE = PI.load("sprites/images/cutsceneimage.jpg").convert()
 		self.image = CutScene.IMAGE
 		# lets us know when to fade in
 		self.fade_in = True
