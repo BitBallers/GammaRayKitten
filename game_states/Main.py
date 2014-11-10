@@ -96,9 +96,6 @@ class Game(State.State):
         self.l_interval = 0.0
 
     def render(self):
-        self.l_interval = self.l_interval + .01
-        if self.l_interval >= 4 * math.pi:
-            self.l_interval = 0.0
         G.Globals.SCREEN.fill((0, 0, 0))
         self.non_black_tiles.draw(G.Globals.SCREEN)
         for stain in self.blood_stains:
@@ -114,8 +111,9 @@ class Game(State.State):
         for blood in self.blood:
             blood.render()
         #Cat Glow
-        G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
-                              self.player.rect.y), None, PG.BLEND_ADD)
+        if not self.player.dont_render:
+            G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
+                                  self.player.rect.y), None, PG.BLEND_ADD)
         self.player.render()
         #Render Tile lighting
         for tile in self.non_black_tiles.sprites():
@@ -146,6 +144,10 @@ class Game(State.State):
             self.all_enemies.add(new_enemy)
 
     def update(self, time):
+        self.l_interval = self.l_interval + .01
+        if self.l_interval >= 4 * math.pi:
+            self.l_interval = 0.0
+
         self.time += time
         while self.time > G.Globals.INTERVAL:
             self.time -= G.Globals.INTERVAL
