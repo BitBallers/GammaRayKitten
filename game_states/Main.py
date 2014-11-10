@@ -46,6 +46,8 @@ class Game(State.State):
 
         self.blood = []
         self.blood_stains = []
+        if level is 1:
+            Game.SCORE = 0
 
         if Game.HEART_IMAGE is None:
             heart_surf = PI.load("sprites/images/heart.png").convert()

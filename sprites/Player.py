@@ -457,8 +457,8 @@ class Player(PS.Sprite):
 
     def load_images(self):
         sheet = PI.load("sprites/images/cat_glow.png").convert()
-        surface = PG.Surface((50, 50)).convert()
-        surface.blit(sheet, (0, 0), (0, 0, 50, 50))
+        surface = PG.Surface((40, 50)).convert()
+        surface.blit(sheet, (0, 0), (0, 0, 40, 50))
         Player.GLOW = surface
         sheet = PI.load("sprites/images/cat_sprite_sheet_body.png").convert()
         key = sheet.get_at((0, 0))
