@@ -65,8 +65,8 @@ class Scientist(PS.Sprite):
         self.world_y += self.y_velocity
         if self.in_wall(map):
             self.move_back()
-
-        self.animate(time)
+        else:
+            self.animate(time)
         self.last_x = self.world_x
         self.last_y = self.world_y
         self.rect.x = self.world_x - Camera.Camera.X
