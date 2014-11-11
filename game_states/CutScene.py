@@ -7,14 +7,14 @@ import Main
 class CutScene(State.State):
 
 	IMAGE = None
-	SCROLL_SPEED = 3
-	INTERVAL = 3
+	SCROLL_SPEED = 2
+	INTERVAL = 1
 
 	def __init__(self):
 		State.State.__init__(self)
 		# loads image if not already
 		if not CutScene.IMAGE:
-			CutScene.IMAGE = PI.load("sprites/images/cutsceneimage.jpg").convert()
+			CutScene.IMAGE = PI.load("sprites/images/down.jpg").convert()
 		self.image = CutScene.IMAGE
 		# lets us know when to fade in
 		self.fade_in = True
@@ -37,7 +37,7 @@ class CutScene(State.State):
 	def event(self, event):
 		if event.type == PG.KEYDOWN:
 			if event.key == PG.K_SPACE:
-				G.Globals.STATE = Main.Game()
+				G.Globals.STATE = Main.Game() #needs argument but not sure what
 
 	def update(self, time):
 		self.time += time
