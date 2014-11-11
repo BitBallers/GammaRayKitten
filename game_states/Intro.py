@@ -18,11 +18,11 @@ class Intro(State.State):
         """self.sound = PX.Sound("music/march.wav")
         self.sound.play()"""
         Intro.FONT = PF.Font("fonts/red_october.ttf", 18)
-        img_1 = PI.load("sprites/images/intro1.jpg").convert() # change when at arrives
-        img_2 = PI.load("sprites/images/intro2.jpg").convert() # change when art arrives
-        img_3 = PI.load("sprites/images/intro3.jpg").convert() # change when art arrives
+        img_1 = PI.load("sprites/images/intro1.jpg").convert() 
+        img_2 = PI.load("sprites/images/intro2.jpg").convert() 
+        img_3 = PI.load("sprites/images/intro3.jpg").convert() 
         img_4 = PI.load("sprites/images/intro4.jpg").convert()
-       # img_5 = img_2 # change when art arrives"""
+        img_5 = PI.load("sprites/images/instructions.jpg").convert()
         self.strings1 = []
         self.strings2 = []
         self.images = []
@@ -46,12 +46,14 @@ class Intro(State.State):
         self.strings1.append("It is now time for you to make your escape " +
                             "from the lab,")
         self.strings2.append("for you are now, the Gamma Ray Kitten.")
+        self.strings1.append("")
+        self.strings2.append("")
 
         self.images.append(img_1)
         self.images.append(img_2)
         self.images.append(img_3)
         self.images.append(img_4)
-        #self.images.append(img_5)
+        self.images.append(img_5)
 
         self.surf1 = Intro.FONT.render(self.strings1[self.index], True,
                                        (255, 0, 0))
