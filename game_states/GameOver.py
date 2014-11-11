@@ -54,15 +54,18 @@ class GameOver(State.State):
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
             G.Globals.STATE = Menu.Menu()
-        elif event.type == PG.KEYDOWN:
-            if self.first_key_pressed:
+        elif event.type == PG.KEYDOWN and ((event.key >= PG.K_a 
+                                           and event.key <= PG.K_z) or
+                                            len(self.initials) is 3):
+            if len(self.initials) is 3:
+                self.send_data()
+            elif self.first_key_pressed:
                 self.first_key_pressed = False
                 self.surf = GameOver.FONT.render("".join(self.initials),
                                                  True, self.color)
-                return
-
-            self.initials.append(PK.name(event.key))
-            self.surf = GameOver.FONT.render("".join(self.initials),
+            else:
+                self.initials.append(PK.name(event.key))
+                self.surf = GameOver.FONT.render("".join(self.initials),
                                              True, self.color)
 
             if len(self.initials) == 4:
@@ -72,12 +75,33 @@ class GameOver(State.State):
         pass
 
     def send_data(self):
-        # sends player's initials and score to score text file
-        score_file = open("scores.txt", "a")
+        scores = []
+        has_writ = False
+        #Set up string
+        t_string = ""
+        for char in self.initials:
+            t_string += char
+        t_string += "-" + str(self.score) + "\n"
+
+        with open("scores.txt") as open_file:
+            for line in open_file:
+                lhs, rhs = line.split("-",1)
+                val = int(rhs)
+                if self.score > val:
+                    scores.append(t_string)
+                    has_writ = True
+                scores.append(line)
+        if not has_writ:
+            scores.append(t_string)
+        #write data
+        with open("scores.txt", "w") as open_file:
+            for line in scores:
+                open_file.write(line)
+        '''score_file = open("scores.txt", "a")
         for i in range(3):
             score_file.write(self.initials[i])
         score_file.write(" - Score: " + str(self.score) + "\n")
-        score_file.close()
+        score_file.close() '''
         G.Globals.STATE = Menu.Menu()
 
     def get_center(self, surf):
