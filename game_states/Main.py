@@ -44,7 +44,7 @@ class Game(State.State):
         State.State.__init__(self)
 
         Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
-        self.map = Map.Map(size, level)
+        self.map = Map.Map(size, level, player)
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
         
 
