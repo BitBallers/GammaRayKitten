@@ -5,6 +5,7 @@ import pygame.time as PT
 import pygame.sprite as PS
 import pygame.mixer as PX
 import sprites.Scientist as Scientist
+import sprites.Slime as Slime
 import sprites.Enemy as Enemy
 import sprites.Player as Player
 import sprites.Bullet as Bullet
@@ -102,7 +103,7 @@ class Game(State.State):
             stain.render()
         for heart in self.hearts_group.sprites():
             heart.render()
-        for e in self.all_enemies.sprites():
+        for e in self.enemies.sprites():
             e.render()
         for b in self.bullets.sprites():
             b.render()
@@ -132,16 +133,13 @@ class Game(State.State):
 
     def spawn_enemies(self):
         self.enemies = PS.Group()
-        self.scientists = PS.Group()
-        self.all_enemies = PS.Group()
+        self.scientists = PS.Group()        
         for coords in self.map.sci_coords:
             new_enemy = Scientist.Scientist(coords)
-            self.scientists.add(new_enemy)
-            self.all_enemies.add(new_enemy)
+            self.enemies.add(new_enemy)            
         for coords in self.map.enemy_coords:
-            new_enemy = Enemy.Enemy(coords)
-            self.enemies.add(new_enemy)
-            self.all_enemies.add(new_enemy)
+            new_enemy = Slime.Slime(coords)
+            self.enemies.add(new_enemy)            
 
     def update(self, time):
         self.l_interval = self.l_interval + .01
@@ -150,20 +148,15 @@ class Game(State.State):
 
         self.time += time
         while self.time > G.Globals.INTERVAL:
-            self.time -= G.Globals.INTERVAL
-            for e in self.scientists.sprites():
+            self.time -= G.Globals.INTERVAL                        
+            for e in self.enemies.sprites():
                 dead, bull = e.update(G.Globals.INTERVAL, self.player, 
                                       self.map, self.scientists.sprites())
-                if dead:
-                    self.scientists.remove(e)
-                    self.all_enemies.remove(e)
+                if dead:                    
+                    self.enemies.remove(e)
                 if bull is not None:
                     self.e_bullets.add(bull)
-            for e in self.enemies.sprites():
-                if e.update(G.Globals.INTERVAL, self.player, 
-                                      self.map, self.enemies.sprites()):
-                    self.enemies.remove(e) 
-                    self.all_enemies.remove(e)
+
             for b in self.bullets.sprites():
                 if b.update(G.Globals.INTERVAL):
                     self.bullets.remove(b)
@@ -198,13 +191,9 @@ class Game(State.State):
                                 G.Globals.STATE = GameOver.GameOver(
                                 True, Game.SCORE)
                             else:
-                                G.new_level(self.player)
-            """for enemy in self.scientists.sprites():
-                result = PS.spritecollideany(enemy, self.wall_sprites_list)                                       
-                if result is not None:
-                    enemy.move_back()"""
+                                G.new_level(self.player)            
             #Player collision with enemies
-            result = PS.groupcollide(self.player_group, self.all_enemies,
+            result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)
             for key in result:
                 for enemy in result[key]:
@@ -229,7 +218,7 @@ class Game(State.State):
                     self.e_bullets.remove(bullet)
 
             # Enemy Collision with Bullets
-            result = PS.groupcollide(self.all_enemies, self.bullets, False, False)
+            result = PS.groupcollide(self.enemies, self.bullets, False, False)
             for enemy in result:
                 enemy.start_death()
                 blood_x = enemy.world_x + enemy.width / 2
