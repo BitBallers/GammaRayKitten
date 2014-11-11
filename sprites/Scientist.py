@@ -10,6 +10,7 @@ import pygame.mixer as PM
 import Bullet as B
 
 
+
 class Scientist(PS.Sprite):
 
     IMAGES = None
@@ -21,6 +22,7 @@ class Scientist(PS.Sprite):
     AI_PERCENTAGE = .3
     MIN_SEPERATION_DIST = 25
     SOUND = None
+    WILHEM_SCREAM = None
     SHOT_TIME = 1.0
     B_SPEED = 5
 
@@ -28,7 +30,9 @@ class Scientist(PS.Sprite):
         PS.Sprite.__init__(self)
 
         if Scientist.SOUND is None:
-            Scientist.SOUND = PM.Sound("sounds/wilhelmscream.wav")
+            Scientist.SOUND = PM.Sound("sounds/scientist_death.wav")
+        if Scientist.WILHEM_SCREAM is None:
+            Scientist.WILHEM_SCREAM = PM.Sound("sounds/wilhelmscream.wav")
         if not Scientist.IMAGES:
             self.load_images()
 
@@ -289,7 +293,10 @@ class Scientist(PS.Sprite):
 
 
     def start_death(self):
-        Scientist.SOUND.play()
+        if random.random() <= .95:
+            Scientist.SOUND.play()
+        else:
+            Scientist.WILHEM_SCREAM.play()
         self.dead = True
 
     def check_valid_tile(self, map, tile_key):
