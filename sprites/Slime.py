@@ -148,6 +148,7 @@ class Slime(Enemy.Enemy):
         # original sight vector
         suggested_x = math.copysign(suggested_y, sight_vector[0])
         suggested_y = math.copysign(suggested_x, sight_vector[1])
+
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y

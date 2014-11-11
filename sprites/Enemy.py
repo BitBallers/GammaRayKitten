@@ -30,8 +30,8 @@ class Enemy(PS.Sprite):
     def render(self):
         x = self.world_x - Camera.Camera.X
         y = self.world_y - Camera.Camera.Y
-        if x >= -self.rect.width and x <= G.Globals.WIDTH and \
-                y >= -self.rect.height and y <= G.Globals.HEIGHT:
+        if (x >= -self.rect.width and x <= G.Globals.WIDTH and
+                y >= -self.rect.height and y <= G.Globals.HEIGHT):
             G.Globals.SCREEN.blit(self.image, (x, y))
 
     def ai(self, player, map, enemies_list):
@@ -46,8 +46,8 @@ class Enemy(PS.Sprite):
             coord = (e.world_x, e.world_y)
             new_x = self.world_x + x
             new_y = self.world_y + y
-            if math.sqrt((new_x - coord[0]) ** 2 + (new_y - coord[1]) ** 2) \
-                    <= Enemy.MIN_SEPERATION_DIST:
+            if (math.sqrt((new_x - coord[0]) ** 2 + (new_y - coord[1]) ** 2)
+                    <= Enemy.MIN_SEPERATION_DIST):
                 return False
 
         width = Map.Map.TILE_WIDTH
@@ -68,8 +68,8 @@ class Enemy(PS.Sprite):
             bly = math.ceil((bottom_left[1] - height) / height) * height
             x = math.floor((top_left[0] + width) / width) * width
             return (x - top_right[0] >= padding or
-                    (self.check_valid_tile(map, (x, tly)) and
-                     self.check_valid_tile(map, (x, bly))))
+                    (self.check_valid_tile(map, (x, tly))
+                     and self.check_valid_tile(map, (x, bly))))
 
         elif x < 0:
             tly = math.ceil((top_left[1] - height) / height) * height
@@ -93,7 +93,6 @@ class Enemy(PS.Sprite):
             return (top_left[1] - (y + width) >= padding or
                     (self.check_valid_tile(map, (tlx, y)) and
                      self.check_valid_tile(map, (trx, y))))
-
         return False
 
     def check_valid_tile(self, map, tile_key):
