@@ -92,9 +92,7 @@ class Player(PS.Sprite):
         self.piercing = False
 
         self.items = []
-        
         self.dont_render = False
-
 
     def handle_events(self, event):
         bull = []
@@ -233,7 +231,6 @@ class Player(PS.Sprite):
         G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5,
                               self.rect.y-3.5))
 
-
     # takes in the fixed time interval, dt
     def update(self, time):
         #update velocities if a key is currently held down
@@ -358,7 +355,8 @@ class Player(PS.Sprite):
                            Player.H_CYCLE + time else Player.H_CYCLE + time)
         self.d_time = (self.d_time if self.d_time < Player.DMG_TIME
                        else Player.DMG_TIME)
-        if self.d_time < Player.DMG_TIME and math.floor(self.d_time/.1) % 2 == 0:
+        if self.d_time < Player.DMG_TIME \
+                and math.floor(self.d_time/.1) % 2 == 0:
             self.dont_render = True
         else:
             self.dont_render = False
@@ -382,7 +380,7 @@ class Player(PS.Sprite):
                 self.fire_rate = .5
                 if 1 not in self.items:
                     self.items.append(1)
-            # pill   
+            # pill
             elif tile.type == 14:
                 self.piercing = True
                 if 2 not in self.items:
@@ -511,7 +509,7 @@ class Player(PS.Sprite):
 
     def render_items_on_hud(self, x, y):
 
-        for i,image in enumerate(self.item_images):
+        for i, image in enumerate(self.item_images):
             G.Globals.SCREEN.blit(image, (x, y))
             if i+1 < len(self.item_images):
                 x -= self.item_images[i+1].get_width()

@@ -44,31 +44,27 @@ class Tile(PS.Sprite):
     def set_screen_coords(self, x, y):
         self.rect.x = x
         self.rect.y = y
+
     def load_light(self):
         sheet = PI.load("sprites/images/wall_light.png").convert()
-        key = sheet.get_at((0,0))
+        key = sheet.get_at((0, 0))
         surf = PG.Surface((50, 75))
-        surf.set_colorkey(key) 
+        surf.set_colorkey(key)
         surf.blit(sheet, (0, 0), (0, 0, 50, 75))
         Tile.LIGHT_IMG = surf
 
     def load_images(self):
-        
         Tile.IMAGES = []
-
-        sheet = PI.load("sprites/images/lvl1_texture_sprite_sheet.png").convert()
+        s_string = "sprites/images/lvl1_texture_sprite_sheet.png"
+        sheet = PI.load(s_string).convert()
         level_1_images = []
-
         for i in range(Tile.SPRITE_SHEET_LENGTH):
             surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
-
             surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,
                                          Tile.WIDTH, Tile.HEIGHT))
             level_1_images.append(surface)
-
-        
-
-        sheet = PI.load("sprites/images/lvl2_texture_sprite_sheet.png").convert()
+        s_string = "sprites/images/lvl2_texture_sprite_sheet.png"
+        sheet = PI.load(s_string).convert()
         level_2_images = []
 
         for i in range(Tile.SPRITE_SHEET_LENGTH):
@@ -82,12 +78,11 @@ class Tile(PS.Sprite):
         key = PI.load("sprites/images/20x12_key.png").convert()
         color_key = key.get_at((19, 0))
         key.set_colorkey(color_key)
-        
         surface11 = level_1_images[6].copy().convert()
         surface11.set_colorkey(color_key)
         surface11.blit(key, (15, 19))
         level_1_images.append(surface11)
-        
+
         surface12 = level_2_images[6].copy().convert()
         surface12.set_colorkey(color_key)
         surface12.blit(key, (15, 19))
@@ -97,7 +92,7 @@ class Tile(PS.Sprite):
         syringe = PI.load("sprites/images/syringe_sprite.png").convert()
         color_key = syringe.get_at((0, 0))
         syringe.set_colorkey(color_key)
-        
+
         surface21 = level_1_images[6].copy().convert()
         surface21.set_colorkey(color_key)
         surface21.blit(syringe, (0, 0))
