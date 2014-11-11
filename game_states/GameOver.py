@@ -54,9 +54,9 @@ class GameOver(State.State):
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
             G.Globals.STATE = Menu.Menu()
-        elif event.type == PG.KEYDOWN and ((event.key >= PG.K_a 
-                                           and event.key <= PG.K_z) or
-                                            len(self.initials) is 3):
+        elif event.type == PG.KEYDOWN and ((event.key >= PG.K_a
+                                            and event.key <= PG.K_z) or
+                                           len(self.initials) is 3):
             if len(self.initials) is 3:
                 self.send_data()
             elif self.first_key_pressed:
@@ -66,7 +66,7 @@ class GameOver(State.State):
             else:
                 self.initials.append(PK.name(event.key))
                 self.surf = GameOver.FONT.render("".join(self.initials),
-                                             True, self.color)
+                                                 True, self.color)
 
             if len(self.initials) == 4:
                 self.send_data()
@@ -77,7 +77,7 @@ class GameOver(State.State):
     def send_data(self):
         scores = []
         has_writ = False
-        #Set up string
+        # Set up string
         t_string = ""
         for char in self.initials:
             t_string += char
@@ -85,7 +85,7 @@ class GameOver(State.State):
 
         with open("scores.txt") as open_file:
             for line in open_file:
-                lhs, rhs = line.split("-",1)
+                lhs, rhs = line.split("-", 1)
                 val = int(rhs)
                 if self.score > val:
                     scores.append(t_string)
@@ -93,7 +93,7 @@ class GameOver(State.State):
                 scores.append(line)
         if not has_writ:
             scores.append(t_string)
-        #write data
+        # write data
         with open("scores.txt", "w") as open_file:
             for line in scores:
                 open_file.write(line)
@@ -105,6 +105,6 @@ class GameOver(State.State):
         G.Globals.STATE = Menu.Menu()
 
     def get_center(self, surf):
-        x = G.Globals.WIDTH/2-surf.get_width()/2
-        y = G.Globals.HEIGHT/2-surf.get_height()/2
+        x = G.Globals.WIDTH / 2 - surf.get_width() / 2
+        y = G.Globals.HEIGHT / 2 - surf.get_height() / 2
         return (x, y)
