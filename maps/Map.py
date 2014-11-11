@@ -51,37 +51,47 @@ class Map(object):
         for k in range(size):
             x = 7 * 50 + k * Map.SUB_WIDTH + 50
             y = 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'], level)})
             x += 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['X'], level)})
             y = Map.HEIGHT - 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             x -= 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
 
             x = 50
             y = 4 * 50 + k * Map.SUB_HEIGHT + 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y += 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y += 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             x = Map.WIDTH - 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y -= 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
             y -= 50
-            self.tiles.update({(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, y): Tile.Tile(x, y, Map.KEY_DICT['0'], level)})
         x = 0
         while x < Map.WIDTH:
-            self.tiles.update({(x, 0): Tile.Tile(x, 0, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(x, 0): Tile.Tile(x, 0, Map.KEY_DICT['0'], level)})
             x += Map.TILE_WIDTH
         y = 0
         while y < Map.HEIGHT:
-            self.tiles.update({(0, y): Tile.Tile(0, y, Map.KEY_DICT['0'], level)})
+            self.tiles.update(
+                {(0, y): Tile.Tile(0, y, Map.KEY_DICT['0'], level)})
             y += Map.TILE_HEIGHT
-
-
 
     def load_key_dict(self):
         Map.KEY_DICT = {}
@@ -108,8 +118,8 @@ class Map(object):
                     continue
 
                 if char == 'I':
-                    k = randint(12,14)
-                    while (k-12) in self.player_items:
+                    k = randint(12, 14)
+                    while (k - 12) in self.player_items:
                         k = randint(12, 14)
                     new_tile = Tile.Tile(x, y, k, self.level)
                     self.tiles.update({(x, y): new_tile})
@@ -158,7 +168,7 @@ class Map(object):
         for i in range(size):
             for j in range(size):
                 if m[i][j] is "v":
-                    k = randint(5, len(Map.MAPS)-1)
+                    k = randint(5, len(Map.MAPS) - 1)
                     m[i][j] = Map.MAPS[k]
         return m
 
