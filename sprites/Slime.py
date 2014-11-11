@@ -17,7 +17,7 @@ class Slime(Enemy.Enemy):
     CYCLE = 0.5
     MAX_AI_DIST = 700
     SPEED = 2
-    AI_PERCENTAGE = .3    
+    AI_PERCENTAGE = .3
     SOUND = None
 
     def __init__(self, (x, y)):
@@ -101,7 +101,7 @@ class Slime(Enemy.Enemy):
             self.time = 0
 
     def ai(self, player, map, enemies_list):
-        sight_vector = ((player.world_coord_x - self.world_x), 
+        sight_vector = ((player.world_coord_x - self.world_x),
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
         if dist >= Slime.MAX_AI_DIST:
@@ -112,7 +112,7 @@ class Slime(Enemy.Enemy):
         # full AI is only run certain percentage of the time
         if random.random() >= (Slime.AI_PERCENTAGE):
             # check if our direction is still ok
-            if self.is_good_direction(self.x_velocity, self.y_velocity, 
+            if self.is_good_direction(self.x_velocity, self.y_velocity,
                                       map, enemies_list):
                 return
             else:
@@ -146,7 +146,8 @@ class Slime(Enemy.Enemy):
 
         # check next best direction, swap x y values and copy their signs from
         # original sight vector
-        suggested_x, suggested_y = math.copysign(suggested_y, sight_vector[0]), math.copysign(suggested_x, sight_vector[1])
+        suggested_x = math.copysign(suggested_y, sight_vector[0])
+        suggested_y = math.copysign(suggested_x, sight_vector[1])
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
@@ -164,5 +165,3 @@ class Slime(Enemy.Enemy):
             self.death_index = 0
         self.dying = True
         self.time = 0
-
-    

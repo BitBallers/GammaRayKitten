@@ -11,7 +11,6 @@ import Bullet as B
 import Enemy
 
 
-
 class Scientist(Enemy.Enemy):
 
     IMAGES = None
@@ -20,7 +19,7 @@ class Scientist(Enemy.Enemy):
     MAX_AI_DIST = 700
     SHOT_DIST = 300
     SPEED = 1
-    AI_PERCENTAGE = .3    
+    AI_PERCENTAGE = .3
     SOUND = None
     WILHEM_SCREAM = None
     SHOT_TIME = 1.0
@@ -120,10 +119,10 @@ class Scientist(Enemy.Enemy):
             self.time = 0
 
     def ai(self, player, map, enemies_list):
-        #Don't do anything if shooting 
+        #Don't do anything if shooting
         if self.shooting:
             return None
-        sight_vector = ((player.world_coord_x - self.world_x), 
+        sight_vector = ((player.world_coord_x - self.world_x),
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
         if dist >= Scientist.MAX_AI_DIST:
@@ -134,7 +133,7 @@ class Scientist(Enemy.Enemy):
         if dist < Scientist.SHOT_DIST:
             #Can we shoot in the Y-DIR?
             if player.world_coord_x + 50 >= self.world_x \
-             and player.world_coord_x - 50 <= self.world_x:
+                    and player.world_coord_x - 50 <= self.world_x:
                 self.shooting = True
                 self.cur_shot_time = 0
                 shot_speed = Scientist.B_SPEED
@@ -146,10 +145,10 @@ class Scientist(Enemy.Enemy):
                 else:
                     self.image = Scientist.SHOT_IMAGES[0]
                 return B.Bullet(self.world_x + 12, self.world_y + 25, 0,
-                                shot_speed, Scientist.SHOT_DIST) 
+                                shot_speed, Scientist.SHOT_DIST)
             #Can we shoot in the X-DIR?
             if player.world_coord_y + 50 >= self.world_y \
-             and player.world_coord_y - 50 <= self.world_y:
+                    and player.world_coord_y - 50 <= self.world_y:
                 self.shooting = True
                 self.cur_shot_time = 0
                 shot_speed = Scientist.B_SPEED
@@ -160,7 +159,7 @@ class Scientist(Enemy.Enemy):
                     self.image = Scientist.SHOT_IMAGES[2]
                 else:
                     self.image = Scientist.SHOT_IMAGES[3]
-                return B.Bullet(self.world_x + 12, self.world_y + 25, 
+                return B.Bullet(self.world_x + 12, self.world_y + 25,
                                 shot_speed, 0, Scientist.SHOT_DIST)
             #Which way should we move then?
             '''dist_x = abs(self.world_x - player.world_coord_x)
@@ -186,11 +185,10 @@ class Scientist(Enemy.Enemy):
                     self.x_velocity = suggested_x
                     self.y_velocity = suggested_y
             return None '''
-        
         # full AI is only run certain percentage of the time
         if random.random() >= (Scientist.AI_PERCENTAGE):
             # check if our direction is still ok
-            if self.is_good_direction(self.x_velocity, self.y_velocity, 
+            if self.is_good_direction(self.x_velocity, self.y_velocity,
                                       map, enemies_list):
                 return None
             else:
@@ -224,7 +222,8 @@ class Scientist(Enemy.Enemy):
 
         # check next best direction, swap x y values and copy their signs from
         # original sight vector
-        suggested_x, suggested_y = math.copysign(suggested_y, sight_vector[0]), math.copysign(suggested_x, sight_vector[1])
+        suggested_x = math.copysign(suggested_y, sight_vector[0])
+        suggested_y = math.copysign(suggested_x, sight_vector[1])
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y

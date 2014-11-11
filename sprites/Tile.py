@@ -133,7 +133,6 @@ class Tile(PS.Sprite):
         surface42.blit(pill, (0, 0))
         level_2_images.append(surface42)
 
-
         Tile.IMAGES.append(level_1_images)
         Tile.IMAGES.append(level_2_images)
 
