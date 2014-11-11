@@ -1,36 +1,30 @@
-Gamma Ray Kitten
-BitBallers
+Bit Ballers
+Jay Miller, Trevor Aron, Glen Smith, Bertha Hu
 
-Trevor Aron
-    taron1
-Jay Miller
-    jmill220
-
-How to run:
-    python game.py
-
-How to play:
-    WASD to move
-    Arrow keys to shoot (directional)
-    You need to get to the stairs in the level
-    You need a key to open doors
-    The syringe is a powerup
-
-CHEAT CODE:
-    Typing "0" in level 1 will automatically put you in level 2
-
-Level two Details
-    Our level two is also randomly generated. We have a bunch of premade squares (or rooms).
-    Our level generation algorithim will then put them into a 4x4 grid, so the level
-    is not the same each time! (Randomization is our whole gimmick!)
-
-Improvements:
-
-    New Enemy
-        We made a new enemy, a scientist. It shoots bullets at the 
-        player. This caused alot of overhauls for the game and needed
-        new art 
-    More Powerups
-        We added a new "pill" powerup that gives you piercing shots
-        We added a new "soap" powerup that increases your fire rate
-        Each item is randomly picked per level
+Things fixed
+1) Added sound for player shooting and made the scientists death
+	sound less annoying
+3) Fix the HUD so elements on the HUD are more evenly spaced
+	and nothing every overlaps
+4) Made scenery more interesting/varied by adding tables, and machines
+	and used blending effects for lighting, as opposed to just having
+	the lights as part of the wall sprite images
+5) More rooms were added to the 'pool' of rooms to randomly select from
+	for the random map generation. This makes the random map generation
+	much more varied than before.
+8) Made it so the highscores list displays scores in order
+9) Made it so you don't get damaged by dead enemies. Before, 
+	if you ran into an enemy during its death animation you would still
+	get damaged.
+11) Made it more apparent that cat is damaged, by making the cat flash when 
+	it gets hit. This also lets the player know when the invincibility period
+	after getting hit has ended.
+	
+12) Fixed the enemy AI walking over walls.
+13) Made it so duplicate items can't be picked up and if a player already has an
+	item, it won't spawn again on the next level.
+13) Polish code
+	Made all our files pass pep8
+	Superclassed our enemies, so know the different types of enemies inherit from the
+	same class. This means that alot of methods that we had to write for each individual enemy
+	can be inherited from one super class.
