@@ -21,7 +21,11 @@ class Map(object):
     MAPS = None
     MAP_FILE = "maps/texts/map_collection.txt"
 
-    def __init__(self, size, level):
+    def __init__(self, size, level, player):
+        if player is None:
+            self.player_items = []
+        else:
+            self.player_items = player.items
         self.level = level
         self.size = size
         if not Map.KEY_DICT:
@@ -105,6 +109,8 @@ class Map(object):
 
                 if char == 'I':
                     k = randint(12,14)
+                    while (k-12) in self.player_items:
+                        k = randint(12, 14)
                     new_tile = Tile.Tile(x, y, k, self.level)
                     self.tiles.update({(x, y): new_tile})
                     continue

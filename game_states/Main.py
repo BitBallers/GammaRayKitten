@@ -24,6 +24,7 @@ import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
 
+
 class Game(State.State):
 
     TILE_WIDTH = 50
@@ -40,13 +41,12 @@ class Game(State.State):
     SHAMPOO_IMAGE = None
     ITEM_IMAGES = None
 
-    def __init__(self, level, size = 3, player = None):
+    def __init__(self, level, size=3, player=None):
         State.State.__init__(self)
 
         Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
-        self.map = Map.Map(size, level)
+        self.map = Map.Map(size, level, player)
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
-        
 
         self.blood = []
         self.blood_stains = []
@@ -67,7 +67,7 @@ class Game(State.State):
             Game.KEY_IMAGE = PG.Surface((20, 12))
             Game.KEY_IMAGE.set_colorkey(key_surf.get_at((0, 0)))
             Game.KEY_IMAGE.blit(key_surf, (0, 0))
-        
+
         if player is None:
             self.player = Player.Player(500, Map.Map.HEIGHT - 300, self.camera)
         else:
@@ -75,7 +75,7 @@ class Game(State.State):
             self.player.camera = self.camera
             self.player.world_coord_x = 500
             self.player.world_coord_y = Map.Map.HEIGHT - 300
-            
+
         self.set_screen_cords_player()
 
         self.spawn_enemies()
@@ -87,7 +87,7 @@ class Game(State.State):
         self.enemy_speed = 1
         self.time = 0.0
         self.level = level
-        
+
         self.non_black_tiles = None
         self.wall_sprites_list = None
         self.black_tiles = None
@@ -111,18 +111,19 @@ class Game(State.State):
             b.render()
         for blood in self.blood:
             blood.render()
-        #Cat Glow
+        # Cat Glow
         if not self.player.dont_render:
             G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
-                                  self.player.rect.y), None, PG.BLEND_ADD)
+                                                       self.player.rect.y),
+                                  None, PG.BLEND_ADD)
         self.player.render()
-        #Render Tile lighting
+        # Render Tile lighting
         for tile in self.non_black_tiles.sprites():
             light = tile.get_light()
             if light is not None:
                 coords = (tile.rect.x, tile.rect.y)
                 G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
-        #Siren
+        # Siren
         if self.level is 2:
             surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
             c = int(100 + 50 * math.sin(self.l_interval))
@@ -133,13 +134,13 @@ class Game(State.State):
 
     def spawn_enemies(self):
         self.enemies = PS.Group()
-        self.scientists = PS.Group()        
+        self.scientists = PS.Group()
         for coords in self.map.sci_coords:
             new_enemy = Scientist.Scientist(coords)
-            self.enemies.add(new_enemy)            
+            self.enemies.add(new_enemy)
         for coords in self.map.enemy_coords:
             new_enemy = Slime.Slime(coords)
-            self.enemies.add(new_enemy)            
+            self.enemies.add(new_enemy)
 
     def update(self, time):
         self.l_interval = self.l_interval + .01
@@ -148,11 +149,11 @@ class Game(State.State):
 
         self.time += time
         while self.time > G.Globals.INTERVAL:
-            self.time -= G.Globals.INTERVAL                        
+            self.time -= G.Globals.INTERVAL
             for e in self.enemies.sprites():
-                dead, bull = e.update(G.Globals.INTERVAL, self.player, 
+                dead, bull = e.update(G.Globals.INTERVAL, self.player,
                                       self.map, self.scientists.sprites())
-                if dead:                    
+                if dead:
                     self.enemies.remove(e)
                 if bull is not None:
                     self.e_bullets.add(bull)
@@ -189,18 +190,18 @@ class Game(State.State):
                             Game.SCORE += 100
                             if self.level >= 2:
                                 G.Globals.STATE = GameOver.GameOver(
-                                True, Game.SCORE)
+                                    True, Game.SCORE)
                             else:
-                                G.new_level(self.player)            
-            #Player collision with enemies
+                                G.new_level(self.player)
+            # Player collision with enemies
             result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)
             for key in result:
                 for enemy in result[key]:
                     if enemy.dying is False and self.player.take_damage(1):
                         G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
-            #Player collision with enemy bullets
-            result = PS.groupcollide(self.player_group, self.e_bullets, False, 
+            # Player collision with enemy bullets
+            result = PS.groupcollide(self.player_group, self.e_bullets, False,
                                      False)
             for player in result:
                 if self.player.take_damage(1):
@@ -209,10 +210,12 @@ class Game(State.State):
                 blood_y = player.world_coord_y + Player.Player.HEIGHT / 2
                 self.blood.append(Blood.Blood(blood_x,
                                               blood_y, .8))
+                p_width = Player.Player.WIDTH
+                p_height = Player.Player.HEIGHT
                 self.blood_stains.append(BloodStain.BloodStain(blood_x,
                                                                blood_y,
-                                                               Player.Player.WIDTH,
-                                                               Player.Player.HEIGHT))
+                                                               p_width,
+                                                               p_height))
 
                 for bullet in result[player]:
                     self.e_bullets.remove(bullet)
@@ -243,7 +246,7 @@ class Game(State.State):
                 self.bullets, self.wall_sprites_list, False, False)
             for bullet in result:
                 self.bullets.remove(bullet)
-            #Enemy Bullets Collide with Wall
+            # Enemy Bullets Collide with Wall
             result = PS.groupcollide(
                 self.e_bullets, self.wall_sprites_list, False, False)
             for bullet in result:
@@ -322,10 +325,12 @@ class Game(State.State):
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT + 10))
         heart_x = G.Globals.WIDTH - Player.Player.MAX_HEALTH * 25 - 5
         hud_y = 25 / 2 + G.Globals.HEIGHT
-        heart_y = hud_y+item_box_dimension/2-Game.HEART_IMAGE.get_height()/2
-        key_x = heart_x - item_box_dimension/2
-        key_x -= Game.KEY_IMAGE.get_width()/2
-        key_y = hud_y + item_box_dimension/2-Game.KEY_IMAGE.get_height()/2
+        heart_y = hud_y + item_box_dimension / \
+            2 - Game.HEART_IMAGE.get_height() / 2
+        key_x = heart_x - item_box_dimension / 2
+        key_x -= Game.KEY_IMAGE.get_width() / 2
+        key_y = hud_y + item_box_dimension / \
+            2 - Game.KEY_IMAGE.get_height() / 2
         for i in range(self.player.health):
             G.Globals.SCREEN.blit(Game.HEART_IMAGE, (heart_x, heart_y))
             heart_x += 25
@@ -333,11 +338,11 @@ class Game(State.State):
             G.Globals.SCREEN.blit(Game.KEY_IMAGE, (key_x, key_y))
         init_x = key_x - 30
         for index, image in enumerate(self.player.items):
-            x = init_x - index*item_box_dimension
+            x = init_x - index * item_box_dimension
             item_image = Game.ITEM_IMAGES[image]
-            x += item_box_dimension/2
-            x -= item_image.get_width()/2
-            y = hud_y + item_box_dimension/2 - item_image.get_height()/2
+            x += item_box_dimension / 2
+            x -= item_image.get_width() / 2
+            y = hud_y + item_box_dimension / 2 - item_image.get_height() / 2
             G.Globals.SCREEN.blit(item_image, (x, y))
 
     def load_item_images(self):
@@ -364,4 +369,3 @@ class Game(State.State):
         Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
         Game.ITEM_IMAGES.append(Game.SHAMPOO_IMAGE)
         Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
-

@@ -18,9 +18,9 @@ class Intro(State.State):
         """self.sound = PX.Sound("music/march.wav")
         self.sound.play()"""
         Intro.FONT = PF.Font("fonts/red_october.ttf", 18)
-        img_1 = PI.load("sprites/images/intro1.jpg").convert() 
-        img_2 = PI.load("sprites/images/intro2.jpg").convert() 
-        img_3 = PI.load("sprites/images/intro3.jpg").convert() 
+        img_1 = PI.load("sprites/images/intro1.jpg").convert()
+        img_2 = PI.load("sprites/images/intro2.jpg").convert()
+        img_3 = PI.load("sprites/images/intro3.jpg").convert()
         img_4 = PI.load("sprites/images/intro4.jpg").convert()
         img_5 = PI.load("sprites/images/instructions.jpg").convert()
         self.strings1 = []
@@ -30,12 +30,12 @@ class Intro(State.State):
         self.time = 0
 
         self.strings1.append("In a secret government lab, deep " +
-                            "within a deserted Russian town,")
+                             "within a deserted Russian town,")
         self.strings2.append("Scientists concocted experiments on" +
-                            " a large group of specimens.")
+                             " a large group of specimens.")
 
         self.strings1.append("Through a series of radioactive experiments" +
-                            " and countless injections")
+                             " and countless injections")
         self.strings2.append("a powerful new age weapon was created.")
 
         self.strings1.append("A fierce creature: the product of science" +
@@ -44,7 +44,7 @@ class Intro(State.State):
                              "and sentient being.")
 
         self.strings1.append("It is now time for you to make your escape " +
-                            "from the lab,")
+                             "from the lab,")
         self.strings2.append("for you are now, the Gamma Ray Kitten.")
         self.strings1.append("")
         self.strings2.append("")
@@ -80,32 +80,31 @@ class Intro(State.State):
         if self.index == -1:
             self.index = 0
         self.time += time
-        self.fadein += time * self.fade_value # controls fade in time
-        if self.fadein <= 255: # values over 255 do not matter
+        self.fadein += time * self.fade_value  # controls fade in time
+        if self.fadein <= 255:  # values over 255 do not matter
             self.images[self.index].set_alpha(self.fadein)
             self.surf1 = Intro.FONT.render(self.strings1[self.index], True,
-                                             (self.fadein, 0, 0))
+                                           (self.fadein, 0, 0))
             self.surf2 = Intro.FONT.render(self.strings2[self.index], True,
-                                             (self.fadein, 0, 0))
+                                           (self.fadein, 0, 0))
 
-        # begin to fade out if time has reached point 
+        # begin to fade out if time has reached point
         # that is >= the fade in time
         if Intro.LENGTH - (self.time % Intro.LENGTH) \
-            <= 255/self.fade_value + 1:
+                <= 255 / self.fade_value + 1:
             # controls the fade out time
-            self.fadeout -= time * self.fade_value 
+            self.fadeout -= time * self.fade_value
             if self.fadeout >= 0:
                 # if not the last image, fade out
-                if self.index != len(self.images): 
+                if self.index != len(self.images):
                     self.images[self.index].set_alpha(self.fadeout)
-                    self.surf1 = Intro.FONT.render(self.strings1[self.index], True,
-                                             (self.fadeout, 0, 0))
-                    self.surf2 = Intro.FONT.render(self.strings2[self.index], True,
-                                             (self.fadeout, 0, 0))
-
+                    self.surf1 = Intro.FONT.render(self.strings1[self.index],
+                                                   True, (self.fadeout, 0, 0))
+                    self.surf2 = Intro.FONT.render(self.strings2[self.index],
+                                                   True, (self.fadeout, 0, 0))
 
         # decides whether or not it is time to change the image
-        if self.time >= (self.index+1) * Intro.LENGTH:
+        if self.time >= (self.index + 1) * Intro.LENGTH:
             if self.index + 1 < len(self.images):
                 self.index += 1
                 # we changed images so we reset values
@@ -113,15 +112,15 @@ class Intro(State.State):
                 self.fadeout = 255
                 self.images[self.index].set_alpha(self.fadein)
             else:
-                G.Globals.STATE = Main.Game(1)   
+                G.Globals.STATE = Main.Game(1)
 
         self.xy1 = ((400 - self.surf1.get_width() / 2,
                      500 - self.surf1.get_height()))
         self.xy2 = ((400 - self.surf2.get_width() / 2,
-                     500 + self.surf2.get_height()))    
+                     500 + self.surf2.get_height()))
         G.Globals.SCREEN.blit(self.images[self.index], (0, 0))
         G.Globals.SCREEN.blit(self.surf1, self.xy1)
-        G.Globals.SCREEN.blit(self.surf2, self.xy2)                  
+        G.Globals.SCREEN.blit(self.surf2, self.xy2)
 
     def event(self, event):
         if event.type == PG.KEYDOWN:
