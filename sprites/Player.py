@@ -44,15 +44,20 @@ class Player(PS.Sprite):
     SHAMPOO_IMAGE = None
     PILL_IMAGE = None
     GLOW = None
+    SHOT_SOUND = None
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
 
-        if not Player.WALKING_BODY_IMAGES:
+        if Player.WALKING_BODY_IMAGES is None:
             self.load_images()
 
-        if not Player.SOUND:
+        if Player.SOUND is None:
             Player.SOUND = PM.Sound("sounds/meow.wav")
+
+        if Player.SHOT_SOUND is None:
+            Player.SHOT_SOUND = PM.Sound("sounds/cat_shoot.wav")
+
         self.health = Player.MAX_HEALTH
         self.image = None
         self.body_image = Player.WALKING_BODY_IMAGES[10]
@@ -98,6 +103,7 @@ class Player(PS.Sprite):
         if event.type == PG.KEYDOWN:
             if event.key == PG.K_UP:
                 if self.s_time >= self.fire_rate:
+                    Player.SHOT_SOUND.play()
                     self.shot_dir = 1
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
@@ -115,6 +121,7 @@ class Player(PS.Sprite):
 
             elif event.key == PG.K_DOWN:
                 if self.s_time >= self.fire_rate:
+                    Player.SHOT_SOUND.play()
                     self.shot_dir = 2
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
@@ -133,6 +140,7 @@ class Player(PS.Sprite):
 
             elif event.key == PG.K_RIGHT:
                 if self.s_time >= self.fire_rate:
+                    Player.SHOT_SOUND.play()
                     self.shot_dir = 3
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
@@ -151,6 +159,7 @@ class Player(PS.Sprite):
 
             elif event.key == PG.K_LEFT:
                 if self.s_time >= self.fire_rate:
+                    Player.SHOT_SOUND.play()
                     self.shot_dir = 4
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x, self.world_coord_y

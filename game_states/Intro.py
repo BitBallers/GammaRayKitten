@@ -26,10 +26,10 @@ class Intro(State.State):
         self.strings1 = []
         self.strings2 = []
         self.images = []
-        self.index = 0
+        self.index = -1
         self.time = 0
 
-        self.strings1.append("In a secret government lab, deep" +
+        self.strings1.append("In a secret government lab, deep " +
                             "within a deserted Russian town,")
         self.strings2.append("Scientists concocted experiments on" +
                             " a large group of specimens.")
@@ -38,12 +38,12 @@ class Intro(State.State):
                             " and countless injections")
         self.strings2.append("a powerful new age weapon was created.")
 
-        self.strings1.append("A fierce creature, the product of science" +
+        self.strings1.append("A fierce creature: the product of science" +
                              " and one's worst fears")
         self.strings2.append("was brought into this world as a dangerous " +
                              "and sentient being.")
 
-        self.strings1.append("It is now time for you to make your escape" +
+        self.strings1.append("It is now time for you to make your escape " +
                             "from the lab,")
         self.strings2.append("for you are now, the Gamma Ray Kitten.")
         self.strings1.append("")
@@ -70,11 +70,15 @@ class Intro(State.State):
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
+        if self.index == -1:
+            return
         G.Globals.SCREEN.blit(self.images[self.index], (0, 0))
         G.Globals.SCREEN.blit(self.surf1, self.xy1)
         G.Globals.SCREEN.blit(self.surf2, self.xy2)
 
     def update(self, time):
+        if self.index == -1:
+            self.index = 0
         self.time += time
         self.fadein += time * self.fade_value # controls fade in time
         if self.fadein <= 255: # values over 255 do not matter
