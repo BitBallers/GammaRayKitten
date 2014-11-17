@@ -40,6 +40,8 @@ class Game(State.State):
     PILL_IMAGE = None
     SHAMPOO_IMAGE = None
     ITEM_IMAGES = None
+    LEVEL = 1
+    MAX_LEVEL = 3
 
     def __init__(self, level, size=3, player=None):
         State.State.__init__(self)
@@ -86,7 +88,7 @@ class Game(State.State):
         self.player_group.add(self.player)
         self.enemy_speed = 1
         self.time = 0.0
-        self.level = level
+        Game.LEVEL = level
 
         self.non_black_tiles = None
         self.wall_sprites_list = None
@@ -124,7 +126,7 @@ class Game(State.State):
                 coords = (tile.rect.x, tile.rect.y)
                 G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
         # Siren
-        if self.level is 2:
+        if Game.LEVEL is 2:
             surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
             c = int(100 + 50 * math.sin(self.l_interval))
             surface.fill((255, c, c))
