@@ -39,6 +39,7 @@ class Game(State.State):
     SYRINGE_IMAGE = None
     PILL_IMAGE = None
     SHAMPOO_IMAGE = None
+    SHEILD_IMAGE = None
     ITEM_IMAGES = None
     LEVEL = 1
     MAX_LEVEL = 3
@@ -255,11 +256,13 @@ class Game(State.State):
                 self.e_bullets.remove(bullet)
 
             # Player picking up hearts
-            if self.player.health < Player.Player.MAX_HEALTH:
+            if self.player.health < self.player.max_health:
                 heart = PS.spritecollideany(self.player, self.hearts_group)
                 if heart is not None:
                     self.hearts_group.remove(heart)
                     self.player.health += 1
+                    if self.player.health > self.player.max_health:
+                        self.player.health = self.player.max_health
 
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
@@ -325,7 +328,7 @@ class Game(State.State):
         score_surf = Game.SCORE_FONT.render(
             score_string, True, (255, 255, 255))
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT + 10))
-        heart_x = G.Globals.WIDTH - Player.Player.MAX_HEALTH * 25 - 5
+        heart_x = G.Globals.WIDTH - self.player.max_health * 25 - 5
         hud_y = 25 / 2 + G.Globals.HEIGHT
         heart_y = hud_y + item_box_dimension / \
             2 - Game.HEART_IMAGE.get_height() / 2
@@ -367,7 +370,15 @@ class Game(State.State):
         Game.PILL_IMAGE.set_colorkey(color_key)
         Game.PILL_IMAGE.blit(pill, (0, 0))
 
+        sheild = PI.load("sprites/images/shield_sprite.png").convert()
+        color_key = sheild.get_at((0, 0))
+        sheild.set_colorkey(color_key)
+        Game.SHEILD_IMAGE = PG.Surface(sheild.get_size())
+        Game.SHEILD_IMAGE.set_colorkey(color_key)
+        Game.SHEILD_IMAGE.blit(sheild, (0, 0))
+
         Game.ITEM_IMAGES = []
         Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
         Game.ITEM_IMAGES.append(Game.SHAMPOO_IMAGE)
         Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
+        Game.ITEM_IMAGES.append(Game.SHEILD_IMAGE)

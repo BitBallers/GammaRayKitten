@@ -14,7 +14,7 @@ class Tile(PS.Sprite):
     DOOR_TILES = [1]
     STAIR_TILES = [5]
     FORWARD_WALL_TILE = [0, 2, 3, 4, 8, 9, 10]
-    ITEM_TILES = [12, 13, 14]
+    ITEM_TILES = [12, 13, 14, 15]
     KEY_TILES = [11]
 
     def __init__(self, x, y, type, level):
@@ -164,6 +164,27 @@ class Tile(PS.Sprite):
         surface43.set_colorkey(color_key)
         surface43.blit(pill, (0, 0))
         level_3_images.append(surface43)
+
+        # create sheild tile
+        sheild = PI.load("sprites/images/shield_sprite.png").convert()
+        color_key = sheild.get_at((0, 0))
+        sheild.set_colorkey(color_key)
+
+        surface51 = level_1_images[6].copy().convert()
+        surface51.set_colorkey(color_key)
+        surface51.blit(sheild, (0, 0))
+        level_1_images.append(surface51)
+
+        surface52 = level_2_images[6].copy().convert()
+        surface52.set_colorkey(color_key)
+        surface52.blit(sheild, (0, 0))
+        level_2_images.append(surface52)
+
+        surface53 = level_2_images[6].copy().convert()
+        surface53.set_colorkey(color_key)
+        surface53.blit(sheild, (0, 0))
+        level_3_images.append(surface53)
+
 
         Tile.IMAGES.append(level_1_images)
         Tile.IMAGES.append(level_2_images)
