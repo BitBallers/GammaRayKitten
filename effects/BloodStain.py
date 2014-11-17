@@ -27,8 +27,8 @@ class BloodStain(object):
             self.velocities.append((random.uniform(1, -1) * self.max_speed,
                                     random.uniform(1, -1) * self.max_speed))
 
-            self.targets.append((random.randint(0, .8 * width),
-                                 random.randint(0, .8 * height)))
+            self.targets.append((random.randint(0, int(.8 * width)),
+                                 random.randint(0, int(.8 * height))))
 
             self.sizes.append(random.randint(3, 5))
 

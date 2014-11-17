@@ -5,7 +5,7 @@ import pygame.time as PT
 import pygame.sprite as PS
 import pygame.mixer as PX
 import sprites.Scientist as Scientist
-import sprites.Slime as Slime
+import sprites.Bug as Bug
 import sprites.Enemy as Enemy
 import sprites.Player as Player
 import sprites.Bullet as Bullet
@@ -141,7 +141,7 @@ class Game(State.State):
             new_enemy = Scientist.Scientist(coords)
             self.enemies.add(new_enemy)
         for coords in self.map.enemy_coords:
-            new_enemy = Slime.Slime(coords)
+            new_enemy = Bug.Bug(coords)
             self.enemies.add(new_enemy)
 
     def update(self, time):
@@ -226,8 +226,8 @@ class Game(State.State):
             result = PS.groupcollide(self.enemies, self.bullets, False, False)
             for enemy in result:
                 enemy.start_death()
-                blood_x = enemy.world_x + enemy.width / 2
-                blood_y = enemy.world_y + enemy.height / 2
+                blood_x = int(enemy.world_x + enemy.width / 2)
+                blood_y = int(enemy.world_y + enemy.height / 2)
                 self.blood.append(Blood.Blood(blood_x,
                                               blood_y, .8))
                 self.blood_stains.append(BloodStain.BloodStain(blood_x,
