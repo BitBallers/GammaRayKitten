@@ -1,4 +1,5 @@
 import game_states.Main as Main
+import game_states.CutScene as CutScene
 
 class Globals(object):
     RUNNING = True
@@ -10,5 +11,6 @@ class Globals(object):
     HUD_HEIGHT = 50
 
 def new_level(player):
-	if(Main.Game.LEVEL+1 <= Main.Game.MAX_LEVEL):
-		Globals.STATE = Main.Game(Main.Game.LEVEL+1, 4, player)
+	if Main.Game.LEVEL+1 <= Main.Game.MAX_LEVEL:
+		Globals.STATE = CutScene.CutScene(Main.Game.LEVEL+1, 4, player)
+		

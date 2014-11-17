@@ -8,10 +8,10 @@ import Main
 class CutScene(State.State):
 
     IMAGE = None
-    SCROLL_SPEED = 2
+    SCROLL_SPEED = 15
     INTERVAL = 1
 
-    def __init__(self):
+    def __init__(self, level, size, player):
         State.State.__init__(self)
         # loads image if not already
         if not CutScene.IMAGE:
@@ -28,6 +28,9 @@ class CutScene(State.State):
         # surface that shades over image to create sliding effect
         self.slide_surface = PG.Surface((self.dx, G.Globals.HEIGHT +
                                          G.Globals.HUD_HEIGHT))
+        self.level = level
+        self.size = size
+        self.player = player        
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
@@ -37,11 +40,11 @@ class CutScene(State.State):
 
     def event(self, event):
         if event.type == PG.KEYDOWN:
-            if event.key == PG.K_SPACE:
-                # needs argument but not sure what
-                G.Globals.STATE = Main.Game()
+            if event.key == PG.K_SPACE:                
+                G.Globals.STATE = Main.Game(self.level, self.size, self.player)
 
     def update(self, time):
+
         self.time += time
         # fade in the image by decreasing rect of black surface
         if self.fade_in:
@@ -57,7 +60,7 @@ class CutScene(State.State):
         if self.time > CutScene.INTERVAL + CutScene.SCROLL_SPEED:
             self.dx += CutScene.SCROLL_SPEED
             if self.dx > G.Globals.WIDTH:
-                G.Globals.STATE = Main.Game()
+                G.Globals.STATE = Main.Game(self.level, self.size, self.player)
 
         self.slide_surface = PG.Surface((self.dx, G.Globals.HEIGHT +
                                          G.Globals.HUD_HEIGHT))
