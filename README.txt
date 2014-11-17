@@ -1,30 +1,24 @@
-Bit Ballers
+Team Name: Bit Ballers
 Jay Miller, Trevor Aron, Glen Smith, Bertha Hu
 
-Things fixed
-1) Added sound for player shooting and made the scientists death
-	sound less annoying
-3) Fix the HUD so elements on the HUD are more evenly spaced
-	and nothing every overlaps
-4) Made scenery more interesting/varied by adding tables, and machines
-	and used blending effects for lighting, as opposed to just having
-	the lights as part of the wall sprite images
-5) More rooms were added to the 'pool' of rooms to randomly select from
-	for the random map generation. This makes the random map generation
-	much more varied than before.
-8) Made it so the highscores list displays scores in order
-9) Made it so you don't get damaged by dead enemies. Before, 
-	if you ran into an enemy during its death animation you would still
-	get damaged.
-11) Made it more apparent that cat is damaged, by making the cat flash when 
-	it gets hit. This also lets the player know when the invincibility period
-	after getting hit has ended.
-	
-12) Fixed the enemy AI walking over walls.
-13) Made it so duplicate items can't be picked up and if a player already has an
-	item, it won't spawn again on the next level.
-13) Polish code
-	Made all our files pass pep8
-	Superclassed our enemies, so know the different types of enemies inherit from the
-	same class. This means that alot of methods that we had to write for each individual enemy
-	can be inherited from one super class.
+We have added level 3, which contains a new enemy type, the insect.
+The insect is significantly faster than the slimes, hence a more challenging enemy.
+There is also a new landscape to the level, which gives it a more sinister feel
+than the previous two levels. Right now there is only 1 enemy type per each level.
+This is simply to emphasize the differences in levels, but in the final game
+it is likely that there will be a mixture of enemies on each level, and that mixture
+will be determined by the difficulty of the level. This week, we added support for
+that functionality (multiple enemy types per level, spawned at a certain percentage).
+
+We also added a new item type, which like all items, will randomly appear in the item
+room (each item has a equal probability of appearing). This new item is a shield. 
+When the player picks up this item, they are given full health, and the maximum amount
+of health they can obtain increases from 5 to 6.
+
+We also revised the enemy AI system so that if there is not a valid path towards the player,
+they will "wander" around, as opposed to staying still. Although this "wandering" includes
+staying stationary, for strategic reasons.
+
+To skip levels, press 0. 
+
+To run the game, type "python game.py". 

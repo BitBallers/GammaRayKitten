@@ -3,6 +3,7 @@ import maps.Camera as Camera
 import maps.Map as Map
 import Globals as G
 import math
+import random
 
 
 class Enemy(PS.Sprite):
@@ -11,20 +12,19 @@ class Enemy(PS.Sprite):
 
     def __init__(self):
         PS.Sprite.__init__(self)
+        self.wander_time = 0
+        self.max_wander_time = 2
 
     def update(self, time, player, map, enemies_list):
         self.ai(player, map, enemies_list)
         self.world_x += self.x_velocity
-        self.world_y += self.y_velocity
-        if self.in_wall(map):
-            self.move_back()
-        else:
-            self.animate(time)
-
+        self.world_y += self.y_velocity        
+        self.animate(time)
         self.last_x = self.world_x
         self.last_y = self.world_y
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
+        self.wander_time += time
         return (self.dead, None)
 
     def render(self):
@@ -38,6 +38,18 @@ class Enemy(PS.Sprite):
         pass
 
     def is_good_direction(self, x, y, map, enemies_list):
+        self.world_x += x+math.copysign(5, x)
+        self.world_y += y+math.copysign(5, y)
+        if self.in_wall(map):
+            self.world_x -= x+math.copysign(5, x)
+            self.world_y -= y+math.copysign(5, y)
+            return False
+        else:
+            self.world_x -= x+math.copysign(5, x)
+            self.world_y -= y+math.copysign(5, y)
+            return True
+
+    """def is_good_direction(self, x, y, map, enemies_list):
         padding = 5
         # check other Slime coords
         for e in enemies_list:
@@ -93,7 +105,7 @@ class Enemy(PS.Sprite):
             return (top_left[1] - (y + width) >= padding or
                     (self.check_valid_tile(map, (tlx, y)) and
                      self.check_valid_tile(map, (trx, y))))
-        return False
+        return False"""
 
     def check_valid_tile(self, map, tile_key):
         if tile_key in map.tiles:
@@ -137,5 +149,15 @@ class Enemy(PS.Sprite):
     def move_back(self):
         self.world_x = self.last_x
         self.world_y = self.last_y
+        self.x_velocity = 0
+        self.y_velocity = 0
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
+
+    def random_velocity(self, speed):
+        if random.random() <= .5:
+            x = (-1) ** random.randint(1, 2)                    
+            return (x*speed, 0)
+        else:
+            y = (-1) ** random.randint(1, 2)            
+            return (0, y*speed)

@@ -40,7 +40,7 @@ class Bug(Enemy.Enemy):
 
         self.time = 0.0
         self.dying = False
-        self.dead = False
+        self.dead = False        
 
         self.last_x = self.world_x
         self.last_y = self.world_y
@@ -76,8 +76,8 @@ class Bug(Enemy.Enemy):
             self.b_index = 8
             update_image = True
 
-        if update_image:
-            self.image = Bug.IMAGES[self.b_index + index]
+        
+        self.image = Bug.IMAGES[self.b_index + index]
 
         if self.dying:
             if index == 3:
@@ -87,7 +87,7 @@ class Bug(Enemy.Enemy):
         if self.time >= Bug.CYCLE:
             self.time = 0
 
-    def ai(self, player, map, enemies_list):
+    def ai(self, player, map, enemies_list):                      
         sight_vector = ((player.world_coord_x - self.world_x),
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
@@ -102,14 +102,23 @@ class Bug(Enemy.Enemy):
             if self.is_good_direction(self.x_velocity, self.y_velocity,
                                       map, enemies_list):
                 return
-            else:
-                # else set it to 0
-                self.x_velocity = 0
-                self.y_velocity = 0
-                return
+            else:                
+                k = 0
+                while True:
+                    x, y = self.random_velocity(Bug.SPEED)
+                    if(self.is_good_direction(x, y, map, enemies_list)):
+                        self.x_velocity = x
+                        self.y_velocity = y
+                        # self.wander_time = 0
+                        return
+                    k += 1
+                    if(k > 100):
+                        self.x_velocity = 0
+                        self.y_velocity = 0
+                        return
 
         # full AI here
-
+        
         # get which x or y direction will bring closest to player
         # avoid division by zero
         if sight_vector[0] == 0:
@@ -139,11 +148,21 @@ class Bug(Enemy.Enemy):
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
-            return
-
-        # else don't move
-        self.x_velocity = 0
-        self.y_velocity = 0
+            return        
+        if self.wander_time >= self.max_wander_time:           
+            k = 0
+            while True:
+                x, y = self.random_velocity(Bug.SPEED)
+                if(self.is_good_direction(x, y, map, enemies_list)):
+                    self.x_velocity = x
+                    self.y_velocity = y
+                    self.wander_time = 0                    
+                    break
+                k += 1
+                if(k > 100):
+                    self.x_velocity = 0
+                    self.y_velocity = 0
+                    break        
 
     def start_death(self):
         Bug.SOUND.play()

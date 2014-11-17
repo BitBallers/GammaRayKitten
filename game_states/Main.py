@@ -23,6 +23,7 @@ import pygame.font as PF
 import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
+import sprites.Slime as Slime
 
 
 class Game(State.State):
@@ -141,6 +142,9 @@ class Game(State.State):
             new_enemy = Scientist.Scientist(coords)
             self.enemies.add(new_enemy)
         for coords in self.map.enemy_coords:
+            new_enemy = Slime.Slime(coords)
+            self.enemies.add(new_enemy)
+        for coords in self.map.bug_coords:
             new_enemy = Bug.Bug(coords)
             self.enemies.add(new_enemy)
 

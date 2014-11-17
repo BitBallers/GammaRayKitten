@@ -233,6 +233,7 @@ class Player(PS.Sprite):
 
     # takes in the fixed time interval, dt
     def update(self, time):
+        self.health = 5
         #update velocities if a key is currently held down
         if len(self.key) > 0:
             if self.key[-1] == PG.K_w:
