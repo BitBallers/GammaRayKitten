@@ -118,9 +118,9 @@ class Map(object):
                     continue
 
                 if char == 'I':
-                    k = randint(12, 14)
+                    k = randint(12, 15)
                     while (k - 12) in self.player_items:
-                        k = randint(12, 14)
+                        k = randint(12, 15)
                     new_tile = Tile.Tile(x, y, k, self.level)
                     self.tiles.update({(x, y): new_tile})
                     continue

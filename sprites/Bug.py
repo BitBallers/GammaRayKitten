@@ -15,7 +15,7 @@ class Bug(Enemy.Enemy):
     IMAGES = None
     CYCLE = 0.5
     MAX_AI_DIST = 700
-    SPEED = 4
+    SPEED = 1
     AI_PERCENTAGE = .3
     SOUND = None
 

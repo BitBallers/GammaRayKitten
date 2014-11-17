@@ -59,6 +59,7 @@ class Player(PS.Sprite):
             Player.SHOT_SOUND = PM.Sound("sounds/cat_shoot.wav")
 
         self.health = Player.MAX_HEALTH
+        self.max_health = Player.MAX_HEALTH
         self.image = None
         self.body_image = Player.WALKING_BODY_IMAGES[10]
         self.head_image = Player.REG_HEAD_IMAGES[1]
@@ -385,6 +386,12 @@ class Player(PS.Sprite):
                 self.piercing = True
                 if 2 not in self.items:
                     self.items.append(2)
+            # sheild
+            elif tile.type == 15:
+                self.max_health = self.max_health + 1
+                self.health = self.max_health
+                if 3 not in self.items:
+                    self.items.append(3)
             tile.change_image(6)
             val = 1
         #opening a door
