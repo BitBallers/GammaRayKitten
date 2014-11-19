@@ -54,6 +54,7 @@ class Game(State.State):
 
         self.blood = []
         self.blood_stains = []
+
         if level is 1:
             Game.SCORE = 0
 
@@ -160,7 +161,7 @@ class Game(State.State):
             self.time -= G.Globals.INTERVAL
             for e in self.enemies.sprites():
                 dead, bull = e.update(G.Globals.INTERVAL, self.player,
-                                      self.map, self.scientists.sprites())
+                                      self.map, self.enemies.sprites())
                 if dead:
                     self.enemies.remove(e)
                 if bull is not None:

@@ -15,7 +15,15 @@ class Map(object):
     SUB_WIDTH = 800
     SUB_HEIGHT = 600
     ENEMIES = ['e']
-    SCIENTISTS = ['s']
+    LEVEL_1_SLIME_RATE = .8
+    LEVEL_1_SCI_RATE = .2
+    LEVEL_1_BUG_RATE = 0
+    LEVEL_2_SLIME_RATE = .2
+    LEVEL_2_SCI_RATE = .7
+    LEVEL_2_BUG_RATE = .1
+    LEVEL_3_SLIME_RATE = .2
+    LEVEL_3_SCI_RATE = .2
+    LEVEL_3_BUG_RATE = .1
 
     # Blank Room is Maps[0],  Stairs, Item, key
     MAPS = None
@@ -128,15 +136,28 @@ class Map(object):
 
                 if char in Map.ENEMIES:
                     if self.level is 1:
-                        self.enemy_coords.append((x, y))
+                        self.choose_enemies(Map.LEVEL_1_SLIME_RATE,
+                                       Map.LEVEL_1_SCI_RATE,
+                                       Map.LEVEL_1_BUG_RATE, x, y)
                     elif self.level is 2:
-                        self.sci_coords.append((x, y))
+                        self.choose_enemies(Map.LEVEL_2_SLIME_RATE,
+                                       Map.LEVEL_2_SCI_RATE,
+                                       Map.LEVEL_2_BUG_RATE, x, y)
                     elif self.level is 3:
-                        if random() <= .6:
-                            self.bug_coords.append((x, y))                    
-                
+                        self.choose_enemies(Map.LEVEL_3_SLIME_RATE,
+                                       Map.LEVEL_3_SCI_RATE,
+                                       Map.LEVEL_3_BUG_RATE, x, y)
                 new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)
                 self.tiles.update({(x, y): new_tile})
+
+    def choose_enemies(self, sRate, sciRate, bugRate, x, y):
+        r = random()
+        if r <= sRate:
+            self.enemy_coords.append((x, y))
+        elif r <= sciRate+sRate:
+            self.sci_coords.append((x, y))
+        elif r <= sciRate+sRate+bugRate:
+            self.bug_coords.append((x, y)) 
 
     def create_map(self, size):
         m = [["v" for x in range(size)] for x in range(size)]

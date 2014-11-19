@@ -125,9 +125,9 @@ class Slime(Enemy.Enemy):
                         # self.wander_time = 0
                         return
                     k += 1
-                    if(k > 100):
+                    if(k > 200):
                         self.x_velocity = 0
-                        self.y_velocity = 0
+                        self.y_velocity = 0                        
                         return
 
         # full AI here
@@ -136,7 +136,7 @@ class Slime(Enemy.Enemy):
         # avoid division by zero
         if sight_vector[0] == 0:
             suggested_x = 0
-            suggested_y = math.copysign(Slime.SPEED, sight_vector[1])
+            suggested_y = math.copysign(Slime.SPEED, sight_vector[1])            
 
         else:
             sight_slope = sight_vector[1] / sight_vector[0]
@@ -161,7 +161,8 @@ class Slime(Enemy.Enemy):
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
-            return        
+            return
+
         if self.wander_time >= self.max_wander_time:           
             k = 0
             while True:
@@ -172,9 +173,9 @@ class Slime(Enemy.Enemy):
                     self.wander_time = 0                    
                     break
                 k += 1
-                if(k > 100):
+                if(k > 200):
                     self.x_velocity = 0
-                    self.y_velocity = 0
+                    self.y_velocity = 0                    
                     break 
 
     def start_death(self):

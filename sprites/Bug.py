@@ -15,7 +15,7 @@ class Bug(Enemy.Enemy):
     IMAGES = None
     CYCLE = 0.5
     MAX_AI_DIST = 700
-    SPEED = 1
+    SPEED = 4
     AI_PERCENTAGE = .3
     SOUND = None
 
@@ -91,6 +91,7 @@ class Bug(Enemy.Enemy):
         sight_vector = ((player.world_coord_x - self.world_x),
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
+        
         if dist >= Bug.MAX_AI_DIST:
             x_velocity = 0
             y_velocity = 0
@@ -149,11 +150,12 @@ class Bug(Enemy.Enemy):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
             return        
+        
         if self.wander_time >= self.max_wander_time:           
             k = 0
             while True:
                 x, y = self.random_velocity(Bug.SPEED)
-                if(self.is_good_direction(x, y, map, enemies_list)):
+                if self.is_good_direction(x, y, map, enemies_list):
                     self.x_velocity = x
                     self.y_velocity = y
                     self.wander_time = 0                    

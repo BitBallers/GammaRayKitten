@@ -40,6 +40,13 @@ class Enemy(PS.Sprite):
     def is_good_direction(self, x, y, map, enemies_list):
         self.world_x += x+math.copysign(5, x)
         self.world_y += y+math.copysign(5, y)
+        for e in enemies_list:
+            if e is self:                
+                continue
+            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 10**2:
+                self.world_x -= x+math.copysign(5, x)
+                self.world_y -= y+math.copysign(5, y)
+                return False
         if self.in_wall(map):
             self.world_x -= x+math.copysign(5, x)
             self.world_y -= y+math.copysign(5, y)
