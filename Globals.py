@@ -1,5 +1,6 @@
 import game_states.Main as Main
 import game_states.CutScene as CutScene
+import game_states.GameOver as GameOver
 
 
 class Globals(object):
@@ -15,3 +16,5 @@ class Globals(object):
 def new_level(player):
     if Main.Game.LEVEL+1 <= Main.Game.MAX_LEVEL:
         Globals.STATE = CutScene.CutScene(Main.Game.LEVEL+1, 4, player)
+    else:
+        Globals.STATE = GameOver.Gameover(True, Main.Game.Score)

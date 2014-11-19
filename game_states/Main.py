@@ -23,6 +23,7 @@ import pygame.font as PF
 import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
+import sprites.Slime as Slime
 
 
 class Game(State.State):
@@ -142,6 +143,9 @@ class Game(State.State):
             new_enemy = Scientist.Scientist(coords)
             self.enemies.add(new_enemy)
         for coords in self.map.enemy_coords:
+            new_enemy = Slime.Slime(coords)
+            self.enemies.add(new_enemy)
+        for coords in self.map.bug_coords:
             new_enemy = Bug.Bug(coords)
             self.enemies.add(new_enemy)
 
@@ -191,11 +195,7 @@ class Game(State.State):
                             self.wall_sprites_list.remove(wall)
                         if val == 2:
                             Game.SCORE += 100
-                            if self.level >= 2:
-                                G.Globals.STATE = GameOver.GameOver(
-                                    True, Game.SCORE)
-                            else:
-                                G.new_level(self.player)
+                            G.new_level(self.player)
             # Player collision with enemies
             result = PS.groupcollide(self.player_group, self.enemies,
                                      False, False)

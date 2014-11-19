@@ -37,6 +37,7 @@ class Map(object):
         self.tiles = {}
         self.enemy_coords = []
         self.sci_coords = []
+        self.bug_coords = []
 
         map_matrix = self.create_map(size)
 
@@ -128,13 +129,12 @@ class Map(object):
                 if char in Map.ENEMIES:
                     if self.level is 1:
                         self.enemy_coords.append((x, y))
-                    else:
+                    elif self.level is 2:
                         self.sci_coords.append((x, y))
-                if char in Map.SCIENTISTS:
-                    if self.level is 1:
-                        self.enemy_coords.append((x, y))
-                    else:
-                        self.sci_coords.append((x, y))
+                    elif self.level is 3:
+                        if random() <= .6:
+                            self.bug_coords.append((x, y))                    
+                
                 new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)
                 self.tiles.update({(x, y): new_tile})
 
