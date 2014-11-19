@@ -95,6 +95,9 @@ class Player(PS.Sprite):
         self.items = []
         self.dont_render = False
 
+    def reset_movement(self):
+        self.key = []
+
     def handle_events(self, event):
         bull = []
         adj_old = m.cos(m.pi/12)*self.b_speed

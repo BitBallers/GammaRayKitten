@@ -99,6 +99,7 @@ class Game(State.State):
 
         self.hearts_group = PS.Group()
         self.l_interval = 0.0
+        self.player.reset_movement()
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
