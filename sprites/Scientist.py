@@ -54,12 +54,12 @@ class Scientist(Enemy.Enemy):
         self.last_x = self.world_x
         self.last_y = self.world_y
 
-    def update(self, time, player, map, enemies_list):
+    def update(self, time, player, map, enemies_list, i):
         self.cur_shot_time += time
         if self.cur_shot_time > Scientist.SHOT_TIME:
             self.cur_shot_time = Scientist.SHOT_TIME
             self.shooting = False
-        b = self.ai(player, map, enemies_list)
+        b = self.ai(player, map, enemies_list, i)
         self.animate(time)
         self.world_x += self.x_velocity
         self.world_y += self.y_velocity        
@@ -67,6 +67,12 @@ class Scientist(Enemy.Enemy):
         self.last_y = self.world_y
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
+        if self.in_wall(map) and (self.rect.x <= -2*self.rect.width or
+                                  self.rect.x >= G.Globals.WIDTH+2*self.rect.width or
+                                  self.rect.y <= -2*self.rect.height or
+                                  self.rect.y >= G.Globals.HEIGHT+2*self.rect.height):
+            self.move_out_of_wall(map)
+        self.wander_time += time
         return (self.dead, b)
 
     def load_images(self):
@@ -117,7 +123,7 @@ class Scientist(Enemy.Enemy):
         if self.time >= Scientist.CYCLE:
             self.time = 0
 
-    def ai(self, player, map, enemies_list):
+    def ai(self, player, map, enemies_list, index):
         #Don't do anything if shooting
         if self.shooting:
             return None
@@ -183,26 +189,35 @@ class Scientist(Enemy.Enemy):
                                           map, enemies_list):
                     self.x_velocity = suggested_x
                     self.y_velocity = suggested_y
-            return None '''
+            return None '''     
         # full AI is only run certain percentage of the time
         if random.random() >= (Scientist.AI_PERCENTAGE):
             # check if our direction is still ok
             if self.is_good_direction(self.x_velocity, self.y_velocity,
-                                      map, enemies_list):
-                return None
-            else:
-                # else set it to 0
-                self.x_velocity = 0
-                self.y_velocity = 0
-                return None
+                                      map, enemies_list, index):
+                return
+            else:                
+                k = 0
+                while True:
+                    x, y = self.random_velocity(Scientist.SPEED)
+                    if(self.is_good_direction(x, y, map, enemies_list, index)):
+                        self.x_velocity = x
+                        self.y_velocity = y
+                        # self.wander_time = 0
+                        return
+                    k += 1
+                    if(k > 200):
+                        self.x_velocity = 0
+                        self.y_velocity = 0                        
+                        return
 
         # full AI here
-
+        
         # get which x or y direction will bring closest to player
         # avoid division by zero
         if sight_vector[0] == 0:
             suggested_x = 0
-            suggested_y = math.copysign(Scientist.SPEED, sight_vector[1])
+            suggested_y = math.copysign(Scientist.SPEED, sight_vector[1])            
 
         else:
             sight_slope = sight_vector[1] / sight_vector[0]
@@ -214,23 +229,35 @@ class Scientist(Enemy.Enemy):
                 suggested_y = 0
 
         # check if next tile in that direction is a wall
-        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
+        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list, index):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
-            return None
+            return
 
         # check next best direction, swap x y values and copy their signs from
         # original sight vector
         suggested_x = math.copysign(suggested_y, sight_vector[0])
         suggested_y = math.copysign(suggested_x, sight_vector[1])
-        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
+
+        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list, index):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
-            return None
+            return
 
-        # else don't move
-        self.x_velocity = 0
-        self.y_velocity = 0
+        if self.wander_time >= self.max_wander_time:           
+            k = 0
+            while True:
+                x, y = self.random_velocity(Scientist.SPEED)
+                if(self.is_good_direction(x, y, map, enemies_list, index)):
+                    self.x_velocity = x
+                    self.y_velocity = y
+                    self.wander_time = 0                    
+                    break
+                k += 1
+                if(k > 50):
+                    self.x_velocity = 0
+                    self.y_velocity = 0                    
+                    break
 
     def start_death(self):
         if random.random() <= .95:

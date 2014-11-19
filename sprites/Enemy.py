@@ -15,8 +15,8 @@ class Enemy(PS.Sprite):
         self.wander_time = 0
         self.max_wander_time = 10
 
-    def update(self, time, player, map, enemies_list):
-        self.ai(player, map, enemies_list)
+    def update(self, time, player, map, enemies_list, index):
+        self.ai(player, map, enemies_list, index)
         self.world_x += self.x_velocity
         self.world_y += self.y_velocity        
         self.animate(time)
@@ -25,6 +25,11 @@ class Enemy(PS.Sprite):
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
         self.wander_time += time
+        if self.in_wall(map) and (self.rect.x <= -2*self.rect.width or
+                                  self.rect.x >= G.Globals.WIDTH+2*self.rect.width or
+                                  self.rect.y <= -2*self.rect.height or
+                                  self.rect.y >= G.Globals.HEIGHT+2*self.rect.height):
+            self.move_out_of_wall(map)
         return (self.dead, None)
 
     def render(self):
@@ -34,16 +39,19 @@ class Enemy(PS.Sprite):
                 y >= -self.rect.height and y <= G.Globals.HEIGHT):
             G.Globals.SCREEN.blit(self.image, (x, y))
 
-    def ai(self, player, map, enemies_list):
+    def ai(self, player, map, enemies_list, index):
         pass
 
-    def is_good_direction(self, x, y, map, enemies_list):
+    def is_good_direction(self, x, y, map, enemies_list, index):
         self.world_x += x+math.copysign(5, x)
         self.world_y += y+math.copysign(5, y)
-        for e in enemies_list:
+        for k in range(index):
+            if k >= len(enemies_list):
+                break
+            e = enemies_list[k]
             if e is self:                
                 continue
-            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 10**2:
+            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 25**2:
                 self.world_x -= x+math.copysign(5, x)
                 self.world_y -= y+math.copysign(5, y)
                 return False
@@ -152,6 +160,45 @@ class Enemy(PS.Sprite):
         if self.check_valid_tile(map, (brx, bry)) is False:
             return True
         return False
+
+    def move_out_of_wall(self, map):
+        top_left = (self.world_x, self.world_y)
+        top_right = (self.world_x + self.rect.width, self.world_y)
+        bottom_left = (self.world_x, self.world_y + self.rect.height)
+        bottom_right = (
+            self.world_x + self.rect.width, self.world_y + self.rect.height)
+
+        tlx = math.floor(top_left[0]/50)*50
+        tly = math.floor(top_left[1]/50)*50
+
+        blx = math.floor(bottom_left[0]/50)*50
+        bly = math.floor(bottom_left[1]/50)*50
+
+        trx = math.floor(top_right[0]/50)*50
+        try_ = math.floor(top_right[1]/50)*50
+
+        brx = math.floor(bottom_right[0]/50)*50
+        bry = math.floor(bottom_right[1]/50)*50
+
+        if self.check_valid_tile(map, (tlx, tly)) is True:
+            self.world_x = tlx
+            self.world_y = tly
+            return
+
+        if self.check_valid_tile(map, (blx, bly)) is True:
+            self.world_x = blx
+            self.world_y = bly
+            return
+
+        if self.check_valid_tile(map, (trx, try_)) is True:
+            self.world_x = trx
+            self.world_y = try_
+            return
+
+        if self.check_valid_tile(map, (brx, bry)) is True:
+            self.world_x = brx
+            self.world_y = bry
+            return
 
     def move_back(self):
         self.world_x = self.last_x

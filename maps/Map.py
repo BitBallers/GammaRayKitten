@@ -148,7 +148,7 @@ class Map(object):
                                        Map.LEVEL_3_SCI_RATE,
                                        Map.LEVEL_3_BUG_RATE, x, y)
                 if char == 'W':
-                    if random() <= .7:
+                    if random() <= .5:
                         char = 'X'
 
                 new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)

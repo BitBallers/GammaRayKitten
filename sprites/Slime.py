@@ -100,7 +100,7 @@ class Slime(Enemy.Enemy):
         if self.time >= Slime.CYCLE:
             self.time = 0
 
-    def ai(self, player, map, enemies_list):                      
+    def ai(self, player, map, enemies_list, index):                      
         sight_vector = ((player.world_coord_x - self.world_x),
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
@@ -113,13 +113,13 @@ class Slime(Enemy.Enemy):
         if random.random() >= (Slime.AI_PERCENTAGE):
             # check if our direction is still ok
             if self.is_good_direction(self.x_velocity, self.y_velocity,
-                                      map, enemies_list):
+                                      map, enemies_list, index):
                 return
             else:                
                 k = 0
                 while True:
                     x, y = self.random_velocity(Slime.SPEED)
-                    if(self.is_good_direction(x, y, map, enemies_list)):
+                    if(self.is_good_direction(x, y, map, enemies_list, index)):
                         self.x_velocity = x
                         self.y_velocity = y
                         # self.wander_time = 0
@@ -148,7 +148,7 @@ class Slime(Enemy.Enemy):
                 suggested_y = 0
 
         # check if next tile in that direction is a wall
-        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
+        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list, index):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
             return
@@ -158,7 +158,7 @@ class Slime(Enemy.Enemy):
         suggested_x = math.copysign(suggested_y, sight_vector[0])
         suggested_y = math.copysign(suggested_x, sight_vector[1])
 
-        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list):
+        if self.is_good_direction(suggested_x, suggested_y, map, enemies_list, index):
             self.x_velocity = suggested_x
             self.y_velocity = suggested_y
             return
@@ -167,7 +167,7 @@ class Slime(Enemy.Enemy):
             k = 0
             while True:
                 x, y = self.random_velocity(Slime.SPEED)
-                if(self.is_good_direction(x, y, map, enemies_list)):
+                if(self.is_good_direction(x, y, map, enemies_list, index)):
                     self.x_velocity = x
                     self.y_velocity = y
                     self.wander_time = 0                    

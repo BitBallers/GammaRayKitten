@@ -159,9 +159,9 @@ class Game(State.State):
         self.time += time
         while self.time > G.Globals.INTERVAL:
             self.time -= G.Globals.INTERVAL
-            for e in self.enemies.sprites():
+            for i, e in enumerate(self.enemies.sprites()):
                 dead, bull = e.update(G.Globals.INTERVAL, self.player,
-                                      self.map, self.enemies.sprites())
+                                      self.map, self.enemies.sprites(), i)
                 if dead:
                     self.enemies.remove(e)
                 if bull is not None:
