@@ -113,7 +113,7 @@ class Bug(Enemy.Enemy):
                         # self.wander_time = 0
                         return
                     k += 1
-                    if(k > 100):
+                    if(k > 300):
                         self.x_velocity = 0
                         self.y_velocity = 0
                         return
@@ -161,7 +161,7 @@ class Bug(Enemy.Enemy):
                     self.wander_time = 0                    
                     break
                 k += 1
-                if(k > 100):
+                if(k > 300):
                     self.x_velocity = 0
                     self.y_velocity = 0
                     break        

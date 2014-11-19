@@ -113,6 +113,8 @@ class Scientist(Enemy.Enemy):
 
         if update_image and not self.shooting:
             self.image = Scientist.IMAGES[self.b_index + index]
+        else:
+            self.image = Scientist.IMAGES[self.b_index]
 
         self.time += time
         if self.time >= Scientist.CYCLE:
