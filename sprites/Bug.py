@@ -164,7 +164,19 @@ class Bug(Enemy.Enemy):
                 if(k > 50):
                     self.x_velocity = 0
                     self.y_velocity = 0
-                    break        
+                    break
+
+    def check_valid_tile(self, map, tile_key):
+        if tile_key in map.tiles:
+            tile = map.tiles[tile_key]
+            if tile.is_table():
+                return True
+            if tile.is_wall() or tile.is_forward_wall():
+                return False
+            else:
+                return True
+        else:
+            return False        
 
     def start_death(self):
         Bug.SOUND.play()

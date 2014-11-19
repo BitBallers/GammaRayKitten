@@ -14,6 +14,7 @@ class Tile(PS.Sprite):
     DOOR_TILES = [1]
     STAIR_TILES = [5]
     FORWARD_WALL_TILE = [0, 2, 3, 4, 8, 9, 10]
+    TABLE_TILES = [9, 10]
     ITEM_TILES = [12, 13, 14, 15]
     KEY_TILES = [11]
 
@@ -192,6 +193,12 @@ class Tile(PS.Sprite):
 
     def is_wall(self):
         if self.type in Tile.WALL_TILES:
+            return True
+        else:
+            return False
+
+    def is_table(self):
+        if self.type in Tile.TABLE_TILES:
             return True
         else:
             return False
