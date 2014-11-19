@@ -147,6 +147,10 @@ class Map(object):
                         self.choose_enemies(Map.LEVEL_3_SLIME_RATE,
                                        Map.LEVEL_3_SCI_RATE,
                                        Map.LEVEL_3_BUG_RATE, x, y)
+                if char == 'W':
+                    if random() <= .7:
+                        char = 'X'
+
                 new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)
                 self.tiles.update({(x, y): new_tile})
 

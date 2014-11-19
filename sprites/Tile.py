@@ -181,7 +181,7 @@ class Tile(PS.Sprite):
         surface52.blit(sheild, (0, 0))
         level_2_images.append(surface52)
 
-        surface53 = level_2_images[6].copy().convert()
+        surface53 = level_3_images[6].copy().convert()
         surface53.set_colorkey(color_key)
         surface53.blit(sheild, (0, 0))
         level_3_images.append(surface53)
