@@ -206,7 +206,7 @@ class Scientist(Enemy.Enemy):
                         # self.wander_time = 0
                         return
                     k += 1
-                    if(k > 200):
+                    if(k > 15):
                         self.x_velocity = 0
                         self.y_velocity = 0                        
                         return
@@ -254,7 +254,7 @@ class Scientist(Enemy.Enemy):
                     self.wander_time = 0                    
                     break
                 k += 1
-                if(k > 50):
+                if(k > 15):
                     self.x_velocity = 0
                     self.y_velocity = 0                    
                     break
