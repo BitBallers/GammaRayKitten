@@ -14,7 +14,7 @@ class Bug(Enemy.Enemy):
 
     IMAGES = None
     CYCLE = 0.5
-    MAX_AI_DIST = 700
+    MAX_AI_DIST = 500
     SPEED = 4
     AI_PERCENTAGE = .3
     SOUND = None
@@ -161,7 +161,7 @@ class Bug(Enemy.Enemy):
                     self.wander_time = 0                    
                     break
                 k += 1
-                if(k > 300):
+                if(k > 50):
                     self.x_velocity = 0
                     self.y_velocity = 0
                     break        

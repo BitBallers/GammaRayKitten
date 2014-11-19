@@ -16,7 +16,7 @@ class Scientist(Enemy.Enemy):
     IMAGES = None
     SHOT_IMAGES = None
     CYCLE = 0.5
-    MAX_AI_DIST = 700
+    MAX_AI_DIST = 500
     SHOT_DIST = 300
     SPEED = 1
     AI_PERCENTAGE = .3
@@ -60,12 +60,9 @@ class Scientist(Enemy.Enemy):
             self.cur_shot_time = Scientist.SHOT_TIME
             self.shooting = False
         b = self.ai(player, map, enemies_list)
+        self.animate(time)
         self.world_x += self.x_velocity
-        self.world_y += self.y_velocity
-        if self.in_wall(map):
-            self.move_back()
-        else:
-            self.animate(time)
+        self.world_y += self.y_velocity        
         self.last_x = self.world_x
         self.last_y = self.world_y
         self.rect.x = self.world_x - Camera.Camera.X

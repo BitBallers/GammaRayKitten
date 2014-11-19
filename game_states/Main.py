@@ -118,10 +118,10 @@ class Game(State.State):
         for blood in self.blood:
             blood.render()
         # Cat Glow
-        if not self.player.dont_render:
+        """if not self.player.dont_render:
             G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
                                                        self.player.rect.y),
-                                  None, PG.BLEND_ADD)
+                                None, PG.BLEND_ADD)"""
         self.player.render()
         # Render Tile lighting
         for tile in self.non_black_tiles.sprites():
@@ -284,17 +284,19 @@ class Game(State.State):
         self.wall_sprites_list = PS.Group()
         self.black_tiles = PS.Group()
 
-        first_x = math.floor(self.camera.X / Game.TILE_WIDTH) * Game.TILE_WIDTH
+        first_x = math.floor(self.camera.X / Game.TILE_WIDTH) * Game.TILE_WIDTH - Game.TILE_WIDTH
         first_y = math.floor(
-            self.camera.Y / Game.TILE_HEIGHT) * Game.TILE_HEIGHT
+            self.camera.Y / Game.TILE_HEIGHT) * Game.TILE_HEIGHT - Game.TILE_HEIGHT
         offset_x = first_x - self.camera.X
         offset_y = first_y - self.camera.Y
 
-        for i in range(Game.MAP_TILE_WIDTH + 1):
-            for k in range(Game.MAP_TILE_HEIGHT + 1):
+        for i in range(Game.MAP_TILE_WIDTH + 2):
+            for k in range(Game.MAP_TILE_HEIGHT + 2):
                 x = first_x + (i * Game.TILE_WIDTH)
                 y = first_y + (k * Game.TILE_HEIGHT)
                 if x >= Map.Map.WIDTH or y >= Map.Map.HEIGHT:
+                    continue
+                if x < 0 or y < 0:
                     continue
 
                 tile = self.map.tiles[(x, y)]

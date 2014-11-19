@@ -13,7 +13,7 @@ class Enemy(PS.Sprite):
     def __init__(self):
         PS.Sprite.__init__(self)
         self.wander_time = 0
-        self.max_wander_time = 2
+        self.max_wander_time = 10
 
     def update(self, time, player, map, enemies_list):
         self.ai(player, map, enemies_list)
