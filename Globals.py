@@ -17,4 +17,4 @@ def new_level(player):
     if Main.Game.LEVEL+1 <= Main.Game.MAX_LEVEL:
         Globals.STATE = CutScene.CutScene(Main.Game.LEVEL+1, 4, player)
     else:
-        Globals.STATE = GameOver.GameOver(True, Main.Game.Score)
+        Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)
