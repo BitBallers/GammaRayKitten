@@ -23,7 +23,7 @@ class Map(object):
     LEVEL_2_BUG_RATE = .1
     LEVEL_3_SLIME_RATE = .2
     LEVEL_3_SCI_RATE = .2
-    LEVEL_3_BUG_RATE = .1
+    LEVEL_3_BUG_RATE = .6
 
     # Blank Room is Maps[0],  Stairs, Item, key
     MAPS = None

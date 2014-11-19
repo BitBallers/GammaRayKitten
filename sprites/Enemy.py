@@ -51,7 +51,7 @@ class Enemy(PS.Sprite):
             e = enemies_list[k]
             if e is self:                
                 continue
-            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 25**2:
+            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 25**2:                
                 self.world_x -= x+math.copysign(5, x)
                 self.world_y -= y+math.copysign(5, y)
                 return False
