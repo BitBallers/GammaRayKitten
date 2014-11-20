@@ -13,7 +13,7 @@ class Enemy(PS.Sprite):
     def __init__(self):
         PS.Sprite.__init__(self)
         self.wander_time = 0
-        self.max_wander_time = 10
+        self.max_wander_time = 20
 
     def update(self, time, player, map, enemies_list, index):
         self.ai(player, map, enemies_list, index)
@@ -43,6 +43,8 @@ class Enemy(PS.Sprite):
         pass
 
     def is_good_direction(self, x, y, map, enemies_list, index):
+        if x == 0 and y == 0:
+            return False
         self.world_x += x+math.copysign(5, x)
         self.world_y += y+math.copysign(5, y)
         for k in range(index):
@@ -51,7 +53,7 @@ class Enemy(PS.Sprite):
             e = enemies_list[k]
             if e is self:                
                 continue
-            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 25**2:
+            if (self.world_x-e.world_x)**2+(self.world_y-e.world_y)**2 < 25**2:                
                 self.world_x -= x+math.copysign(5, x)
                 self.world_y -= y+math.copysign(5, y)
                 return False

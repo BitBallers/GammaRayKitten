@@ -150,7 +150,7 @@ class Slime(Enemy.Enemy):
         # check if next tile in that direction is a wall
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list, index):
             self.x_velocity = suggested_x
-            self.y_velocity = suggested_y
+            self.y_velocity = suggested_y            
             return
 
         # check next best direction, swap x y values and copy their signs from
@@ -160,7 +160,7 @@ class Slime(Enemy.Enemy):
 
         if self.is_good_direction(suggested_x, suggested_y, map, enemies_list, index):
             self.x_velocity = suggested_x
-            self.y_velocity = suggested_y
+            self.y_velocity = suggested_y            
             return
 
         if self.wander_time >= self.max_wander_time:           
@@ -173,7 +173,7 @@ class Slime(Enemy.Enemy):
                     self.wander_time = 0                    
                     break
                 k += 1
-                if(k > 50):
+                if(k > 15):
                     self.x_velocity = 0
                     self.y_velocity = 0                    
                     break 

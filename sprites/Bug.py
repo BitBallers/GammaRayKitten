@@ -161,7 +161,7 @@ class Bug(Enemy.Enemy):
                     self.wander_time = 0                    
                     break
                 k += 1
-                if(k > 50):
+                if(k > 15):
                     self.x_velocity = 0
                     self.y_velocity = 0
                     break

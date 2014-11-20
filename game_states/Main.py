@@ -131,10 +131,10 @@ class Game(State.State):
                 G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
         # Siren
         if Game.LEVEL is 2:
-            surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
+            """surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
             c = int(100 + 50 * math.sin(self.l_interval))
             surface.fill((255, c, c))
-            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT)
+            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT)"""
         self.black_tiles.draw(G.Globals.SCREEN)
         self.render_HUD()
 
