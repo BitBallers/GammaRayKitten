@@ -104,6 +104,7 @@ class Player(PS.Sprite):
         self.activate_timer = 0
         self.max_activate_time = 100
         self.shield_on = False
+        self.render_shield = True
         self.shield_timer = 0
         self.max_shield_time = 10
 
@@ -249,7 +250,7 @@ class Player(PS.Sprite):
             return
         # surf = PG.Surface((self.rect.width, self.rect.height)).convert()
         # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
-        if self.shield_on:
+        if self.shield_on and self.render_shield:
             G.Globals.SCREEN.blit(Player.SHIELD_GLOW, (self.rect.x-5, self.rect.y-3.5), None, PG.BLEND_ADD)
         G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5,
                               self.rect.y+Player.HEAD_HEIGHT-4-3.5))
@@ -387,6 +388,10 @@ class Player(PS.Sprite):
             self.dont_render = False
 
         self.shield_timer += time
+        if self.shield_timer >= self.max_shield_time-2 and math.floor(self.shield_timer/.05) % 2 == 0:
+            self.render_shield = False
+        else:
+            self.render_shield = True
         if self.shield_timer >= self.max_shield_time:
             self.shield_on = False
         self.activate_timer += time
