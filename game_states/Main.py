@@ -151,6 +151,9 @@ class Game(State.State):
         for coords in self.map.bug_coords:
             new_enemy = Bug.Bug(coords)
             self.enemies.add(new_enemy)
+        for coords in self.map.ss_coords:
+            new_enemy = SuperSlime.SuperSlime(coords)
+            self.enemies.add(new_enemy)
 
     def update(self, time):
         self.l_interval = self.l_interval + .01

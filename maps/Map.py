@@ -18,12 +18,19 @@ class Map(object):
     LEVEL_1_SLIME_RATE = .8
     LEVEL_1_SCI_RATE = .2
     LEVEL_1_BUG_RATE = 0
+    LEVEL_1_SS_RATE = 0
     LEVEL_2_SLIME_RATE = .2
     LEVEL_2_SCI_RATE = .7
     LEVEL_2_BUG_RATE = .1
+    LEVEL_2_SS_RATE = 0.0
     LEVEL_3_SLIME_RATE = .2
     LEVEL_3_SCI_RATE = .2
     LEVEL_3_BUG_RATE = .6
+    LEVEL_3_SS_RATE = 0
+    LEVEL_4_SLIME_RATE = 0
+    LEVEL_4_SCI_RATE = .2
+    LEVEL_4_BUG_RATE = .2
+    LEVEL_4_SS_RATE = .6
 
     # Blank Room is Maps[0],  Stairs, Item, key
     MAPS = None
@@ -46,6 +53,7 @@ class Map(object):
         self.enemy_coords = []
         self.sci_coords = []
         self.bug_coords = []
+        self.ss_coords = []
 
         map_matrix = self.create_map(size)
 
@@ -138,15 +146,24 @@ class Map(object):
                     if self.level is 1:
                         self.choose_enemies(Map.LEVEL_1_SLIME_RATE,
                                        Map.LEVEL_1_SCI_RATE,
-                                       Map.LEVEL_1_BUG_RATE, x, y)
+                                       Map.LEVEL_1_BUG_RATE,
+                                       Map.LEVEL_1_SS_RATE, x, y)
                     elif self.level is 2:
                         self.choose_enemies(Map.LEVEL_2_SLIME_RATE,
                                        Map.LEVEL_2_SCI_RATE,
-                                       Map.LEVEL_2_BUG_RATE, x, y)
+                                       Map.LEVEL_2_BUG_RATE, 
+                                       Map.LEVEL_2_SS_RATE, x, y)
                     elif self.level is 3:
                         self.choose_enemies(Map.LEVEL_3_SLIME_RATE,
                                        Map.LEVEL_3_SCI_RATE,
-                                       Map.LEVEL_3_BUG_RATE, x, y)
+                                       Map.LEVEL_3_BUG_RATE,
+                                       Map.LEVEL_3_SS_RATE, x, y)
+                    elif self.level is 4:
+                        self.choose_enemies(Map.LEVEL_4_SLIME_RATE,
+                                       Map.LEVEL_4_SCI_RATE,
+                                       Map.LEVEL_4_BUG_RATE,
+                                       Map.LEVEL_4_SS_RATE, x, y)
+
                 if char == 'W':
                     if random() <= .5:
                         char = 'X'
@@ -154,14 +171,16 @@ class Map(object):
                 new_tile = Tile.Tile(x, y, Map.KEY_DICT[char], self.level)
                 self.tiles.update({(x, y): new_tile})
 
-    def choose_enemies(self, sRate, sciRate, bugRate, x, y):
+    def choose_enemies(self, sRate, sciRate, bugRate, ssRate, x, y):
         r = random()
         if r <= sRate:
             self.enemy_coords.append((x, y))
         elif r <= sciRate+sRate:
             self.sci_coords.append((x, y))
         elif r <= sciRate+sRate+bugRate:
-            self.bug_coords.append((x, y)) 
+            self.bug_coords.append((x, y))
+        elif r <= sciRate+sRate+bugRate+ssRate:
+            self.ss_coords.append((x, y))
 
     def create_map(self, size):
         m = [["v" for x in range(size)] for x in range(size)]
