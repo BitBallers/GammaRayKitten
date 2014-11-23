@@ -79,7 +79,7 @@ class Player(PS.Sprite):
         self.camera = cam
         self.keys = 0
         #The time (s) when you can fire
-        self.fire_rate = .6
+        self.fire_rate = 0.8
         #1 is up, 2 is down, 3 is right, 4 is left, 0 is not shooting
         self.shot_dir = 0
         #time value for shooting
@@ -91,6 +91,7 @@ class Player(PS.Sprite):
         self.d_time = self.DMG_TIME
         self.shot_type = 0
         self.piercing = False
+        self.drunk = True
 
         self.items = []
         self.dont_render = False
@@ -110,16 +111,16 @@ class Player(PS.Sprite):
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
                                 - B.Bullet.WIDTH, self.world_coord_y, 0,
-                                - self.b_speed, self.b_distance))
+                                - self.b_speed, self.b_distance, self.drunk))
                     if self.shot_type == 1:
                         bull.append(B.Bullet(self.world_coord_x +
                                     Player.WIDTH/2 - B.Bullet.WIDTH,
                                     self.world_coord_y, adj_new, -adj_old,
-                                    self.b_distance))
+                                    self.b_distance, False))
                         bull.append(B.Bullet(self.world_coord_x +
                                     Player.WIDTH/2 - B.Bullet.WIDTH,
                                     self.world_coord_y, -adj_new, -adj_old,
-                                    self.b_distance))
+                                    self.b_distance, False))
 
             elif event.key == PG.K_DOWN:
                 if self.s_time >= self.fire_rate:
@@ -129,16 +130,16 @@ class Player(PS.Sprite):
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
                                 - B.Bullet.WIDTH, self.world_coord_y +
                                 Player.HEAD_HEIGHT, 0, self.b_speed,
-                                self.b_distance))
+                                self.b_distance, self.drunk))
                     if self.shot_type == 1:
                         bull.append(B.Bullet(self.world_coord_x +
                                     Player.WIDTH/2 - B.Bullet.WIDTH,
                                     self.world_coord_y + Player.HEAD_HEIGHT,
-                                    adj_new, adj_old, self.b_distance))
+                                    adj_new, adj_old, self.b_distance, False))
                         bull.append(B.Bullet(self.world_coord_x +
                                     Player.WIDTH/2 - B.Bullet.WIDTH,
                                     self.world_coord_y + Player.HEAD_HEIGHT,
-                                    -adj_new, adj_old, self.b_distance))
+                                    -adj_new, adj_old, self.b_distance, False))
 
             elif event.key == PG.K_RIGHT:
                 if self.s_time >= self.fire_rate:
@@ -148,16 +149,16 @@ class Player(PS.Sprite):
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
                                 self.world_coord_y + Player.HEAD_HEIGHT -
                                 B.Bullet.HEIGHT, self.b_speed, 0,
-                                self.b_distance))
+                                self.b_distance, self.drunk))
                     if self.shot_type == 1:
                         bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
                                     self.world_coord_y + Player.HEAD_HEIGHT
                                     - B.Bullet.HEIGHT, adj_old, -adj_new,
-                                    self.b_distance))
+                                    self.b_distance, False))
                         bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
                                     self.world_coord_y + Player.HEAD_HEIGHT -
                                     B.Bullet.HEIGHT, adj_old, adj_new,
-                                    self.b_distance))
+                                    self.b_distance, False))
 
             elif event.key == PG.K_LEFT:
                 if self.s_time >= self.fire_rate:
@@ -166,16 +167,16 @@ class Player(PS.Sprite):
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x, self.world_coord_y
                                 + Player.HEAD_HEIGHT - B.Bullet.HEIGHT,
-                                -self.b_speed, 0, self.b_distance))
+                                -self.b_speed, 0, self.b_distance, self.drunk))
                     if self.shot_type == 1:
                         bull.append(B.Bullet(self.world_coord_x,
                                     self.world_coord_y + Player.HEAD_HEIGHT
                                     - B.Bullet.HEIGHT, -adj_old, adj_new,
-                                    self.b_distance))
+                                    self.b_distance, False))
                         bull.append(B.Bullet(self.world_coord_x,
                                     self.world_coord_y + Player.HEAD_HEIGHT
                                     - B.Bullet.HEIGHT, -adj_old, -adj_new,
-                                    self.b_distance))
+                                    self.b_distance, False))
             #Adding the new key press to the end of
             #the array
             elif event.key in Player.MOVE_KEYS:
@@ -381,7 +382,7 @@ class Player(PS.Sprite):
                     self.items.append(0)
             # shampoo
             elif tile.type == 13:
-                self.fire_rate = .3
+                self.fire_rate = .4
                 if 1 not in self.items:
                     self.items.append(1)
             # pill

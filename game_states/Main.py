@@ -46,7 +46,7 @@ class Game(State.State):
     LEVEL = 1
     MAX_LEVEL = 4
     DOUBLE_KILL_SOUND = None
-    DOUBLE_KILL_TIME = .5
+    DOUBLE_KILL_TIME = .38
 
     def __init__(self, level, size=3, player=None):
         State.State.__init__(self)
