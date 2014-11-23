@@ -20,7 +20,7 @@ class Menu(State.State):
     IMG_3 = None
     IMG_4 = None
     INIT_X = 10
-    INIT_Y = 250
+    INIT_Y = 300
     Y_SPACING = 30
 
     def __init__(self):
@@ -41,17 +41,17 @@ class Menu(State.State):
             Menu.IMG_4 = PI.load("sprites/images/intro4.jpg").convert()
 
 
-        self.menu_strings = ["New Game", "Instructions", "Adjust Brightness", 
-                            "Adjust Sound", "Display Highscores", "Quit"]
+        self.menu_strings = ["New Game", "Instructions", "Options", 
+                            "Display Highscores", "Quit"]
         self.surfs = []
         self.title_surf = Menu.TITLEFONT.render("Gamma Ray Kitten",
                                                 True, (0, 255, 0))
         self.image = Menu.TITLEIMAGE
-        for i in range(6):
+        for i in range(5):
             self.surfs.append(Menu.FONT.render(self.menu_strings[i],
                                                True, (255, 255, 255)))
         self.selected = []
-        for i in range(6):
+        for i in range(5):
             self.selected.append(False)
 
         self.images = []
@@ -80,7 +80,7 @@ class Menu(State.State):
         x_cord = Menu.INIT_X
         y_cord = Menu.INIT_Y
         y_spacing = Menu.Y_SPACING
-        for i in range(6):
+        for i in range(5):
             self.surfs[i] = Menu.FONT.render(self.menu_strings[i],
                                              True, (255, 255, 255))
             surf = self.surfs[i]
@@ -98,9 +98,9 @@ class Menu(State.State):
                 G.Globals.STATE = StoryBoard.StoryBoard("story_texts/intro.txt", self.images)
             if self.selected[1]:
                 G.Globals.STATE = Instructions.Instructions()   
-            if self.selected[4]:
+            if self.selected[3]:
                 G.Globals.STATE = Score.Score()    
-            if self.selected[5]:
+            if self.selected[4]:
                 G.Globals.RUNNING = False
 
     def check_mouse(self, x, y, width, height):
