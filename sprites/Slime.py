@@ -179,6 +179,8 @@ class Slime(Enemy.Enemy):
                     break 
 
     def start_death(self):
+        if self.dying:
+            return
         Slime.SOUND.play()
         if self.b_index == 15:
             self.death_index = 4
