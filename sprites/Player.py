@@ -45,7 +45,8 @@ class Player(PS.Sprite):
     PILL_IMAGE = None
     GLOW = None
     SHOT_SOUND = None
-    SHIELD_GLOW = None    
+    SHIELD_GLOW = None  
+    LASER_SHEET = None  
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
@@ -107,6 +108,8 @@ class Player(PS.Sprite):
         self.render_shield = True
         self.shield_timer = 0
         self.max_shield_time = 10
+
+        self.laser_image = None
 
     def reset_movement(self):
         self.key = []
@@ -238,12 +241,16 @@ class Player(PS.Sprite):
                 self.head_image = Player.ATTACKING_HEAD_IMAGES[6 + index]
         elif self.y_velocity > 0:
             self.head_image = Player.REG_HEAD_IMAGES[1]
+            self.laser_image = Player.LASER_SHEET[1]
         elif self.y_velocity < 0:
             self.head_image = Player.REG_HEAD_IMAGES[0]
+            self.laser_image = Player.LASER_SHEET[0]
         elif self.x_velocity < 0:
             self.head_image = Player.REG_HEAD_IMAGES[2]
+            self.laser_image = Player.LASER_SHEET[2]
         elif self.x_velocity > 0:
             self.head_image = Player.REG_HEAD_IMAGES[3]
+            self.laser_image = Player.LASER_SHEET[3]
 
     def render(self):
         if self.dont_render:
@@ -255,6 +262,9 @@ class Player(PS.Sprite):
         G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5,
                               self.rect.y+Player.HEAD_HEIGHT-4-3.5))
         G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5,
+                              self.rect.y-3.5))
+        if self.activated_item == 1:
+            G.Globals.SCREEN.blit(self.laser_image, (self.rect.x-5,
                               self.rect.y-3.5))
 
     # takes in the fixed time interval, dt
@@ -558,6 +568,17 @@ class Player(PS.Sprite):
                              k*Player.HEAD_HEIGHT, Player.WIDTH,
                              Player.HEAD_HEIGHT))
                 Player.ATTACKING_HEAD_IMAGES.append(surface)
+
+        sheet = PI.load("sprites/images/laser_sprite_sheet.png").convert()
+        key = sheet.get_at((0, 0))
+
+        Player.LASER_SHEET = []
+        
+        for k in range(4):
+            surface = PG.Surface((Player.WIDTH, Player.HEAD_HEIGHT)).convert()
+            surface.set_colorkey(key)
+            surface.blit(sheet, (0, 0), (0, k*Player.HEAD_HEIGHT, Player.WIDTH, Player.HEAD_HEIGHT))
+            Player.LASER_SHEET.append(surface)
 
     def render_items_on_hud(self, x, y):
 
