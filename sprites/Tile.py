@@ -15,7 +15,7 @@ class Tile(PS.Sprite):
     STAIR_TILES = [5]
     FORWARD_WALL_TILE = [0, 2, 3, 4, 8, 9, 10]
     TABLE_TILES = [9, 10]
-    ITEM_TILES = [12, 13, 14, 15]
+    ITEM_TILES = [12, 13, 14, 15, 16, 17, 18]
     KEY_TILES = [11]
 
     def __init__(self, x, y, type, level):
@@ -197,54 +197,105 @@ class Tile(PS.Sprite):
         surface44.blit(pill, (0, 0))
         level_4_images.append(surface44)
 
-        # create sheild tile
-        sheild = PI.load("sprites/images/shield_sprite.png").convert()
-        color_key = sheild.get_at((0, 0))
-        sheild.set_colorkey(color_key)
+        # create heart up tile
+        heart = PI.load("sprites/images/heart_sprite.png").convert()
+        color_key = heart.get_at((0, 0))
+        heart.set_colorkey(color_key)
 
         surface51 = level_1_images[6].copy().convert()
         surface51.set_colorkey(color_key)
-        surface51.blit(sheild, (0, 0))
+        surface51.blit(heart, (0, 0))
         level_1_images.append(surface51)
 
         surface52 = level_2_images[6].copy().convert()
         surface52.set_colorkey(color_key)
-        surface52.blit(sheild, (0, 0))
+        surface52.blit(heart, (0, 0))
         level_2_images.append(surface52)
 
         surface53 = level_3_images[6].copy().convert()
         surface53.set_colorkey(color_key)
-        surface53.blit(sheild, (0, 0))
+        surface53.blit(heart, (0, 0))
         level_3_images.append(surface53)
 
         surface54 = level_4_images[6].copy().convert()
         surface54.set_colorkey(color_key)
-        surface54.blit(sheild, (0, 0))
+        surface54.blit(heart, (0, 0))
         level_4_images.append(surface54)
 
-        # create the beer tile
-        beer = PI.load("sprites/images/beer_sprite.png").convert()
-        color_key = beer.get_at((0, 0))
-        sheild.set_colorkey(color_key)
+        # create shield tile
+        shield = PI.load("sprites/images/shield_sprite.png").convert()
+        color_key = shield.get_at((0, 0))
+        shield.set_colorkey(color_key)
+
         surface61 = level_1_images[6].copy().convert()
         surface61.set_colorkey(color_key)
-        surface61.blit(beer, (0, 0))
+        surface61.blit(shield, (0, 0))
         level_1_images.append(surface61)
 
         surface62 = level_2_images[6].copy().convert()
         surface62.set_colorkey(color_key)
-        surface62.blit(beer, (0, 0))
+        surface62.blit(shield, (0, 0))
         level_2_images.append(surface62)
 
         surface63 = level_3_images[6].copy().convert()
         surface63.set_colorkey(color_key)
-        surface63.blit(beer, (0, 0))
+        surface63.blit(shield, (0, 0))
         level_3_images.append(surface63)
 
         surface64 = level_4_images[6].copy().convert()
         surface64.set_colorkey(color_key)
-        surface64.blit(beer, (0, 0))
-        level_4_images.append(surface54)
+        surface64.blit(shield, (0, 0))
+        level_4_images.append(surface64)
+
+        # create laser tile
+        laser = PI.load("sprites/images/laser_sprite.png").convert()
+        color_key = laser.get_at((0, 0))
+        laser.set_colorkey(color_key)
+
+        surface71 = level_1_images[6].copy().convert()
+        surface71.set_colorkey(color_key)
+        surface71.blit(laser, (0, 0))
+        level_1_images.append(surface71)
+
+        surface72 = level_2_images[6].copy().convert()
+        surface72.set_colorkey(color_key)
+        surface72.blit(laser, (0, 0))
+        level_2_images.append(surface72)
+
+        surface73 = level_3_images[6].copy().convert()
+        surface73.set_colorkey(color_key)
+        surface73.blit(laser, (0, 0))
+        level_3_images.append(surface73)
+
+        surface74 = level_4_images[6].copy().convert()
+        surface74.set_colorkey(color_key)
+        surface74.blit(laser, (0, 0))
+        level_4_images.append(surface74)
+
+        # create the beer tile
+        beer = PI.load("sprites/images/beer_sprite.png").convert()
+        color_key = beer.get_at((0, 0))
+        beer.set_colorkey(color_key)
+
+        surface81 = level_1_images[6].copy().convert()
+        surface81.set_colorkey(color_key)
+        surface81.blit(beer, (0, 0))
+        level_1_images.append(surface81)
+
+        surface82 = level_2_images[6].copy().convert()
+        surface82.set_colorkey(color_key)
+        surface82.blit(beer, (0, 0))
+        level_2_images.append(surface82)
+
+        surface83 = level_3_images[6].copy().convert()
+        surface83.set_colorkey(color_key)
+        surface83.blit(beer, (0, 0))
+        level_3_images.append(surface83)
+
+        surface84 = level_4_images[6].copy().convert()
+        surface84.set_colorkey(color_key)
+        surface84.blit(beer, (0, 0))
+        level_4_images.append(surface84)
 
 
         Tile.IMAGES.append(level_1_images)

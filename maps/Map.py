@@ -2,6 +2,7 @@ import Globals as G
 import sprites.Tile as Tile
 from random import randint
 from random import random
+from random import choice
 
 
 class Map(object):
@@ -39,8 +40,10 @@ class Map(object):
     def __init__(self, size, level, player):
         if player is None:
             self.player_items = []
+            self.player_activated_item = -1
         else:
             self.player_items = player.items
+            self.player_activated_item = player.activated_item
         self.level = level
         self.size = size
         if not Map.KEY_DICT:
@@ -135,9 +138,9 @@ class Map(object):
                     continue
 
                 if char == 'I':
-                    k = randint(12, 15)
-                    while (k - 12) in self.player_items:
-                        k = randint(12, 15)
+                    k = choice(Tile.Tile.ITEM_TILES)
+                    while (k - 12) in self.player_items or (k - 12) == self.player_activated_item:
+                        k = choice(Tile.Tile.ITEM_TILES)
                     new_tile = Tile.Tile(x, y, k, self.level)
                     self.tiles.update({(x, y): new_tile})
                     continue

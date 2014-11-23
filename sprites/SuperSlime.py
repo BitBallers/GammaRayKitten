@@ -17,10 +17,11 @@ class SuperSlime(Slime.Slime):
     DEATH_IMAGES = None
     CYCLE = 0.5
     MAX_AI_DIST = 500
-    SPEED = 2
+    SPEED = 2.5
     AI_PERCENTAGE = .3
     SOUND = None
     HEALTH = 2
+    INVUL_TIME = .2
 
     def __init__(self, (x, y)):
         Slime.Slime.__init__(self, (x, y))
@@ -44,7 +45,7 @@ class SuperSlime(Slime.Slime):
         self.time = 0.0
         self.dying = False
         self.dead = False
-
+        self.invul_time = SuperSlime.INVUL_TIME
         self.last_x = self.world_x
         self.last_y = self.world_y
         self.health = SuperSlime.HEALTH
@@ -80,6 +81,9 @@ class SuperSlime(Slime.Slime):
                 SuperSlime.DEATH_IMAGES.append(surface)
 
     def animate(self, time):
+        self.invul_time += time
+        if self.invul_time > SuperSlime.INVUL_TIME:
+            self.invul_time = SuperSlime.INVUL_TIME
         k = SuperSlime.CYCLE / 5.0
         index = math.floor(self.time / k)
         index = int(index)
@@ -114,8 +118,11 @@ class SuperSlime(Slime.Slime):
         #Make sure the death doesn't reset if it is already dead
         if self.dying:
             return
+        if self.invul_time < SuperSlime.INVUL_TIME:
+            return
         SuperSlime.SOUND.play()
         self.health = self.health - 1
+        self.invul_time = 0.0
         #Doesn't do anything else if it isn't dead yet
         if self.health > 0:
             return

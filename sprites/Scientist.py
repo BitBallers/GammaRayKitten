@@ -150,7 +150,7 @@ class Scientist(Enemy.Enemy):
                 else:
                     self.image = Scientist.SHOT_IMAGES[0]
                 return B.Bullet(self.world_x + 12, self.world_y + 25, 0,
-                                shot_speed, Scientist.SHOT_DIST)
+                                shot_speed, Scientist.SHOT_DIST, False)
             #Can we shoot in the X-DIR?
             if player.world_coord_y + 50 >= self.world_y \
                     and player.world_coord_y - 50 <= self.world_y:
@@ -165,7 +165,7 @@ class Scientist(Enemy.Enemy):
                 else:
                     self.image = Scientist.SHOT_IMAGES[3]
                 return B.Bullet(self.world_x + 12, self.world_y + 25,
-                                shot_speed, 0, Scientist.SHOT_DIST)
+                                shot_speed, 0, Scientist.SHOT_DIST, False)
             #Which way should we move then?
             '''dist_x = abs(self.world_x - player.world_coord_x)
             dist_y = abs(self.world_y - player.world_coord_y)
