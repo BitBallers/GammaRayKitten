@@ -37,12 +37,9 @@ class Game(State.State):
     SCORE_FONT = None
     HEART_IMAGE = None
     HEALTH_DROP_RATE = .1
-    KEY_IMAGE = None
-    SYRINGE_IMAGE = None
-    PILL_IMAGE = None
-    SHAMPOO_IMAGE = None
-    SHEILD_IMAGE = None
+    KEY_IMAGE = None    
     ITEM_IMAGES = None
+    ACTIVATED_ITEM_IMAGES = None
     LEVEL = 1
     MAX_LEVEL = 4
     DOUBLE_KILL_SOUND = None
@@ -357,6 +354,22 @@ class Game(State.State):
         score_surf = Game.SCORE_FONT.render(
             score_string, True, (255, 255, 255))
         G.Globals.SCREEN.blit(score_surf, (5, G.Globals.HEIGHT + 10))
+        activated_string = "Activated Item:"
+        activated_surf = Game.SCORE_FONT.render(activated_string, 
+            True, (255, 255, 255))
+        G.Globals.SCREEN.blit(activated_surf, (200, G.Globals.HEIGHT+10))
+        if self.player.activated_item != -1:
+            x = activated_surf.get_width()+205
+            activated_item = Game.ACTIVATED_ITEM_IMAGES[self.player.activated_item]
+            if self.player.activate_ready is False:
+                activated_item = Game.ACTIVATED_ITEM_IMAGES[self.player.activated_item].copy()
+                fade = PG.Surface(activated_item.get_size()).convert_alpha()
+                fade.fill((0, 0, 0, 100))
+                activated_item.blit(fade, (0, 0))
+                activated_item.set_colorkey(activated_item.get_at((0, 0)))            
+            G.Globals.SCREEN.blit(activated_item, (x, G.Globals.HEIGHT+10))
+            
+
         heart_x = G.Globals.WIDTH - self.player.max_health * 25 - 5
         hud_y = 25 / 2 + G.Globals.HEIGHT
         heart_y = hud_y + item_box_dimension / \
@@ -386,28 +399,43 @@ class Game(State.State):
         Game.SYRINGE_IMAGE.blit(s_surf, (0, 0))
 
         shampoo = PI.load("sprites/images/shampoo_sprite.png").convert()
-        color_key = shampoo.get_at((0, 0))
-        shampoo.set_colorkey(color_key)
+        color_key = shampoo.get_at((0, 0))        
         Game.SHAMPOO_IMAGE = PG.Surface(shampoo.get_size())
         Game.SHAMPOO_IMAGE.set_colorkey(color_key)
         Game.SHAMPOO_IMAGE.blit(shampoo, (0, 0))
 
         pill = PI.load("sprites/images/pill_sprite.png").convert()
-        color_key = pill.get_at((0, 0))
-        pill.set_colorkey(color_key)
+        color_key = pill.get_at((0, 0))        
         Game.PILL_IMAGE = PG.Surface(pill.get_size())
         Game.PILL_IMAGE.set_colorkey(color_key)
         Game.PILL_IMAGE.blit(pill, (0, 0))
 
+        heart = PI.load("sprites/images/heart_sprite.png").convert()
+        color_key = heart.get_at((0, 0))        
+        Game.HEART_UP_IMAGE = PG.Surface(heart.get_size())
+        Game.HEART_UP_IMAGE.set_colorkey(color_key)
+        Game.HEART_UP_IMAGE.blit(heart, (0, 0))
+
         sheild = PI.load("sprites/images/shield_sprite.png").convert()
-        color_key = sheild.get_at((0, 0))
-        sheild.set_colorkey(color_key)
+        color_key = sheild.get_at((0, 0))        
         Game.SHEILD_IMAGE = PG.Surface(sheild.get_size())
         Game.SHEILD_IMAGE.set_colorkey(color_key)
         Game.SHEILD_IMAGE.blit(sheild, (0, 0))
 
+        laser = PI.load("sprites/images/laser_sprite.png").convert()
+        color_key = laser.get_at((0, 0))        
+        Game.LASER_IMAGE = PG.Surface(laser.get_size())
+        Game.LASER_IMAGE.set_colorkey(color_key)
+        Game.LASER_IMAGE.blit(laser, (0, 0))
+
         Game.ITEM_IMAGES = []
+
         Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
         Game.ITEM_IMAGES.append(Game.SHAMPOO_IMAGE)
         Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
-        Game.ITEM_IMAGES.append(Game.SHEILD_IMAGE)
+        Game.ITEM_IMAGES.append(Game.HEART_UP_IMAGE)
+        
+        Game.ACTIVATED_ITEM_IMAGES = []
+
+        Game.ACTIVATED_ITEM_IMAGES.append(Game.SHEILD_IMAGE)
+        Game.ACTIVATED_ITEM_IMAGES.append(Game.LASER_IMAGE)

@@ -45,9 +45,13 @@ class Player(PS.Sprite):
     PILL_IMAGE = None
     GLOW = None
     SHOT_SOUND = None
+    SHIELD_GLOW = None    
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
+
+        if Player.SHIELD_GLOW is None:
+            Player.SHIELD_GLOW = PI.load("sprites/images/shield_glow.png")
 
         if Player.WALKING_BODY_IMAGES is None:
             self.load_images()
@@ -92,8 +96,16 @@ class Player(PS.Sprite):
         self.shot_type = 0
         self.piercing = False
 
-        self.items = []
+        self.items = []                
         self.dont_render = False
+
+        self.activated_item = -1
+        self.activate_ready = True
+        self.activate_timer = 0
+        self.max_activate_time = 100
+        self.shield_on = False
+        self.shield_timer = 0
+        self.max_shield_time = 10
 
     def reset_movement(self):
         self.key = []
@@ -182,6 +194,13 @@ class Player(PS.Sprite):
                 self.key.append(event.key)
                 self.time = 0
 
+            elif event.key == PG.K_SPACE:
+                if self.activated_item == 0 and self.activate_ready:
+                    self.shield_on = True
+                    self.shield_timer = 0
+                    self.activate_ready = False
+                    self.activate_timer = 0
+
         elif event.type == PG.KEYUP:
             #Remove the key from the array if
             #it is there
@@ -230,6 +249,8 @@ class Player(PS.Sprite):
             return
         # surf = PG.Surface((self.rect.width, self.rect.height)).convert()
         # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
+        if self.shield_on:
+            G.Globals.SCREEN.blit(Player.SHIELD_GLOW, (self.rect.x-5, self.rect.y-3.5), None, PG.BLEND_ADD)
         G.Globals.SCREEN.blit(self.body_image, (self.rect.x-5,
                               self.rect.y+Player.HEAD_HEIGHT-4-3.5))
         G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5,
@@ -365,6 +386,13 @@ class Player(PS.Sprite):
         else:
             self.dont_render = False
 
+        self.shield_timer += time
+        if self.shield_timer >= self.max_shield_time:
+            self.shield_on = False
+        self.activate_timer += time
+        if self.activate_timer >= self.max_activate_time:
+            self.activate_ready = True
+
     def wall_collision(self, tile, map):
         val = 0
         #picking up a key
@@ -389,12 +417,21 @@ class Player(PS.Sprite):
                 self.piercing = True
                 if 2 not in self.items:
                     self.items.append(2)
-            # sheild
+            # heart up
             elif tile.type == 15:
                 self.max_health = self.max_health + 1
                 self.health = self.max_health
                 if 3 not in self.items:
                     self.items.append(3)
+            
+            # shield
+            elif tile.type == 16:
+                self.activated_item = 0
+
+            # laser
+            elif tile.type == 17:
+                self.activated_item = 1
+
             tile.change_image(6)
             val = 1
         #opening a door
@@ -457,7 +494,7 @@ class Player(PS.Sprite):
         return val
 
     def take_damage(self, h_lost):
-        if self.d_time >= Player.DMG_TIME:
+        if self.d_time >= Player.DMG_TIME and self.shield_on is False:
             Player.SOUND.play()
             self.health = self.health - h_lost
             self.d_time = 0
