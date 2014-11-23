@@ -44,6 +44,8 @@ class Game(State.State):
     ITEM_IMAGES = None
     LEVEL = 1
     MAX_LEVEL = 3
+    DOUBLE_KILL_SOUND = None
+    DOUBLE_KILL_TIME = .5
 
     def __init__(self, level, size=3, player=None):
         State.State.__init__(self)
@@ -57,6 +59,9 @@ class Game(State.State):
 
         if level is 1:
             Game.SCORE = 0
+
+        if Game.DOUBLE_KILL_SOUND is None:
+            Game.DOUBLE_KILL_SOUND = PX.Sound("sounds/double_kill.wav")
 
         if Game.HEART_IMAGE is None:
             heart_surf = PI.load("sprites/images/heart.png").convert()
@@ -101,6 +106,9 @@ class Game(State.State):
         self.hearts_group = PS.Group()
         self.l_interval = 0.0
         self.player.reset_movement()
+        self.double_kill_timer = 0
+        self.double_kill = False
+        self.last_killed = None
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
@@ -157,7 +165,7 @@ class Game(State.State):
             self.l_interval = 0.0
 
         self.time += time
-        while self.time > G.Globals.INTERVAL:
+        while self.time > G.Globals.INTERVAL:            
             self.time -= G.Globals.INTERVAL
             for i, e in enumerate(self.enemies.sprites()):
                 dead, bull = e.update(G.Globals.INTERVAL, self.player,
@@ -226,8 +234,17 @@ class Game(State.State):
                     self.e_bullets.remove(bullet)
 
             # Enemy Collision with Bullets
-            result = PS.groupcollide(self.enemies, self.bullets, False, False)
+            result = PS.groupcollide(self.enemies, self.bullets, False, False)            
             for enemy in result:
+                if self.double_kill is False and enemy.dying is False:                    
+                    self.double_kill = True
+                    self.double_kill_timer = 0
+                    self.last_killed = enemy
+                if self.double_kill_timer < Game.DOUBLE_KILL_TIME and self.double_kill \
+                and self.last_killed is not enemy:
+                    Game.DOUBLE_KILL_SOUND.play()
+                    self.double_kill = False                
+
                 enemy.start_death()
                 blood_x = int(enemy.world_x + enemy.width / 2)
                 blood_y = int(enemy.world_y + enemy.height / 2)
@@ -244,7 +261,7 @@ class Game(State.State):
                         self.bullets.remove(bullet)
                 if random.random() < Game.HEALTH_DROP_RATE:
                     self.hearts_group.add(Heart.Heart(enemy.world_x,
-                                                      enemy.world_y))
+                                                      enemy.world_y))                        
 
             # Bullets Collide with Wall
             result = PS.groupcollide(
@@ -265,6 +282,10 @@ class Game(State.State):
                     self.player.health += 1
                     if self.player.health > self.player.max_health:
                         self.player.health = self.player.max_health
+            if self.double_kill:                
+                self.double_kill_timer += time
+                if self.double_kill_timer > Game.DOUBLE_KILL_TIME:
+                    self.double_kill = False                  
 
     def event(self, event):
         if event.type == PG.KEYDOWN and event.key == PG.K_ESCAPE:
