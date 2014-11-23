@@ -87,6 +87,17 @@ class Tile(PS.Sprite):
                                          Tile.WIDTH, Tile.HEIGHT))
             level_3_images.append(surface)
 
+        s_string = "sprites/images/lvl4_texture_sprite_sheet.png"
+        sheet = PI.load(s_string).convert()
+        level_4_images = []
+
+        for i in range(Tile.SPRITE_SHEET_LENGTH):
+            surface = PG.Surface((Tile.WIDTH, Tile.HEIGHT))
+
+            surface.blit(sheet, (0, 0), (i * Tile.WIDTH, 0,
+                                         Tile.WIDTH, Tile.HEIGHT))
+            level_4_images.append(surface)
+
         # create key tile
         key = PI.load("sprites/images/20x12_key.png").convert()
         color_key = key.get_at((19, 0))
@@ -105,6 +116,11 @@ class Tile(PS.Sprite):
         surface13.set_colorkey(color_key)
         surface13.blit(key, (15, 19))
         level_3_images.append(surface13)
+
+        surface14 = level_4_images[6].copy().convert()
+        surface14.set_colorkey(color_key)
+        surface14.blit(key, (15, 19))
+        level_4_images.append(surface14)
 
         # create syringe tile
         syringe = PI.load("sprites/images/syringe_sprite.png").convert()
@@ -126,6 +142,11 @@ class Tile(PS.Sprite):
         surface23.blit(syringe, (0, 0))
         level_3_images.append(surface23)
 
+        surface24 = level_4_images[6].copy().convert()
+        surface24.set_colorkey(color_key)
+        surface24.blit(syringe, (0, 0))
+        level_4_images.append(surface24)
+
         # create shampoo tile
         shampoo = PI.load("sprites/images/shampoo_sprite.png").convert()
         color_key = shampoo.get_at((0, 0))
@@ -145,6 +166,11 @@ class Tile(PS.Sprite):
         surface33.set_colorkey(color_key)
         surface33.blit(shampoo, (0, 0))
         level_3_images.append(surface33)
+
+        surface34 = level_4_images[6].copy().convert()
+        surface34.set_colorkey(color_key)
+        surface34.blit(shampoo, (0, 0))
+        level_4_images.append(surface34)
 
         # create pill tile
         pill = PI.load("sprites/images/pill_sprite.png").convert()
@@ -166,6 +192,11 @@ class Tile(PS.Sprite):
         surface43.blit(pill, (0, 0))
         level_3_images.append(surface43)
 
+        surface44 = level_4_images[6].copy().convert()
+        surface44.set_colorkey(color_key)
+        surface44.blit(pill, (0, 0))
+        level_4_images.append(surface44)
+
         # create sheild tile
         sheild = PI.load("sprites/images/shield_sprite.png").convert()
         color_key = sheild.get_at((0, 0))
@@ -186,10 +217,16 @@ class Tile(PS.Sprite):
         surface53.blit(sheild, (0, 0))
         level_3_images.append(surface53)
 
+        surface54 = level_3_images[6].copy().convert()
+        surface54.set_colorkey(color_key)
+        surface54.blit(sheild, (0, 0))
+        level_4_images.append(surface54)
+
 
         Tile.IMAGES.append(level_1_images)
         Tile.IMAGES.append(level_2_images)
         Tile.IMAGES.append(level_3_images)
+        Tile.IMAGES.append(level_4_images)
 
     def is_wall(self):
         if self.type in Tile.WALL_TILES:
