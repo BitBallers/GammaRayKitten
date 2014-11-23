@@ -140,7 +140,7 @@ class Map(object):
                 if char == 'I':
                     k = choice(Tile.Tile.ITEM_TILES)
                     while (k - 12) in self.player_items or (k - 12) == self.player_activated_item:
-                        k = random.choice(Tile.Tile.ITEM_TILES)
+                        k = choice(Tile.Tile.ITEM_TILES)
                     new_tile = Tile.Tile(x, y, k, self.level)
                     self.tiles.update({(x, y): new_tile})
                     continue

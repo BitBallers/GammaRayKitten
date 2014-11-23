@@ -102,7 +102,7 @@ class Player(PS.Sprite):
         self.activated_item = -1
         self.activate_ready = True
         self.activate_timer = 0
-        self.max_activate_time = 100
+        self.max_activate_time = 20
         self.shield_on = False
         self.render_shield = True
         self.shield_timer = 0
