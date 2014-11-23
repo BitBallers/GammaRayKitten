@@ -79,7 +79,7 @@ class Player(PS.Sprite):
         self.camera = cam
         self.keys = 0
         #The time (s) when you can fire
-        self.fire_rate = 1.0
+        self.fire_rate = .6
         #1 is up, 2 is down, 3 is right, 4 is left, 0 is not shooting
         self.shot_dir = 0
         #time value for shooting
@@ -381,7 +381,7 @@ class Player(PS.Sprite):
                     self.items.append(0)
             # shampoo
             elif tile.type == 13:
-                self.fire_rate = .5
+                self.fire_rate = .3
                 if 1 not in self.items:
                     self.items.append(1)
             # pill

@@ -5,6 +5,7 @@ import pygame.time as PT
 import pygame.sprite as PS
 import pygame.mixer as PX
 import sprites.Scientist as Scientist
+import sprites.SuperSlime as SuperSlime
 import sprites.Bug as Bug
 import sprites.Enemy as Enemy
 import sprites.Player as Player
