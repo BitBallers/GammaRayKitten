@@ -451,6 +451,8 @@ class Player(PS.Sprite):
             #BEER
             elif tile.type == 18:
                 self.drunk = True
+                if 4 not in self.items:
+                    self.items.append(4)
 
             tile.change_image(6)
             val = 1

@@ -428,12 +428,19 @@ class Game(State.State):
         Game.LASER_IMAGE.set_colorkey(color_key)
         Game.LASER_IMAGE.blit(laser, (0, 0))
 
+        beer = PI.load("sprites/images/beer_sprite.png").convert()
+        color_key = laser.get_at((0, 0))
+        Game.BEER_IMAGE = PG.Surface(beer.get_size())
+        Game.BEER_IMAGE.set_colorkey(color_key)
+        Game.BEER_IMAGE.blit(beer, (0, 0))
+
         Game.ITEM_IMAGES = []
 
         Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
         Game.ITEM_IMAGES.append(Game.SHAMPOO_IMAGE)
         Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
         Game.ITEM_IMAGES.append(Game.HEART_UP_IMAGE)
+        Game.ITEM_IMAGES.append(Game.BEER_IMAGE)
         
         Game.ACTIVATED_ITEM_IMAGES = []
 
