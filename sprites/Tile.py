@@ -186,6 +186,24 @@ class Tile(PS.Sprite):
         surface53.blit(sheild, (0, 0))
         level_3_images.append(surface53)
 
+        # create the beer tile
+        beer = PI.load("sprites/images/beer_sprite.png").convert()
+        color_key = beer.get_at((0, 0))
+        sheild.set_colorkey(color_key)
+        surface61 = level_1_images[6].copy().convert()
+        surface61.set_colorkey(color_key)
+        surface61.blit(beer, (0, 0))
+        level_1_images.append(surface61)
+
+        surface62 = level_2_images[6].copy().convert()
+        surface62.set_colorkey(color_key)
+        surface62.blit(beer, (0, 0))
+        level_2_images.append(surface62)
+
+        surface63 = level_3_images[6].copy().convert()
+        surface63.set_colorkey(color_key)
+        surface63.blit(beer, (0, 0))
+        level_3_images.append(surface63)
 
         Tile.IMAGES.append(level_1_images)
         Tile.IMAGES.append(level_2_images)
