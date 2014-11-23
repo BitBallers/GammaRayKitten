@@ -265,3 +265,4 @@ class Scientist(Enemy.Enemy):
         else:
             Scientist.WILHEM_SCREAM.play()
         self.dead = True
+        self.dying = True
