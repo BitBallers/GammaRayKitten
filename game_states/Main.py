@@ -300,6 +300,10 @@ class Game(State.State):
         if event.type == PG.KEYDOWN and event.key == PG.K_0:
             G.new_level(self.player)
             # G.Globals.STATE = Game2.Game2()
+        if event.type == PG.KEYDOWN and event.key == PG.K_9:
+            self.player.activated_item = 1
+        if event.type == PG.KEYDOWN and event.key == PG.K_8:
+            self.player.activated_item = 0
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
             bull, laser = self.player.handle_events(event)
