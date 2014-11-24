@@ -1,26 +1,41 @@
 Team Name: Bit Ballers
 Jay Miller, Trevor Aron, Glen Smith, Bertha Hu
 
-We have added level 3, which contains a new enemy type, the insect.
-The insect is significantly faster than the slimes, hence a more challenging enemy.
-There is also a new landscape to the level, which gives it a more sinister feel
-than the previous two levels. Right now there is only 1 enemy type per each level.
-This is simply to emphasize the differences in levels, but in the final game
-it is likely that there will be a mixture of enemies on each level, and that mixture
-will be determined by the difficulty of the level. This week, we added support for
-that functionality (multiple enemy types per level, spawned at a certain percentage).
+We have added Level 4, along with an additonal enemy type, a pink colored slime, 
+aka the "Super Slime". These super slimes differ from the normal green ones 
+in that they take 2 shots to kill as opposed to one. The new level also 
+features a different looking environment.
 
-We also added a new item type, which like all items, will randomly appear in the item
-room (each item has a equal probability of appearing). This new item is a shield. 
-When the player picks up this item, they are given full health, and the maximum amount
-of health they can obtain increases from 5 to 6.
+Improvements:
+-Each level now has a mixture of enemies. This mixture of enemies is determined by a preset
+probability distribution for each enemy type at each level. For example, on the first level,
+for each enemy spawned, there is an 80% chance it will be a basic green slime (the easiest
+enemy) and a 20% chance it will be a scientist (the second easiest enemy). While on the 
+last level, there is a 60% chance of spawning a super slime while there is a 20% chance 
+of spawning a bug and a 20% chance of spawning a scientist.
 
-We also revised the enemy AI system so that if there is not a valid path towards the player,
-they will "wander" around, as opposed to staying still. Although this "wandering" includes
-staying stationary, for strategic reasons.
+-There is a new item that is a beer bottle. When the player picks up the beer bottle,
+it makes the shots move like a sine wave instead of a straight line. This power-up
+helps the player because it greatly increases the hit radius of each shot.
 
-Finally, we finally added interlevel cutscenes, which are pretty dope.
+-We have also added a new item type, called "Activated Items". Activated items are items
+that don't kick in automatically but are instead activated with the space bar. 
+After the player uses an activated item, there is a cool down period before it can be used
+again. When the item is in this cool down period, it will appear faded out on the HUD.
 
-To skip levels, press 0. 
+-We added a new activated item called the shield. When the shield item is activated, 
+a blue aura will appear around the player until the shield wears off. While the shield is
+on, the player is invincible and will not lose health if it runs into an enemy or is hit
+by an enemy bullet.
 
-To run the game, type "python game.py". 
+-We added another new activated item called the laser. The laser shoots a wide beam in the
+direction that the player is currently facing. The laser also can penetrate through walls,
+making it useful in many situations. An extra artistic feature related to the laser is that,
+when the player is equipped with the laser, the cat is animated with a laser-goggle eye-patch!
+
+CHEATS TO HELP YOU OUT:
+To skip levels, press 0.
+To equip the laser, press 9.
+To equip the shield, press 8. 
+
+To run the game, type "python game.py".
