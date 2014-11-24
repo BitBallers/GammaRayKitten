@@ -13,6 +13,7 @@ import maps.Camera as Camera
 import maps.Map as Map
 import Bullet as B
 import math as m
+import Laser
 
 
 class Player(PS.Sprite):
@@ -46,11 +47,14 @@ class Player(PS.Sprite):
     GLOW = None
     SHOT_SOUND = None
     SHIELD_GLOW = None  
-    LASER_SHEET = None  
+    LASER_SHEET = None 
+    LASER_SOUND = None 
 
     def __init__(self, x_cord, y_cord, cam):
         PS.Sprite.__init__(self)
 
+        if Player.LASER_SOUND is None:
+            Player.LASER_SOUND = PM.Sound("sounds/laser.wav")
         if Player.SHIELD_GLOW is None:
             Player.SHIELD_GLOW = PI.load("sprites/images/shield_glow.png")
 
@@ -108,14 +112,16 @@ class Player(PS.Sprite):
         self.shield_on = False
         self.render_shield = True
         self.shield_timer = 0
-        self.max_shield_time = 10
+        self.max_shield_time = 5
 
         self.laser_image = None
+        self.laser_angle = 0
 
     def reset_movement(self):
         self.key = []
 
     def handle_events(self, event):
+        laser = None
         bull = []
         adj_old = m.cos(m.pi/12)*self.b_speed
         adj_new = m.sin(m.pi/12)*self.b_speed
@@ -205,13 +211,19 @@ class Player(PS.Sprite):
                     self.shield_timer = 0
                     self.activate_ready = False
                     self.activate_timer = 0
+                if self.activated_item == 1 and self.activate_ready:
+                    self.activate_ready = False
+                    self.activate_timer = 0
+                    laser = Laser.Laser((self.world_coord_x+5, self.world_coord_y), 
+                                        self.laser_angle)
+                    Player.LASER_SOUND.play()
 
         elif event.type == PG.KEYUP:
             #Remove the key from the array if
             #it is there
             if event.key in self.key:
                 self.key.remove(event.key)
-        return bull
+        return bull, laser
 
     def set_screen_coords(self, x, y):
         self.rect.x = x
@@ -264,12 +276,15 @@ class Player(PS.Sprite):
                               self.rect.y+Player.HEAD_HEIGHT-4-3.5))
         G.Globals.SCREEN.blit(self.head_image, (self.rect.x-5,
                               self.rect.y-3.5))
-        if self.activated_item == 1:
-            G.Globals.SCREEN.blit(self.laser_image, (self.rect.x-5,
-                              self.rect.y-3.5))
+        if self.activated_item == 1 and self.laser_image is not None:
+            G.Globals.SCREEN.blit(self.laser_image, (self.rect.x-5, self.rect.y-3.5))
 
     # takes in the fixed time interval, dt
     def update(self, time):
+        if self.activated_item == 1:
+            self.max_activate_time = 15
+        if self.activated_item == 0:
+            self.max_activate_time = 30
         #update velocities if a key is currently held down
         if len(self.key) > 0:
             if self.key[-1] == PG.K_w:
@@ -408,6 +423,16 @@ class Player(PS.Sprite):
         self.activate_timer += time
         if self.activate_timer >= self.max_activate_time:
             self.activate_ready = True
+
+        # Laser
+        if self.y_velocity > 0:
+            self.laser_angle = 270
+        elif self.y_velocity < 0:
+            self.laser_angle = 90
+        elif self.x_velocity > 0:
+            self.laser_angle = 0
+        elif self.x_velocity < 0:
+            self.laser_angle = 180
 
     def wall_collision(self, tile, map):
         val = 0

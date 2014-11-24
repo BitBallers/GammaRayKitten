@@ -90,6 +90,7 @@ class Game(State.State):
         self.all_sprites_list = PS.Group()
         self.player_group = PS.Group()
         self.bullets = PS.Group()
+        self.lasers = PS.Group()
         self.e_bullets = PS.Group()
         self.player_group.add(self.player)
         self.enemy_speed = 1
@@ -123,6 +124,7 @@ class Game(State.State):
             b.render()
         for blood in self.blood:
             blood.render()
+        
         # Cat Glow
         """if not self.player.dont_render:
             G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
@@ -189,7 +191,7 @@ class Game(State.State):
             for stain in self.blood_stains:
                 stain.update()
             for heart in self.hearts_group.sprites():
-                heart.update()
+                heart.update()            
 
             self.player.update(G.Globals.INTERVAL)
             self.set_screen_cords_player()
@@ -237,7 +239,9 @@ class Game(State.State):
             # Enemy Collision with Bullets
             result = PS.groupcollide(self.enemies, self.bullets, False, False)            
             for enemy in result:
-                if self.double_kill is False and enemy.dying is False:                    
+                if enemy.dying is True:
+                    continue
+                if self.double_kill is False:                   
                     self.double_kill = True
                     self.double_kill_timer = 0
                     self.last_killed = enemy
@@ -258,7 +262,7 @@ class Game(State.State):
 
                 Game.SCORE = Game.SCORE + 10
                 for bullet in result[enemy]:
-                    if self.player.piercing is False:
+                    if self.player.piercing is False and bullet.__class__.__name__ is not "Laser":
                         self.bullets.remove(bullet)
                 if random.random() < Game.HEALTH_DROP_RATE:
                     self.hearts_group.add(Heart.Heart(enemy.world_x,
@@ -268,7 +272,8 @@ class Game(State.State):
             result = PS.groupcollide(
                 self.bullets, self.wall_sprites_list, False, False)
             for bullet in result:
-                self.bullets.remove(bullet)
+                if bullet.__class__.__name__ is not "Laser": 
+                    self.bullets.remove(bullet)
             # Enemy Bullets Collide with Wall
             result = PS.groupcollide(
                 self.e_bullets, self.wall_sprites_list, False, False)
@@ -297,9 +302,12 @@ class Game(State.State):
             # G.Globals.STATE = Game2.Game2()
 
         elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
-            bull = self.player.handle_events(event)
+            bull, laser = self.player.handle_events(event)
             for b in bull:
                 self.bullets.add(b)
+
+            if laser is not None:
+                self.bullets.add(laser)
 
     def set_screen_coords_map(self):
         self.non_black_tiles = PS.Group()
@@ -364,7 +372,7 @@ class Game(State.State):
             if self.player.activate_ready is False:
                 activated_item = Game.ACTIVATED_ITEM_IMAGES[self.player.activated_item].copy()
                 fade = PG.Surface(activated_item.get_size()).convert_alpha()
-                fade.fill((0, 0, 0, 100))
+                fade.fill((0, 0, 0, 200))
                 activated_item.blit(fade, (0, 0))
                 activated_item.set_colorkey(activated_item.get_at((0, 0)))            
             G.Globals.SCREEN.blit(activated_item, (x, G.Globals.HEIGHT+10))
