@@ -131,8 +131,8 @@ class Scientist(Enemy.Enemy):
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
         if dist >= Scientist.MAX_AI_DIST:
-            x_velocity = 0
-            y_velocity = 0
+            self.x_velocity = 0
+            self.y_velocity = 0
             return None
         #Shot AI
         if dist < Scientist.SHOT_DIST:

@@ -100,13 +100,21 @@ class Slime(Enemy.Enemy):
         if self.time >= Slime.CYCLE:
             self.time = 0
 
+    """def ai(self, player, map, enemies_list, index):
+        self.x_velocity = 2
+        self.y_velocity = 0
+        
+        if not self.is_good_direction(self.x_velocity, self.y_velocity, map, enemies_list, index):
+            self.x_velocity = 0
+            self.y_velocity = 0"""
+
     def ai(self, player, map, enemies_list, index):                      
         sight_vector = ((player.world_coord_x - self.world_x),
                         (player.world_coord_y - self.world_y))
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
         if dist >= Slime.MAX_AI_DIST:
-            x_velocity = 0
-            y_velocity = 0
+            self.x_velocity = 0
+            self.y_velocity = 0
             return
 
         # full AI is only run certain percentage of the time
@@ -115,14 +123,14 @@ class Slime(Enemy.Enemy):
             if self.is_good_direction(self.x_velocity, self.y_velocity,
                                       map, enemies_list, index):
                 return
-            else:                
+            else:
                 k = 0
                 while True:
                     x, y = self.random_velocity(Slime.SPEED)
-                    if(self.is_good_direction(x, y, map, enemies_list, index)):
+                    if self.is_good_direction(x, y, map, enemies_list, index):
                         self.x_velocity = x
                         self.y_velocity = y
-                        # self.wander_time = 0
+                        self.wander_time = 0
                         return
                     k += 1
                     if(k > 200):
@@ -163,7 +171,7 @@ class Slime(Enemy.Enemy):
             self.y_velocity = suggested_y            
             return
 
-        if self.wander_time >= self.max_wander_time:           
+        elif self.wander_time >= self.max_wander_time:           
             k = 0
             while True:
                 x, y = self.random_velocity(Slime.SPEED)
@@ -176,7 +184,9 @@ class Slime(Enemy.Enemy):
                 if(k > 15):
                     self.x_velocity = 0
                     self.y_velocity = 0                    
-                    break 
+                    break
+
+
 
     def start_death(self):
         if self.dying:

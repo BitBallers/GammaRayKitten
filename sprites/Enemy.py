@@ -13,7 +13,7 @@ class Enemy(PS.Sprite):
     def __init__(self):
         PS.Sprite.__init__(self)
         self.wander_time = 0
-        self.max_wander_time = 20
+        self.max_wander_time = 50
 
     def update(self, time, player, map, enemies_list, index):
         self.ai(player, map, enemies_list, index)
@@ -65,64 +65,6 @@ class Enemy(PS.Sprite):
             self.world_x -= x+math.copysign(5, x)
             self.world_y -= y+math.copysign(5, y)
             return True
-
-    """def is_good_direction(self, x, y, map, enemies_list):
-        padding = 5
-        # check other Slime coords
-        for e in enemies_list:
-            if e == self:
-                continue
-            coord = (e.world_x, e.world_y)
-            new_x = self.world_x + x
-            new_y = self.world_y + y
-            if (math.sqrt((new_x - coord[0]) ** 2 + (new_y - coord[1]) ** 2)
-                    <= Enemy.MIN_SEPERATION_DIST):
-                return False
-
-        width = Map.Map.TILE_WIDTH
-        height = Map.Map.TILE_HEIGHT
-        top_left = (self.world_x, self.world_y)
-        top_right = (self.world_x + self.rect.width, self.world_y)
-        bottom_left = (self.world_x, self.world_y + self.rect.height)
-        bottom_right = (
-            self.world_x + self.rect.width, self.world_y + self.rect.height)
-
-        map_x_right = math.floor((self.world_x + width) / width) * width
-        map_x_left = math.ceil((self.world_x - width) / width) * width
-        map_y_down = math.floor((self.world_y + height) / height) * height
-        map_y_up = math.ceil((self.world_y - height) / height) * height
-
-        if x > 0:
-            tly = math.ceil((top_left[1] - height) / height) * height
-            bly = math.ceil((bottom_left[1] - height) / height) * height
-            x = math.floor((top_left[0] + width) / width) * width
-            return (x - top_right[0] >= padding or
-                    (self.check_valid_tile(map, (x, tly))
-                     and self.check_valid_tile(map, (x, bly))))
-
-        elif x < 0:
-            tly = math.ceil((top_left[1] - height) / height) * height
-            bly = math.ceil((bottom_left[1] - height) / height) * height
-            x = math.floor((top_left[0] - width) / width) * width
-            return (top_left[0] - (x + width) >= padding or
-                    (self.check_valid_tile(map, (x, tly)) and
-                     self.check_valid_tile(map, (x, bly))))
-
-        elif y > 0:
-            blx = math.ceil((bottom_left[0] - width) / width) * width
-            brx = math.ceil((bottom_right[0] - width) / width) * width
-            y = math.floor((top_left[1] + height) / height) * height
-            return (y - bottom_left[1] >= padding or
-                    (self.check_valid_tile(map, (blx, y)) and
-                     self.check_valid_tile(map, (brx, y))))
-        elif y < 0:
-            tlx = math.ceil((top_left[0] - width) / width) * width
-            trx = math.ceil((top_right[0] - width) / width) * width
-            y = math.floor((top_left[1] - height) / height) * height
-            return (top_left[1] - (y + width) >= padding or
-                    (self.check_valid_tile(map, (tlx, y)) and
-                     self.check_valid_tile(map, (trx, y))))
-        return False"""
 
     def check_valid_tile(self, map, tile_key):
         if tile_key in map.tiles:

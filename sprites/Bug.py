@@ -93,8 +93,8 @@ class Bug(Enemy.Enemy):
         dist = math.sqrt(sight_vector[0] ** 2 + sight_vector[1] ** 2)
         
         if dist >= Bug.MAX_AI_DIST:
-            x_velocity = 0
-            y_velocity = 0
+            self.x_velocity = 0
+            self.y_velocity = 0
             return
 
         # full AI is only run certain percentage of the time
