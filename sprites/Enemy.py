@@ -25,11 +25,6 @@ class Enemy(PS.Sprite):
         self.rect.x = self.world_x - Camera.Camera.X
         self.rect.y = self.world_y - Camera.Camera.Y
         self.wander_time += time
-        if self.in_wall(map) and (self.rect.x <= -2*self.rect.width or
-                                  self.rect.x >= G.Globals.WIDTH+2*self.rect.width or
-                                  self.rect.y <= -2*self.rect.height or
-                                  self.rect.y >= G.Globals.HEIGHT+2*self.rect.height):
-            self.move_out_of_wall(map)
         return (self.dead, None)
 
     def render(self):

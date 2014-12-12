@@ -25,6 +25,7 @@ import GameOver
 import effects.Blood as Blood
 import effects.BloodStain as BloodStain
 import sprites.Slime as Slime
+import sprites.Boss as Boss
 
 
 class Game(State.State):
@@ -161,6 +162,9 @@ class Game(State.State):
         for coords in self.map.ss_coords:
             new_enemy = SuperSlime.SuperSlime(coords)
             self.enemies.add(new_enemy)
+        if self.map.boss_coord is not None:            
+            boss = Boss.Boss(self.map.boss_coord)
+            self.enemies.add(boss)
 
     def update(self, time):
         self.l_interval = self.l_interval + .01
@@ -169,8 +173,8 @@ class Game(State.State):
 
         self.time += time
         while self.time > G.Globals.INTERVAL:            
-            self.time -= G.Globals.INTERVAL
-            for i, e in enumerate(self.enemies.sprites()):
+            self.time -= G.Globals.INTERVAL            
+            for i, e in enumerate(self.enemies.sprites()):                
                 dead, bull = e.update(G.Globals.INTERVAL, self.player,
                                       self.map, self.enemies.sprites(), i)
                 if dead:

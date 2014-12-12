@@ -413,6 +413,8 @@ class Player(PS.Sprite):
         else:
             self.dont_render = False
 
+        # shield
+
         self.shield_timer += time
         if self.shield_timer >= self.max_shield_time-2 and math.floor(self.shield_timer/.05) % 2 == 0:
             self.render_shield = False

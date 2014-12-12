@@ -59,6 +59,7 @@ class Map(object):
         self.sci_coords = []
         self.bug_coords = []
         self.ss_coords = []
+        self.boss_coord = None
 
         map_matrix = self.create_map(size)
 
@@ -166,7 +167,9 @@ class Map(object):
                     continue
 
                 if char in Map.ENEMIES:
-                    if self.level is 1:
+                    if self.size is 1:
+                        self.boss_coord = (x, y)
+                    elif self.level is 1:
                         self.choose_enemies(Map.LEVEL_1_SLIME_RATE,
                                        Map.LEVEL_1_SCI_RATE,
                                        Map.LEVEL_1_BUG_RATE,
