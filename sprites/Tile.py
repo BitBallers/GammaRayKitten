@@ -24,6 +24,7 @@ class Tile(PS.Sprite):
             self.load_images()
         if not Tile.LIGHT_IMG:
             self.load_light()
+        
         self.image = Tile.IMAGES[level-1][type]
         self.rect = self.image.get_rect()
         self.world_x = x

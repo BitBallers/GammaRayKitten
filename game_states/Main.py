@@ -41,7 +41,7 @@ class Game(State.State):
     ITEM_IMAGES = None
     ACTIVATED_ITEM_IMAGES = None
     LEVEL = 1
-    MAX_LEVEL = 4
+    MAX_LEVEL = 5
     DOUBLE_KILL_SOUND = None
     DOUBLE_KILL_TIME = .38
 

@@ -36,6 +36,8 @@ class Map(object):
     # Blank Room is Maps[0],  Stairs, Item, key
     MAPS = None
     MAP_FILE = "maps/texts/map_collection.txt"
+    BOSS_MAP_FILE = "maps/texts/boss_map.txt"
+    BOSS_MAP = None
 
     def __init__(self, size, level, player):
         if player is None:
@@ -63,6 +65,24 @@ class Map(object):
         for row_number, row in enumerate(map_matrix):
             for col_number, sub_map in enumerate(row):
                 self.load_sub_map(sub_map, row_number, col_number)
+
+        if self.size == 1:
+            print len(self.tiles)
+            boss_width = 22
+            boss_height = 16
+            Map.WIDTH = boss_width*50+50
+            Map.HEIGHT = boss_height*50+50
+            x = 0
+            while x < Map.WIDTH:
+                self.tiles.update(
+                    {(x, 0): Tile.Tile(x, 0, Map.KEY_DICT['0'], self.level)})
+                x += Map.TILE_WIDTH
+            y = 0
+            while y < Map.HEIGHT:
+                self.tiles.update(
+                    {(0, y): Tile.Tile(0, y, Map.KEY_DICT['0'], self.level)})
+                y += Map.TILE_HEIGHT
+            return
 
         Map.HEIGHT = len(map_matrix) * Map.SUB_HEIGHT + 50
         Map.WIDTH = len(map_matrix[0]) * Map.SUB_WIDTH + 50
@@ -187,6 +207,10 @@ class Map(object):
 
     def create_map(self, size):
         m = [["v" for x in range(size)] for x in range(size)]
+        if size == 1:
+            self.level = 1
+            m[0][0] = Map.BOSS_MAP            
+            return m
         # Add blank room
         m[size - 1][0] = Map.MAPS[0]
         # Add Stair room
@@ -229,3 +253,12 @@ class Map(object):
                 sub_map = []
             else:
                 sub_map.append(line)
+
+        mfile = open(Map.BOSS_MAP_FILE)
+        Map.BOSS_MAP = []
+        for line in mfile.readlines():
+            if line in ['\n']:
+                pass                
+            else:
+                Map.BOSS_MAP.append(line)
+        # Map.BOSS_MAP.append(sub_map)
