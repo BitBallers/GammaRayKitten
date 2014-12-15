@@ -309,7 +309,8 @@ class Game(State.State):
         if event.type == PG.KEYDOWN and event.key == PG.K_8:
             self.player.activated_item = 0
 
-        elif event.type == PG.KEYDOWN or event.type == PG.KEYUP:
+        elif event.type in G.Globals.BUTTONDOWN \
+             or event.type in G.Globals.BUTTONUP:
             bull, laser = self.player.handle_events(event)
             for b in bull:
                 self.bullets.add(b)

@@ -8,6 +8,7 @@ import Score
 import Main
 import StoryBoard
 import Instructions
+import Options
 
 
 class Menu(State.State):
@@ -98,6 +99,8 @@ class Menu(State.State):
                 G.Globals.STATE = StoryBoard.StoryBoard("story_texts/intro.txt", self.images)
             if self.selected[1]:
                 G.Globals.STATE = Instructions.Instructions()   
+            if self.selected[2]:
+                G.Globals.STATE = Options.Options()    
             if self.selected[3]:
                 G.Globals.STATE = Score.Score()    
             if self.selected[4]:

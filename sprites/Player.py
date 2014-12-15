@@ -9,6 +9,7 @@ import pygame.mixer as PM
 import math
 import Globals as G
 import Tile
+import game_states.JoySettings as JoySettings
 import maps.Camera as Camera
 import maps.Map as Map
 import Bullet as B
@@ -40,6 +41,7 @@ class Player(PS.Sprite):
     SPRITE_IMAGE_KEY = None
     MAX_HEALTH = 5
     MOVE_KEYS = [PG.K_w, PG.K_a, PG.K_s, PG.K_d]
+    MOVE_JOYS = [(1,0), (-1,0), (0,1), (0,-1)]
     SHOT_KEYS = [PG.K_UP, PG.K_DOWN, PG.K_RIGHT, PG.K_LEFT]
     SYRINGE_IMAGE = None
     SHAMPOO_IMAGE = None
@@ -66,6 +68,10 @@ class Player(PS.Sprite):
 
         if Player.SHOT_SOUND is None:
             Player.SHOT_SOUND = PM.Sound("sounds/cat_shoot.wav")
+        # adding possible buttons to list of possible buttons here    
+        if len(JoySettings.JoySettings.POSS_BUTTONS) > 0:
+            Player.MOVE_JOYS = JoySettings.JoySettings.POSS_BUTTONS
+            Player.MOVE_JOYS.append((0,0)) # for JOYHATMOTION Release    
 
         self.health = Player.MAX_HEALTH
         self.max_health = Player.MAX_HEALTH
@@ -125,8 +131,19 @@ class Player(PS.Sprite):
         bull = []
         adj_old = m.cos(m.pi/12)*self.b_speed
         adj_new = m.sin(m.pi/12)*self.b_speed
-        if event.type == PG.KEYDOWN:
-            if event.key == PG.K_UP:
+        if event.type in G.Globals.BUTTONDOWN:
+            if G.Globals.JOY_IN_USE: # using joystick, so configure for joy
+                if event.type == PG.JOYBUTTONDOWN:
+                    event_value = event.button
+                #elif event.type == PG.JOYAXISMOTION:
+                #    event_value = event.axis
+                elif event.type == PG.JOYBALLMOTION:
+                    event_value = event.rel
+                elif event.type == PG.JOYHATMOTION:
+                    event_value = event.value                 
+            else: # otherwise, using keyboard so configure event for keyboard
+                event_value = event.key 
+            if event_value == G.Globals.SHOOT_UP:
                 if self.s_time >= self.fire_rate:
                     Player.SHOT_SOUND.play()
                     self.shot_dir = 1
@@ -144,7 +161,7 @@ class Player(PS.Sprite):
                                     self.world_coord_y, -adj_new, -adj_old,
                                     self.b_distance, False))
 
-            elif event.key == PG.K_DOWN:
+            elif event_value == G.Globals.SHOOT_DOWN:
                 if self.s_time >= self.fire_rate:
                     Player.SHOT_SOUND.play()
                     self.shot_dir = 2
@@ -163,7 +180,7 @@ class Player(PS.Sprite):
                                     self.world_coord_y + Player.HEAD_HEIGHT,
                                     -adj_new, adj_old, self.b_distance, False))
 
-            elif event.key == PG.K_RIGHT:
+            elif event_value == G.Globals.SHOOT_RIGHT:
                 if self.s_time >= self.fire_rate:
                     Player.SHOT_SOUND.play()
                     self.shot_dir = 3
@@ -182,7 +199,7 @@ class Player(PS.Sprite):
                                     B.Bullet.HEIGHT, adj_old, adj_new,
                                     self.b_distance, False))
 
-            elif event.key == PG.K_LEFT:
+            elif event_value == G.Globals.SHOOT_LEFT:
                 if self.s_time >= self.fire_rate:
                     Player.SHOT_SOUND.play()
                     self.shot_dir = 4
@@ -201,11 +218,12 @@ class Player(PS.Sprite):
                                     self.b_distance, False))
             #Adding the new key press to the end of
             #the array
-            elif event.key in Player.MOVE_KEYS:
-                self.key.append(event.key)
+            elif event_value in Player.MOVE_KEYS or \
+                  event_value in Player.MOVE_JOYS:
+                self.key.append(event_value)
                 self.time = 0
 
-            elif event.key == PG.K_SPACE:
+            elif event_value == G.Globals.ACT_KEY:
                 if self.activated_item == 0 and self.activate_ready:
                     self.shield_on = True
                     self.shield_timer = 0
@@ -218,11 +236,18 @@ class Player(PS.Sprite):
                                         self.laser_angle)
                     Player.LASER_SOUND.play()
 
-        elif event.type == PG.KEYUP:
+        elif event.type in G.Globals.BUTTONUP:
+            if G.Globals.JOY_IN_USE:
+                if event.type == PG.JOYHATMOTION:
+                    pass
+                else:    
+                    event_value = event.button
+            else:
+                event_value = event.key    
             #Remove the key from the array if
             #it is there
-            if event.key in self.key:
-                self.key.remove(event.key)
+            if event_value in self.key:
+                self.key.remove(event_value)
         return bull, laser
 
     def set_screen_coords(self, x, y):
@@ -287,7 +312,7 @@ class Player(PS.Sprite):
             self.max_activate_time = 30
         #update velocities if a key is currently held down
         if len(self.key) > 0:
-            if self.key[-1] == PG.K_w:
+            if self.key[-1] == G.Globals.UP:
                 #turn on a dime!
                 if self.x_velocity != 0:
                     self.y_velocity = -abs(self.x_velocity)
@@ -297,7 +322,7 @@ class Player(PS.Sprite):
                     self.y_velocity = -self.speed
                 #To avoid drift
                 self.x_velocity = 0
-            elif self.key[-1] == PG.K_s:
+            elif self.key[-1] == G.Globals.DOWN:
                 #turn on a dime!
                 if self.x_velocity != 0:
                     self.y_velocity = abs(self.x_velocity)
@@ -305,7 +330,7 @@ class Player(PS.Sprite):
                 if self.y_velocity > self.speed:
                     self.y_velocity = self.speed
                 self.x_velocity = 0
-            elif self.key[-1] == PG.K_d:
+            elif self.key[-1] == G.Globals.RIGHT:
                 #turn on a dime!
                 if self.y_velocity != 0:
                     self.x_velocity = abs(self.y_velocity)
@@ -313,7 +338,7 @@ class Player(PS.Sprite):
                 if self.x_velocity > self.speed:
                     self.x_velocity = self.speed
                 self.y_velocity = 0
-            elif self.key[-1] == PG.K_a:
+            elif self.key[-1] == G.Globals.LEFT:
                 #turn on a dime!
                 if self.y_velocity != 0:
                     self.x_velocity = -abs(self.y_velocity)
@@ -321,6 +346,12 @@ class Player(PS.Sprite):
                 if self.x_velocity < -self.speed:
                     self.x_velocity = -self.speed
                 self.y_velocity = 0
+            elif self.key[-1] == (0,0):
+                self.key[:] = (i for i in self.key if i not in \
+                 ([(0, 0), (1,0), (-1,0), (0,1), (0,-1)]))
+                if len(self.key) > 1:
+                    del self.key[:]
+                    self.key = []
 
         #No keys are held down---slow down
         else:

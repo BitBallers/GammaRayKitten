@@ -10,6 +10,7 @@ import pygame.image as PI
 import pygame.time as PT
 import pygame.color as PC
 import pygame.mixer as PX
+import pygame.surface as PSF
 import game_states.Menu as Menu
 import Globals as G
 import game_states.Title as Title
@@ -38,9 +39,12 @@ def initialize():
 
 
 def loop():
+    brightness = PSF.Surface((G.Globals.WIDTH, G.Globals.HEIGHT))
     while G.Globals.RUNNING:
         last = PT.get_ticks()
         G.Globals.STATE.render()
+        brightness.set_alpha(((100-G.Globals.BRIGHT_INTERVAL)/100.0)*255)
+        G.Globals.SCREEN.blit(brightness, (0, 0))
         PD.flip()
         elapsed = (PT.get_ticks() - last) / 1000.0
         G.Globals.STATE.update(elapsed)
