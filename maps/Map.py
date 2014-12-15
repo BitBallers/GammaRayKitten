@@ -67,8 +67,7 @@ class Map(object):
             for col_number, sub_map in enumerate(row):
                 self.load_sub_map(sub_map, row_number, col_number)
 
-        if self.size == 1:
-            print len(self.tiles)
+        if self.size == 1:            
             boss_width = 22
             boss_height = 16
             Map.WIDTH = boss_width*50+50
