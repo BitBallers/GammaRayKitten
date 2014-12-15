@@ -9,6 +9,7 @@ import Bullet as B
 import maps.Map as Map
 import maps.Camera as Camera
 import math
+import pygame.transform as PT
 
 
 class Boss(Enemy.Enemy):
@@ -73,9 +74,18 @@ class Boss(Enemy.Enemy):
         self.shot_type = 0
         self.piercing = False
         self.drunk = False
+        self.dying = False
                  
         self.dont_render = False   
-        self.dead = False  
+        self.dead = False
+        self.move_targets = []
+        self.closest_target = None 
+        self.re_target = None
+        self.jump = False
+        self.jumpx = False
+        self.jumpy = False
+        self.jump_scale = 1
+        self.target_index = 0 
 
     def render(self):
         if self.dont_render:
@@ -84,12 +94,27 @@ class Boss(Enemy.Enemy):
         # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
         x = self.world_coord_x - Camera.Camera.X
         y = self.world_coord_y - Camera.Camera.Y
+        if self.jump is True:
+            b_width = int(self.body_image.get_width()*self.jump_scale)
+            b_height = int(self.body_image.get_height()*self.jump_scale)
+            h_width = int(self.head_image.get_width()*self.jump_scale)
+            h_height = int(self.head_image.get_height()*self.jump_scale)
+            b = PT.scale(self.body_image, (b_width, b_height))
+            h = PT.scale(self.head_image, (h_width, h_height))
+            s = self.jump_scale
+            """G.Globals.SCREEN.blit(b, int((s*(x-5)), int(s*(y+Boss.HEAD_HEIGHT-4-3.5))))
+            G.Globals.SCREEN.blit(h, int((s*(x-5)), int(s*(y-3.5))))"""
+            G.Globals.SCREEN.blit(b, (x-5, y+Boss.HEAD_HEIGHT-4-3.5))
+            G.Globals.SCREEN.blit(h, (x-5, y-3.5-int((1-self.jump_scale)*5)))
+            return
         G.Globals.SCREEN.blit(self.body_image, (x-5,
                               y+Boss.HEAD_HEIGHT-4-3.5))
         G.Globals.SCREEN.blit(self.head_image, (x-5,
                               y-3.5))  
 
     def update(self, time, player, map, enemies_list, index):
+        bullet = self.ai(time, player, map)
+        
         # update world coords
         self.world_coord_x += self.x_velocity
         self.world_coord_y += self.y_velocity
@@ -112,11 +137,6 @@ class Boss(Enemy.Enemy):
         self.d_time += time
         if self.time >= Boss.CYCLE:
             self.time = 0
-        #make sure shot time doesn't get too big
-        if self.s_time > self.fire_rate \
-                and self.s_time > Boss.H_CYCLE + time:
-            self.s_time = (self.fire_rate if self.fire_rate >
-                           Boss.H_CYCLE + time else Boss.H_CYCLE + time)
         self.d_time = (self.d_time if self.d_time < Boss.DMG_TIME
                        else Boss.DMG_TIME)
 
@@ -129,7 +149,187 @@ class Boss(Enemy.Enemy):
         self.rect.x = self.world_coord_x - Camera.Camera.X
         self.rect.y = self.world_coord_y - Camera.Camera.Y
         self.wander_time += time
-        return self.dead, None
+        return self.dead, bullet
+
+    def ai(self, time, player, map):
+        bull = None
+        x = self.world_coord_x
+        y = self.world_coord_y
+        # jumpx frames = 20
+        # jumpy frames = 10
+        if self.jump is True:
+            f = self.jump_frame
+            if self.jumpx is True:
+                self.jump_scale = 1 + -f*(f-45)*.00125
+                self.jump_frame += 1
+                if self.jump_frame == 40:
+                    self.jump = False
+            else:
+                self.jump_scale = 1 + -f*(f-35)*.00125
+                self.jump_frame += 1
+                if self.jump_frame == 30:
+                    self.jump = False
+
+        
+        if len(self.move_targets) is 0:
+            valid = False
+            while valid is False:
+                self.move_targets = []
+                x_wall_dist = random.randint(50, 300)
+                y_wall_dist = random.randint(50, 200)
+                self.move_targets.append((100+x_wall_dist, 100+y_wall_dist))
+                self.move_targets.append((map.WIDTH-50-x_wall_dist, 100+y_wall_dist))
+                self.move_targets.append((map.WIDTH-50-x_wall_dist, map.HEIGHT-50-y_wall_dist))
+                self.move_targets.append((100+x_wall_dist, map.HEIGHT-50-y_wall_dist))
+                valid = True
+                for t in self.move_targets:
+                    if self.in_wall_xy(t, map):
+                        valid = False
+        if len(self.move_targets) > 0:
+            if self.closest_target is None:
+                min_dist = 99999999999
+                for target in self.move_targets:
+                    dist_sq = (x-target[0])**2+(y-target[1])**2
+                    if dist_sq < min_dist:
+                        min_dist = dist_sq
+                        self.closest_target = target
+            if abs(self.closest_target[0]-x) <= 5 or abs(self.closest_target[1]-y) <= 5:
+                if abs(self.closest_target[0]-x) <= 5 and abs(self.closest_target[1]-y) <= 5:
+                    self.move_targets.remove(self.closest_target)
+                    self.closest_target = None
+                elif abs(self.closest_target[0]-x) <= 5:
+                    self.y_velocity = math.copysign(self.speed, self.closest_target[1]-y)
+                    self.x_velocity = 0
+                else:
+                    self.x_velocity = math.copysign(self.speed, self.closest_target[0]-x)
+                    self.y_velocity = 0
+            elif abs(self.closest_target[0]-x) < abs(self.closest_target[1]-y):
+                self.x_velocity = math.copysign(self.speed, self.closest_target[0]-self.world_coord_x)
+                self.y_velocity = 0
+            else:
+                self.y_velocity = math.copysign(self.speed, self.closest_target[1]-self.world_coord_y)
+                self.x_velocity = 0
+
+        if self.is_good_direction(self.x_velocity, self.y_velocity, map) is False and self.jump is False:
+            self.jump = True
+            self.jump_frame = 0
+            if self.x_velocity != 0:
+                self.jumpx = True
+                self.jumpy = False
+            else:
+                self.jumpx = False
+                self.jumpy = True
+        if self.s_time >= self.fire_rate:
+            bull = self.shoot(self.determine_shot(player))
+        return bull
+
+    def is_good_direction(self, x, y, map, enemies_list=[], index=0):
+        self.world_coord_x += x*3
+        self.world_coord_y += y*3
+        if self.in_wall(map):
+            self.world_coord_x -= x*3
+            self.world_coord_y -= y*3
+            return False
+        else:
+            self.world_coord_x -= x*3
+            self.world_coord_y -= y*3
+            return True
+
+    def in_wall(self, map):
+        top_left = (self.world_coord_x, self.world_coord_y)
+        top_right = (self.world_coord_x + self.rect.width, self.world_coord_y)
+        bottom_left = (self.world_coord_x, self.world_coord_y + self.rect.height)
+        bottom_right = (
+            self.world_coord_x + self.rect.width, self.world_coord_y + self.rect.height)
+
+        tlx = math.floor(top_left[0]/50)*50
+        tly = math.floor(top_left[1]/50)*50
+
+        blx = math.floor(bottom_left[0]/50)*50
+        bly = math.floor(bottom_left[1]/50)*50
+
+        trx = math.floor(top_right[0]/50)*50
+        try_ = math.floor(top_right[1]/50)*50
+
+        brx = math.floor(bottom_right[0]/50)*50
+        bry = math.floor(bottom_right[1]/50)*50
+
+        if self.check_valid_tile(map, (tlx, tly)) is False:            
+            return True
+        if self.check_valid_tile(map, (blx, bly)) is False:
+            return True
+        if self.check_valid_tile(map, (trx, try_)) is False:
+            return True
+        if self.check_valid_tile(map, (brx, bry)) is False:
+            return True
+        return False
+
+    def in_wall_xy(self, (x, y), map):
+        top_left = (x, y)
+        top_right = (x + self.rect.width, y)
+        bottom_left = (x, y + self.rect.height)
+        bottom_right = (
+            x + self.rect.width, y + self.rect.height)
+
+        tlx = math.floor(top_left[0]/50)*50
+        tly = math.floor(top_left[1]/50)*50
+
+        blx = math.floor(bottom_left[0]/50)*50
+        bly = math.floor(bottom_left[1]/50)*50
+
+        trx = math.floor(top_right[0]/50)*50
+        try_ = math.floor(top_right[1]/50)*50
+
+        brx = math.floor(bottom_right[0]/50)*50
+        bry = math.floor(bottom_right[1]/50)*50
+
+        if self.check_valid_tile(map, (tlx, tly)) is False:
+            return True
+        if self.check_valid_tile(map, (blx, bly)) is False:
+            return True
+        if self.check_valid_tile(map, (trx, try_)) is False:
+            return True
+        if self.check_valid_tile(map, (brx, bry)) is False:
+            return True
+        return False
+
+
+    def shoot(self, direction):
+        adj_old = math.cos(math.pi/12)*self.b_speed
+        adj_new = math.sin(math.pi/12)*self.b_speed
+        bull = []
+        self.s_time = 0.0
+        bull.append(B.Bullet(self.world_coord_x + Boss.WIDTH/2
+                    - B.Bullet.WIDTH, self.world_coord_y, direction[0]*self.b_speed,
+                    direction[1]*self.b_speed, self.b_distance, True))
+        if direction[0] == 0:
+            bull.append(B.Bullet(self.world_coord_x +
+                    Boss.WIDTH/2 - B.Bullet.WIDTH,
+                    self.world_coord_y, adj_new, adj_old*direction[1],
+                    self.b_distance, False))
+            bull.append(B.Bullet(self.world_coord_x +
+                    Boss.WIDTH/2 - B.Bullet.WIDTH,
+                    self.world_coord_y, -adj_new, adj_old*direction[1],
+                    self.b_distance, False))
+            if direction[1] == -1:
+                self.shot_dir = 1
+            else:
+                self.shot_dir = 2
+        else:
+            bull.append(B.Bullet(self.world_coord_x +
+                    Boss.WIDTH/2 - B.Bullet.WIDTH,
+                    self.world_coord_y, adj_old*direction[0], adj_new,
+                    self.b_distance, False))
+            bull.append(B.Bullet(self.world_coord_x +
+                    Boss.WIDTH/2 - B.Bullet.WIDTH,
+                    self.world_coord_y, adj_old*direction[0], -adj_new,
+                    self.b_distance, False))
+            if direction[0] == 1:
+                self.shot_dir = 3
+            else:
+                self.shot_dir = 4
+        return bull
+
 
     def set_head_image(self):
         k = Boss.H_CYCLE/3.0
@@ -215,3 +415,12 @@ class Boss(Enemy.Enemy):
                              k*Boss.HEAD_HEIGHT, Boss.WIDTH,
                              Boss.HEAD_HEIGHT))
                 Boss.ATTACKING_HEAD_IMAGES.append(surface)
+
+    def determine_shot(self, player):
+        shots = [(self.world_coord_x, self.world_coord_y-self.b_distance),
+                 (self.world_coord_x, self.world_coord_y+self.b_distance),
+                 (self.world_coord_x-self.b_distance, self.world_coord_y),
+                 (self.world_coord_x+self.b_distance, self.world_coord_y)]
+        closest = min(shots, key = lambda x: (x[0]-player.world_coord_x)**2+(x[1]-player.world_coord_y)**2)
+        return (int((closest[0]-self.world_coord_x)/self.b_distance), int((closest[1]-self.world_coord_y)/self.b_distance))
+
