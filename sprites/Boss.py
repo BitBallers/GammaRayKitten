@@ -52,9 +52,10 @@ class Boss(Enemy.Enemy):
         self.head_image = Boss.REG_HEAD_IMAGES[1]
 
         self.rect = PG.Rect(0, 0, Boss.WIDTH-10, Boss.HEIGHT-7)
-
-        self.world_coord_x = x_cord
-        self.world_coord_y = y_cord
+        self.width = Boss.WIDTH
+        self.height = Boss.HEIGHT
+        self.world_x = x_cord
+        self.world_y = y_cord
         self.x_velocity = 0
         self.y_velocity = 0
         self.speed = 4          
@@ -86,14 +87,16 @@ class Boss(Enemy.Enemy):
         self.jumpy = False
         self.jump_scale = 1
         self.target_index = 0 
+        self.re_dir = False
+        self.re_dir_target = None
 
     def render(self):
         if self.dont_render:
             return
         # surf = PG.Surface((self.rect.width, self.rect.height)).convert()
         # G.Globals.SCREEN.blit(surf, (self.rect.x, self.rect.y))
-        x = self.world_coord_x - Camera.Camera.X
-        y = self.world_coord_y - Camera.Camera.Y
+        x = self.world_x - Camera.Camera.X
+        y = self.world_y - Camera.Camera.Y
         if self.jump is True:
             b_width = int(self.body_image.get_width()*self.jump_scale)
             b_height = int(self.body_image.get_height()*self.jump_scale)
@@ -116,8 +119,8 @@ class Boss(Enemy.Enemy):
         bullet = self.ai(time, player, map)
         
         # update world coords
-        self.world_coord_x += self.x_velocity
-        self.world_coord_y += self.y_velocity
+        self.world_x += self.x_velocity
+        self.world_y += self.y_velocity
 
         # animations
         k = Boss.CYCLE/8.0
@@ -146,15 +149,15 @@ class Boss(Enemy.Enemy):
         else:
             self.dont_render = False
 
-        self.rect.x = self.world_coord_x - Camera.Camera.X
-        self.rect.y = self.world_coord_y - Camera.Camera.Y
+        self.rect.x = self.world_x - Camera.Camera.X
+        self.rect.y = self.world_y - Camera.Camera.Y
         self.wander_time += time
         return self.dead, bullet
 
     def ai(self, time, player, map):
         bull = None
-        x = self.world_coord_x
-        y = self.world_coord_y
+        x = self.world_x
+        y = self.world_y
         # jumpx frames = 20
         # jumpy frames = 10
         if self.jump is True:
@@ -195,6 +198,9 @@ class Boss(Enemy.Enemy):
                         self.closest_target = target
             if abs(self.closest_target[0]-x) <= 5 or abs(self.closest_target[1]-y) <= 5:
                 if abs(self.closest_target[0]-x) <= 5 and abs(self.closest_target[1]-y) <= 5:
+                    if self.closest_target == self.re_dir_target:
+                        self.re_dir_target = None
+                        self.re_dir = False
                     self.move_targets.remove(self.closest_target)
                     self.closest_target = None
                 elif abs(self.closest_target[0]-x) <= 5:
@@ -204,13 +210,13 @@ class Boss(Enemy.Enemy):
                     self.x_velocity = math.copysign(self.speed, self.closest_target[0]-x)
                     self.y_velocity = 0
             elif abs(self.closest_target[0]-x) < abs(self.closest_target[1]-y):
-                self.x_velocity = math.copysign(self.speed, self.closest_target[0]-self.world_coord_x)
+                self.x_velocity = math.copysign(self.speed, self.closest_target[0]-self.world_x)
                 self.y_velocity = 0
             else:
-                self.y_velocity = math.copysign(self.speed, self.closest_target[1]-self.world_coord_y)
+                self.y_velocity = math.copysign(self.speed, self.closest_target[1]-self.world_y)
                 self.x_velocity = 0
 
-        if self.is_good_direction(self.x_velocity, self.y_velocity, map) is False and self.jump is False:
+        """if self.is_good_direction(self.x_velocity, self.y_velocity, map) is False and self.jump is False:
             self.jump = True
             self.jump_frame = 0
             if self.x_velocity != 0:
@@ -218,29 +224,46 @@ class Boss(Enemy.Enemy):
                 self.jumpy = False
             else:
                 self.jumpx = False
-                self.jumpy = True
+                self.jumpy = True"""
+        if self.in_wall(map) and self.re_dir is False:
+            if self.y_velocity == 0:
+                if self.world_y <= map.HEIGHT/2:
+                    new_targ = (self.world_x, random.randint(200, 300))
+                else:
+                    new_targ = (self.world_x, map.HEIGHT-random.randint(200, 300))
+            else:
+                if self.world_x <= map.WIDTH/2:
+                    new_targ = (random.randint(100, 200), self.world_y)
+                else:
+                    new_targ = (map.WIDTH-random.randint(100, 200), self.world_y)
+            self.move_targets.append(new_targ)
+            self.re_dir = True
+            self.re_dir_target = new_targ
+            if self.closest_target is not None:
+                self.move_targets.remove(self.closest_target)
+            self.closest_target = new_targ
         if self.s_time >= self.fire_rate:
             bull = self.shoot(self.determine_shot(player))
         return bull
 
     def is_good_direction(self, x, y, map, enemies_list=[], index=0):
-        self.world_coord_x += x*3
-        self.world_coord_y += y*3
+        self.world_x += x*3
+        self.world_y += y*3
         if self.in_wall(map):
-            self.world_coord_x -= x*3
-            self.world_coord_y -= y*3
+            self.world_x -= x*3
+            self.world_y -= y*3
             return False
         else:
-            self.world_coord_x -= x*3
-            self.world_coord_y -= y*3
+            self.world_x -= x*3
+            self.world_y -= y*3
             return True
 
     def in_wall(self, map):
-        top_left = (self.world_coord_x, self.world_coord_y)
-        top_right = (self.world_coord_x + self.rect.width, self.world_coord_y)
-        bottom_left = (self.world_coord_x, self.world_coord_y + self.rect.height)
+        top_left = (self.world_x, self.world_y)
+        top_right = (self.world_x + self.rect.width, self.world_y)
+        bottom_left = (self.world_x, self.world_y + self.rect.height)
         bottom_right = (
-            self.world_coord_x + self.rect.width, self.world_coord_y + self.rect.height)
+            self.world_x + self.rect.width, self.world_y + self.rect.height)
 
         tlx = math.floor(top_left[0]/50)*50
         tly = math.floor(top_left[1]/50)*50
@@ -299,30 +322,30 @@ class Boss(Enemy.Enemy):
         adj_new = math.sin(math.pi/12)*self.b_speed
         bull = []
         self.s_time = 0.0
-        bull.append(B.Bullet(self.world_coord_x + Boss.WIDTH/2
-                    - B.Bullet.WIDTH, self.world_coord_y, direction[0]*self.b_speed,
+        bull.append(B.Bullet(self.world_x + Boss.WIDTH/2
+                    - B.Bullet.WIDTH, self.world_y, direction[0]*self.b_speed,
                     direction[1]*self.b_speed, self.b_distance, True))
         if direction[0] == 0:
-            bull.append(B.Bullet(self.world_coord_x +
+            bull.append(B.Bullet(self.world_x +
                     Boss.WIDTH/2 - B.Bullet.WIDTH,
-                    self.world_coord_y, adj_new, adj_old*direction[1],
+                    self.world_y, adj_new, adj_old*direction[1],
                     self.b_distance, False))
-            bull.append(B.Bullet(self.world_coord_x +
+            bull.append(B.Bullet(self.world_x +
                     Boss.WIDTH/2 - B.Bullet.WIDTH,
-                    self.world_coord_y, -adj_new, adj_old*direction[1],
+                    self.world_y, -adj_new, adj_old*direction[1],
                     self.b_distance, False))
             if direction[1] == -1:
                 self.shot_dir = 1
             else:
                 self.shot_dir = 2
         else:
-            bull.append(B.Bullet(self.world_coord_x +
+            bull.append(B.Bullet(self.world_x +
                     Boss.WIDTH/2 - B.Bullet.WIDTH,
-                    self.world_coord_y, adj_old*direction[0], adj_new,
+                    self.world_y, adj_old*direction[0], adj_new,
                     self.b_distance, False))
-            bull.append(B.Bullet(self.world_coord_x +
+            bull.append(B.Bullet(self.world_x +
                     Boss.WIDTH/2 - B.Bullet.WIDTH,
-                    self.world_coord_y, adj_old*direction[0], -adj_new,
+                    self.world_y, adj_old*direction[0], -adj_new,
                     self.b_distance, False))
             if direction[0] == 1:
                 self.shot_dir = 3
@@ -359,10 +382,10 @@ class Boss(Enemy.Enemy):
         elif self.x_velocity > 0:
             self.head_image = Boss.REG_HEAD_IMAGES[3]            
 
-    def take_damage(self, h_lost):
+    def start_death(self):
         if self.d_time >= Boss.DMG_TIME:
-            Boss.SOUND.play()
-            self.health = self.health - h_lost
+            # Boss.SOUND.play()
+            self.health = self.health - 1
             self.d_time = 0
             if self.health <= 0:
                 return True
@@ -417,10 +440,10 @@ class Boss(Enemy.Enemy):
                 Boss.ATTACKING_HEAD_IMAGES.append(surface)
 
     def determine_shot(self, player):
-        shots = [(self.world_coord_x, self.world_coord_y-self.b_distance),
-                 (self.world_coord_x, self.world_coord_y+self.b_distance),
-                 (self.world_coord_x-self.b_distance, self.world_coord_y),
-                 (self.world_coord_x+self.b_distance, self.world_coord_y)]
+        shots = [(self.world_x, self.world_y-self.b_distance),
+                 (self.world_x, self.world_y+self.b_distance),
+                 (self.world_x-self.b_distance, self.world_y),
+                 (self.world_x+self.b_distance, self.world_y)]
         closest = min(shots, key = lambda x: (x[0]-player.world_coord_x)**2+(x[1]-player.world_coord_y)**2)
-        return (int((closest[0]-self.world_coord_x)/self.b_distance), int((closest[1]-self.world_coord_y)/self.b_distance))
+        return (int((closest[0]-self.world_x)/self.b_distance), int((closest[1]-self.world_y)/self.b_distance))
 
