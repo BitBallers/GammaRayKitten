@@ -96,7 +96,7 @@ class Menu(State.State):
     def event(self, event):
         if event.type == PG.MOUSEBUTTONDOWN:
             if self.selected[0]:
-                G.Globals.STATE = StoryBoard.StoryBoard(1, "story_texts/intro.txt",
+                G.Globals.STATE = StoryBoard.StoryBoard("story_texts/intro.txt",
                                                         self.images)
             if self.selected[1]:
                 G.Globals.STATE = Instructions.Instructions()   
