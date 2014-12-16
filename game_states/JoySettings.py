@@ -5,6 +5,7 @@ import pygame.joystick as PJ
 import pygame.font as PF
 import Globals as G
 import Options
+import Menu
 import State
 
 
@@ -28,8 +29,9 @@ class JoySettings(State.State):
         self.font = JoySettings.FONT
         self.font2 = JoySettings.SECFONT
         self.num_joys = PJ.get_count()
-        if self.num_joys == 0:
-            print "ERROR: No Joystick or gamepad devices found."
+        self.no_joy = False
+        if self.num_joys ==  0:
+            self.no_joy = True
         joys = []
         for i in range(self.num_joys):
             joy = PJ.Joystick(i)
@@ -41,7 +43,7 @@ class JoySettings(State.State):
          "Shoot Up", "Shoot Down", "Shoot Left", "Shoot Right", "Activation Key"]
         self.instructions = self.font.render("Configure your joystick below." ""
          " Press X to set to default settings.",
-        	                                 True, (255, 255, 255))
+                                             True, (255, 255, 255))
 
         self.surfs = []
         for i in range(len(self.buttons)):
@@ -50,47 +52,47 @@ class JoySettings(State.State):
         self.index = 0
         self.selected_buttons = []
         if joys[0].get_numbuttons() < 9:
-        	print "ERROR: Joystick or gamepad does not have enough " +\
-        	      "buttons for configuration."
-        	SYS.exit()       
+            self.no_joy = True
         for i in range(joys[0].get_numbuttons()):
-        	JoySettings.POSS_BUTTONS.append(i)
+            JoySettings.POSS_BUTTONS.append(i)
 
         self.continue_string = self.font2.render("", True, (255, 255, 255))
         self.button_pos = set([(1,0), (-1,0), (0,1), (0,-1)])
 
-
     def render(self):
+        if self.no_joy:
+            G.Globals.STATE = Options.Options()
+            return
         G.Globals.SCREEN.fill((0, 0, 0))
         G.Globals.SCREEN.blit(self.instructions,
             (G.Globals.WIDTH/2-self.instructions.get_width()/2,
-            	10))
+                10))
         x_cord = JoySettings.INIT_X
         y_cord = JoySettings.INIT_Y
         y_spacing = JoySettings.Y_SPACING
 
         for surf in self.surfs:
             G.Globals.SCREEN.blit(surf, (x_cord-surf.get_width()/2,
-            		                     y_cord))
+                	                     y_cord))
             y_cord += (surf.get_height() + y_spacing)
         G.Globals.SCREEN.blit(self.continue_string,
          (x_cord-self.continue_string.get_width()/2, 
           620))
 
     def event(self, event):
-    	button = None
-       	if event.type == PG.JOYBUTTONDOWN:
-       		button = event.button
-       	elif event.type == PG.JOYAXISMOTION:
-       		button = event.axis
-       	elif event.type == PG.JOYBALLMOTION:
-       	    button = event.rel
-       	elif event.type == PG.JOYHATMOTION:
-       	    button = event.value    		
+        button = None
+        if event.type == PG.JOYBUTTONDOWN:
+           button = event.button
+        elif event.type == PG.JOYAXISMOTION:
+           button = event.axis
+        elif event.type == PG.JOYBALLMOTION:
+           button = event.rel
+        elif event.type == PG.JOYHATMOTION:
+           button = event.value    		
 
         if button is None:
             if event.type == PG.KEYDOWN:
-            	if event.key == PG.K_SPACE:
+                if event.key == PG.K_SPACE:
                     self.index = 0
                     G.Globals.BUTTONUP = set([PG.JOYBUTTONUP])
                     G.Globals.BUTTONDOWN = set([PG.JOYBUTTONDOWN, PG.JOYHATMOTION,
@@ -125,14 +127,18 @@ class JoySettings(State.State):
                     if self.index < 8:                                     
                         self.selected_buttons.append(button)
                     self.index += 1  
-         	        
+                     
     def update(self, time):
-    	for i in range(self.index):
-    		self.surfs[i] = self.font2.render(self.buttons[i],
-    			            True, (0, 255, 0))
-    	if self.index >= len(self.buttons):
-    		self.continue_string = self.font2.render("Hit Space to conitnue",
-    				                               True, (255, 255, 255))
+        if self.go_options:
+            G.Globals.STATE = Options.Options()
+            return
+
+        for i in range(self.index):
+        	self.surfs[i] = self.font2.render(self.buttons[i],
+        		            True, (0, 255, 0))
+        if self.index >= len(self.buttons):
+        	self.continue_string = self.font2.render("Hit Space to conitnue",
+        			                               True, (255, 255, 255))
     def default(self):
 
         G.Globals.BUTTONUP = set([PG.KEYUP])
@@ -147,4 +153,4 @@ class JoySettings(State.State):
         G.Globals.SHOOT_LEFT = PG.K_LEFT
         G.Globals.SHOOT_RIGHT = PG.K_RIGHT
         G.Globals.ACT_KEY = PG.K_SPACE
-        G.Globals.STATE = Options.Options()		
+        G.Globals.STATE = Options.Options()    	
