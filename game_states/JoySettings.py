@@ -29,8 +29,7 @@ class JoySettings(State.State):
         self.font2 = JoySettings.SECFONT
         self.num_joys = PJ.get_count()
         if self.num_joys == 0:
-        	print "ERROR: No Joystick or gamepad devices found."
-        	SYS.exit()
+            print "ERROR: No Joystick or gamepad devices found."
         joys = []
         for i in range(self.num_joys):
             joy = PJ.Joystick(i)

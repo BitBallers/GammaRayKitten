@@ -30,7 +30,6 @@ class Globals(object):
 
 
 def new_level(player):
-    print Main.Game.LEVEL
     if Main.Game.LEVEL+1 <= Main.Game.MAX_LEVEL:
         if Main.Game.LEVEL+1 < Main.Game.MAX_LEVEL:
             Globals.STATE = CutScene.CutScene(Main.Game.LEVEL+1, 4, player)
