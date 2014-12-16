@@ -45,16 +45,23 @@ class Game(State.State):
     MAX_LEVEL = 5
     DOUBLE_KILL_SOUND = None
     DOUBLE_KILL_TIME = .38
+    IMG_1 = None
+    IMG_2 = None
 
     def __init__(self, level, size=3, player=None):
         State.State.__init__(self)
-
-        Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
+        if not Game.SCORE_FONT:
+            Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
+        if not Game.IMG_1:
+            Game.IMG_1 = PI.load("sprites/images/enter.jpg").convert()
+        if not Game.IMG_2:
+            Game.IMG_2 = PI.load("sprites/images/catfight.jpg").convert()        
         self.map = Map.Map(size, level, player)
         self.camera = Camera.Camera(0, Map.Map.HEIGHT - G.Globals.HEIGHT, self)
 
         self.blood = []
         self.blood_stains = []
+        self.images = []
 
         if level is 1:
             Game.SCORE = 0
@@ -109,6 +116,10 @@ class Game(State.State):
         self.double_kill_timer = 0
         self.double_kill = False
         self.last_killed = None
+
+        self.images.append(Game.IMG_1)
+        self.images.append(Game.IMG_2)
+
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))

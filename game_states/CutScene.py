@@ -3,6 +3,8 @@ import Globals as G
 import pygame.image as PI
 import State
 import Main
+import StoryBoard
+import Globals as G
 
 
 class CutScene(State.State):
@@ -13,6 +15,7 @@ class CutScene(State.State):
 
     def __init__(self, level, size, player):
         State.State.__init__(self)
+
         # loads image if not already
         if not CutScene.IMAGE:
             CutScene.IMAGE = PI.load("sprites/images/down.jpg").convert()
@@ -30,7 +33,15 @@ class CutScene(State.State):
                                          G.Globals.HUD_HEIGHT))
         self.level = level
         self.size = size
-        self.player = player        
+        self.player = player   
+        if level == 5:
+            images = []
+            img_1 = PI.load("sprites/images/enter.jpg").convert()
+            img_2 = PI.load("sprites/images/catfight.jpg").convert()
+            images.append(img_1)
+            images.append(img_2)
+            G.Globals.STATE = StoryBoard.StoryBoard("story_texts/boss_text.txt",
+                                                  images)     
 
     def render(self):
         G.Globals.SCREEN.fill((0, 0, 0))
