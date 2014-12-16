@@ -145,7 +145,7 @@ class Player(PS.Sprite):
                 event_value = event.key 
             if event_value == G.Globals.SHOOT_UP:
                 if self.s_time >= self.fire_rate:
-                    Player.SHOT_SOUND.play()
+                    G.Globals.FX_CHANNEL.play(Player.SHOT_SOUND)
                     self.shot_dir = 1
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
@@ -163,7 +163,7 @@ class Player(PS.Sprite):
 
             elif event_value == G.Globals.SHOOT_DOWN:
                 if self.s_time >= self.fire_rate:
-                    Player.SHOT_SOUND.play()
+                    G.Globals.FX_CHANNEL.play(Player.SHOT_SOUND)
                     self.shot_dir = 2
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH/2
@@ -182,7 +182,7 @@ class Player(PS.Sprite):
 
             elif event_value == G.Globals.SHOOT_RIGHT:
                 if self.s_time >= self.fire_rate:
-                    Player.SHOT_SOUND.play()
+                    G.Globals.FX_CHANNEL.play(Player.SHOT_SOUND)
                     self.shot_dir = 3
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x + Player.WIDTH,
@@ -201,7 +201,7 @@ class Player(PS.Sprite):
 
             elif event_value == G.Globals.SHOOT_LEFT:
                 if self.s_time >= self.fire_rate:
-                    Player.SHOT_SOUND.play()
+                    G.Globals.FX_CHANNEL.play(Player.SHOT_SOUND)
                     self.shot_dir = 4
                     self.s_time = 0.0
                     bull.append(B.Bullet(self.world_coord_x, self.world_coord_y
@@ -234,7 +234,7 @@ class Player(PS.Sprite):
                     self.activate_timer = 0
                     laser = Laser.Laser((self.world_coord_x+5, self.world_coord_y), 
                                         self.laser_angle)
-                    Player.LASER_SOUND.play()
+                    G.Globals.FX_CHANNEL.play(Player.LASER_SOUND)
 
         elif event.type in G.Globals.BUTTONUP:
             if G.Globals.JOY_IN_USE:
@@ -575,7 +575,7 @@ class Player(PS.Sprite):
 
     def take_damage(self, h_lost):
         if self.d_time >= Player.DMG_TIME and self.shield_on is False:
-            Player.SOUND.play()
+            G.Globals.FX_CHANNEL.play(Player.SOUND)
             self.health = self.health - h_lost
             self.d_time = 0
             if self.health <= 0:

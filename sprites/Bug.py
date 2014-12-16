@@ -179,7 +179,7 @@ class Bug(Enemy.Enemy):
             return False        
 
     def start_death(self):
-        Bug.SOUND.play()
+        G.Globals.FX_CHANNEL.play(Bug.SOUND)
         self.dead = True
         if self.b_index == 15:
             self.death_index = 4

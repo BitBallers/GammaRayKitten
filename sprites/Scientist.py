@@ -261,8 +261,8 @@ class Scientist(Enemy.Enemy):
 
     def start_death(self):
         if random.random() <= .95:
-            Scientist.SOUND.play()
+            G.Globals.FX_CHANNEL.play(Scientist.SOUND)
         else:
-            Scientist.WILHEM_SCREAM.play()
+            G.Globals.FX_CHANNEL.play(Scientist.WILHEM_SCREAM)
         self.dead = True
         self.dying = True

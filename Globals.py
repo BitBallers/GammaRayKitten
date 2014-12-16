@@ -27,6 +27,8 @@ class Globals(object):
     SHOOT_LEFT = PG.K_LEFT
     SHOOT_RIGHT = PG.K_RIGHT
     ACT_KEY = PG.K_SPACE
+    FX_CHANNEL = None
+    MUSIC_CHANNEL = None
 
 
 def new_level(player):
@@ -39,7 +41,7 @@ def new_level(player):
             img_2 = PI.load("sprites/images/catfight.jpg").convert()
             images.append(img_1)
             images.append(img_2)
-            Globals.STATE = StoryBoard.StoryBoard(Main.Game.LEVEL,
-                                "story_texts/boss_text.txt", images)   
+            Globals.STATE = StoryBoard.StoryBoard("story_texts/boss_text.txt", 
+                                                  images, Main.Game.LEVEL, player)   
     else:
         Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)
