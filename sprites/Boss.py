@@ -384,7 +384,7 @@ class Boss(Enemy.Enemy):
 
     def start_death(self):
         if self.d_time >= Boss.DMG_TIME:
-            # Boss.SOUND.play()
+            G.Globals.FX_CHANNEL.play(Boss.SOUND)
             self.health = self.health - 1
             self.d_time = 0
             if self.health <= 0:

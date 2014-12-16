@@ -27,6 +27,8 @@ class Globals(object):
     SHOOT_LEFT = PG.K_LEFT
     SHOOT_RIGHT = PG.K_RIGHT
     ACT_KEY = PG.K_SPACE
+    FX_CHANNEL = None
+    MUSIC_CHANNEL = None
 
 
 def new_level(player):

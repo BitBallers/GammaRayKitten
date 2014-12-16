@@ -36,6 +36,12 @@ def initialize():
     G.Globals.WIDTH = G.Globals.SCREEN.get_width()
     G.Globals.HEIGHT = G.Globals.SCREEN.get_height() - G.Globals.HUD_HEIGHT
     G.Globals.STATE = Title.Title()
+    if PX.get_num_channels() >= 2:
+        G.Globals.FX_CHANNEL = PX.Channel(0)
+        G.Globals.MUSIC_CHANNEL = PX.Channel(1)
+    else:
+        G.Globals.FX_CHANNEL = PX.Channel(0)
+        G.Globals.MUSIC_CHANNEL = PX.Channel(0)
 
 
 def loop():
