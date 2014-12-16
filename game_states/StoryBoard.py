@@ -1,4 +1,5 @@
 import pygame as PG
+import sys as SYS
 import pygame.font as PF
 import pygame.image as PI
 import pygame.mixer as PX
@@ -12,14 +13,14 @@ class StoryBoard(State.State):
     FONT = None
     LENGTH = 7
 
-    def __init__(self, filename, images = []):
+    def __init__(self, level, filename, images = []):
         State.State.__init__(self)
-
         StoryBoard.FONT = PF.Font("fonts/red_october.ttf", 18)
 
         self.images = images
         self.index = -1
         self.time = 0
+        self.level = level
 
         self.fadein = 0
         self.fadeout = 255
@@ -28,7 +29,8 @@ class StoryBoard(State.State):
         try:
             text_file = open(filename, 'r')
         except:
-            print "ERROR: Text file failed to load"
+            print "ERROR: Text file failed to load."
+            SYS.exit()
 
         self.strings1, self.strings2 = \
             StoryBoard.parse_strings(self, text_file)
@@ -77,7 +79,10 @@ class StoryBoard(State.State):
                 self.fadeout = 255
                 self.images[self.index].set_alpha(self.fadein)
             else:
-                G.Globals.STATE = Main.Game(1)
+                if self.level == 4:
+                    G.Globals.STATE = Main.Game(self.level+1, 1)
+                else:
+                    G.Globals.STATE = Main.Game(self.level)    
 
         self.xy1 = ((400 - self.surf1.get_width() / 2,
                      500 - self.surf1.get_height()))
@@ -89,7 +94,11 @@ class StoryBoard(State.State):
 
     def event(self, event):
         if event.type == PG.KEYDOWN:
-            G.Globals.STATE = Main.Game(1)
+            #G.Globals.STATE = Main.Game(self.level)
+            if self.level == 4:
+                G.Globals.STATE = Main.Game(self.level+1, 1)
+            else:
+                G.Globals.STATE = Main.Game(self.level) 
 
     def parse_strings(self, text_file):
 

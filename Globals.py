@@ -1,7 +1,9 @@
 import pygame as PG
+import pygame.image as PI
 import game_states.Main as Main
 import game_states.CutScene as CutScene
 import game_states.GameOver as GameOver
+import game_states.StoryBoard as StoryBoard
 
 
 class Globals(object):
@@ -32,6 +34,12 @@ def new_level(player):
         if Main.Game.LEVEL+1 < Main.Game.MAX_LEVEL:
             Globals.STATE = CutScene.CutScene(Main.Game.LEVEL+1, 4, player)
         else:
-            Globals.STATE = CutScene.CutScene(Main.Game.LEVEL+1, 1, player)
+            images = []
+            img_1 = PI.load("sprites/images/enter.jpg").convert()
+            img_2 = PI.load("sprites/images/catfight.jpg").convert()
+            images.append(img_1)
+            images.append(img_2)
+            Globals.STATE = StoryBoard.StoryBoard(Main.Game.LEVEL,
+                                "story_texts/boss_text.txt", images)   
     else:
         Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)
