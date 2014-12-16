@@ -43,8 +43,9 @@ def loop():
     while G.Globals.RUNNING:
         last = PT.get_ticks()
         G.Globals.STATE.render()
-        brightness.set_alpha(((100-G.Globals.BRIGHT_INTERVAL)/100.0)*255)
-        G.Globals.SCREEN.blit(brightness, (0, 0))
+        if G.Globals.BRIGHT_INTERVAL <= 102 and G.Globals.BRIGHT_INTERVAL >= 80:
+            brightness.set_alpha(((100-G.Globals.BRIGHT_INTERVAL)/100.0)*255)
+            G.Globals.SCREEN.blit(brightness, (0, 0))
         PD.flip()
         elapsed = (PT.get_ticks() - last) / 1000.0
         G.Globals.STATE.update(elapsed)

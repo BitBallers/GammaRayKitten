@@ -127,10 +127,10 @@ class Game(State.State):
             blood.render()
         
         # Cat Glow
-        """if not self.player.dont_render:
+        '''if not self.player.dont_render:
             G.Globals.SCREEN.blit(Player.Player.GLOW, (self.player.rect.x,
                                                        self.player.rect.y),
-                                None, PG.BLEND_ADD)"""
+                                None, PG.BLEND_ADD)'''
         self.player.render()
         # Render Tile lighting
         for tile in self.non_black_tiles.sprites():
@@ -139,11 +139,11 @@ class Game(State.State):
                 coords = (tile.rect.x, tile.rect.y)
                 G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
         # Siren
-        if Game.LEVEL is 2:
-            """surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
+        '''if Game.LEVEL is 2:
+            surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
             c = int(100 + 50 * math.sin(self.l_interval))
             surface.fill((255, c, c))
-            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT)"""
+            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT) '''
         self.black_tiles.draw(G.Globals.SCREEN)
         self.render_HUD()
 
@@ -172,16 +172,19 @@ class Game(State.State):
             self.l_interval = 0.0
 
         self.time += time
-        while self.time > G.Globals.INTERVAL:            
-            self.time -= G.Globals.INTERVAL            
+        while self.time > G.Globals.INTERVAL:
+            self.time -= G.Globals.INTERVAL
+            curr_enemies = PS.Group()
             for i, e in enumerate(self.enemies.sprites()):                
                 dead, bull = e.update(G.Globals.INTERVAL, self.player,
                                       self.map, self.enemies.sprites(), i)
                 if dead:
                     self.enemies.remove(e)
+                elif not (e.rect.x < - e.rect.width or e.rect.x > G.Globals.WIDTH + e.rect.width \
+                        or e.rect.y < -e.rect.height or e.rect.y > G.Globals.HEIGHT + e.rect.height):
+                    curr_enemies.add(e)
                 if bull is not None:
                     self.e_bullets.add(bull)
-
             for b in self.bullets.sprites():
                 if b.update(G.Globals.INTERVAL):
                     self.bullets.remove(b)
@@ -214,7 +217,7 @@ class Game(State.State):
                             Game.SCORE += 100
                             G.new_level(self.player)
             # Player collision with enemies
-            result = PS.groupcollide(self.player_group, self.enemies,
+            result = PS.groupcollide(self.player_group, curr_enemies,
                                      False, False)
             for key in result:
                 for enemy in result[key]:
@@ -241,7 +244,7 @@ class Game(State.State):
                     self.e_bullets.remove(bullet)
 
             # Enemy Collision with Bullets
-            result = PS.groupcollide(self.enemies, self.bullets, False, False)            
+            result = PS.groupcollide(curr_enemies, self.bullets, False, False)            
             for enemy in result:
                 if enemy.dying is True:
                     continue
