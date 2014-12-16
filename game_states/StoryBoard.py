@@ -13,7 +13,7 @@ class StoryBoard(State.State):
     FONT = None
     LENGTH = 7
 
-    def __init__(self, level, filename, images = []):
+    def __init__(self, filename, images = [], level = 1, player = None):
         State.State.__init__(self)
         StoryBoard.FONT = PF.Font("fonts/red_october.ttf", 18)
 
@@ -21,6 +21,7 @@ class StoryBoard(State.State):
         self.index = -1
         self.time = 0
         self.level = level
+        self.player = player
 
         self.fadein = 0
         self.fadeout = 255
@@ -96,7 +97,7 @@ class StoryBoard(State.State):
         if event.type == PG.KEYDOWN:
             #G.Globals.STATE = Main.Game(self.level)
             if self.level == 4:
-                G.Globals.STATE = Main.Game(self.level+1, 1)
+                G.Globals.STATE = Main.Game(self.level+1, 1, self.player)
             else:
                 G.Globals.STATE = Main.Game(self.level) 
 
