@@ -15,7 +15,7 @@ class Tile(PS.Sprite):
     STAIR_TILES = [5]
     FORWARD_WALL_TILE = [0, 2, 3, 4, 8, 9, 10]
     TABLE_TILES = [9, 10]
-    ITEM_TILES = [12, 13, 14, 15, 16, 17, 18]
+    ITEM_TILES = [12, 13, 14, 15, 16, 17, 18, 19]
     KEY_TILES = [11]
 
     def __init__(self, x, y, type, level):
@@ -297,6 +297,32 @@ class Tile(PS.Sprite):
         surface84.set_colorkey(color_key)
         surface84.blit(beer, (0, 0))
         level_4_images.append(surface84)
+
+        # create the boot tile
+        boot = PI.load("sprites/images/boot.png").convert()
+        color_key = boot.get_at((0, 0))
+        boot.set_colorkey(color_key)
+
+        surface91 = level_1_images[6].copy().convert()
+        surface91.set_colorkey(color_key)
+        surface91.blit(boot, (0, 0))
+        level_1_images.append(surface91)
+
+        surface92 = level_2_images[6].copy().convert()
+        surface92.set_colorkey(color_key)
+        surface92.blit(boot, (0, 0))
+        level_2_images.append(surface92)
+
+        surface93 = level_3_images[6].copy().convert()
+        surface93.set_colorkey(color_key)
+        surface93.blit(boot, (0, 0))
+        level_3_images.append(surface93)
+
+        surface94 = level_4_images[6].copy().convert()
+        surface94.set_colorkey(color_key)
+        surface94.blit(boot, (0, 0))
+        level_4_images.append(surface94)
+
 
 
         Tile.IMAGES.append(level_1_images)

@@ -512,6 +512,12 @@ class Player(PS.Sprite):
                 if 4 not in self.items:
                     self.items.append(4)
 
+            #BOOT
+            elif tile.type == 19:
+                self.speed = 10
+                if 5 not in self.items:
+                    self.items.append(5)
+
             tile.change_image(6)
             val = 1
         #opening a door

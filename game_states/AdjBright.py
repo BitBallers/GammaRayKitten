@@ -10,7 +10,7 @@ class AdjBright(State.State):
 
     FONT = None
     SECFONT = None
-    BRIGHT_INTERVAL = 75
+    BRIGHT_INTERVAL = 100
     FADEOUT = .5
 
     def __init__(self):

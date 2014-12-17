@@ -78,9 +78,6 @@ class Options(State.State):
                 if self.selected[1]:
                     G.Globals.STATE = AdjSound.AdjSound()
                 if self.selected[2]:
-                    G.Globals.STATE = JoySettings.JoySettings()                     
-                  
-
-
-
-
+                    G.Globals.STATE = JoySettings.JoySettings()
+                for i in range(0, 3):
+                    self.selected[i] = False
