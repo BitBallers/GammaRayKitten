@@ -42,7 +42,7 @@ class JoySettings(State.State):
 
         self.buttons = ["Move Up" , "Move Down", "Move Left","Move Right",
          "Shoot Up", "Shoot Down", "Shoot Left", "Shoot Right", "Activation Key"]
-        self.instructions = self.font.render("Configure your joystick below." ""
+        self.instructions = self.font.render("Press buttons on gamepad to configure." ""
          " Press X to set to default settings.",
                                              True, (255, 255, 255))
 
@@ -94,7 +94,7 @@ class JoySettings(State.State):
 
         if button is None:
             if event.type == PG.KEYDOWN:
-                if len(self.selected_buttons) == 9: 
+                if self.index == 9: 
                     if event.key == PG.K_SPACE:
                         self.index = 0
                         G.Globals.BUTTONUP = set([PG.JOYBUTTONUP])
