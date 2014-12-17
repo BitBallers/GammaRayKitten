@@ -4,6 +4,7 @@ import pygame.mouse as PM
 import pygame.draw as PD
 import pygame.image as PI
 import State
+import AdjSound
 import Globals as G
 import Menu
 import JoySettings

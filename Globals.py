@@ -30,6 +30,8 @@ class Globals(object):
     FX_CHANNEL = None
     MUSIC_CHANNEL = None
     AMB_MUSIC = None
+    FX_VOL = 10
+    MUSIC_VOL = 10
 
 
 def new_level(player):
@@ -54,3 +56,7 @@ def new_level(player):
 def play_amb():
     if Globals.MUSIC_CHANNEL.get_sound() is not Globals.AMB_MUSIC:
         Globals.MUSIC_CHANNEL.play(Globals.AMB_MUSIC,loops=-1)
+
+def set_vol():
+    Globals.FX_CHANNEL.set_volume(float(Globals.FX_VOL)/10.)
+    Globals.MUSIC_CHANNEL.set_volume(float(Globals.MUSIC_VOL)/10.)

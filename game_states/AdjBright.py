@@ -65,7 +65,7 @@ class AdjBright(State.State):
                      self.save_surf.get_width(), self.save_surf.get_height()):
                          G.Globals.STATE = Options.Options()     
     def update(self, time):
-        if self.interval > AdjBright.BRIGHT_INTERVAL:  
+        if self.interval < AdjBright.BRIGHT_INTERVAL:  
             self.time += time *1000
             if self.time <= 255:
                 self.color1 = (self.time, 255, self.time)  
@@ -73,7 +73,7 @@ class AdjBright(State.State):
                 self.time = 0         
                 AdjBright.BRIGHT_INTERVAL = self.interval
                 G.Globals.BRIGHT_INTERVAL = AdjBright.BRIGHT_INTERVAL
-        elif self.interval < AdjBright.BRIGHT_INTERVAL:
+        elif self.interval > AdjBright.BRIGHT_INTERVAL:
             self.time += time *1000
             if self.time <= 255:
                 self.color2 = (255, self.time, self.time)  
