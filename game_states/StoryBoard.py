@@ -11,7 +11,7 @@ import Main
 class StoryBoard(State.State):
 
     FONT = None
-    LENGTH = 7
+    LENGTH = 5
 
     def __init__(self, filename, images = [], level = 1, player = None):
         State.State.__init__(self)
