@@ -26,7 +26,8 @@ class StoryBoard(State.State):
         self.fadein = 0
         self.fadeout = 255
         self.fade_value = 100
-
+        
+        G.play_amb()
         try:
             text_file = open(filename, 'r')
         except:

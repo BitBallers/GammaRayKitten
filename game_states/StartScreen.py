@@ -21,7 +21,7 @@ class StartScreen(State.State):
         # load fonts
         StartScreen.FONT = PF.Font("fonts/red_october.ttf", 40)
         StartScreen.SECFONT = PF.Font("fonts/red_october.ttf", 65)
-
+        G.play_amb()
         self.index = 0
 
         self.strings1 = []

@@ -47,9 +47,13 @@ class Game(State.State):
     DOUBLE_KILL_TIME = .20
     IMG_1 = None
     IMG_2 = None
+    LEVEL_TRACKS = None
 
     def __init__(self, level, size=3, player=None):
         State.State.__init__(self)
+        if not Game.LEVEL_TRACKS:
+            self.load_tracks() 
+        G.Globals.MUSIC_CHANNEL.play(Game.LEVEL_TRACKS[level-1], loops=-1)
         if not Game.SCORE_FONT:
             Game.SCORE_FONT = PF.Font("fonts/red_october.ttf", 16)
         self.map = Map.Map(size, level, player)
@@ -544,6 +548,14 @@ class Game(State.State):
             x -= item_image.get_width() / 2
             y = hud_y + item_box_dimension / 2 - item_image.get_height() / 2
             G.Globals.SCREEN.blit(item_image, (x, y))
+
+    def load_tracks(self):
+        Game.LEVEL_TRACKS = []
+        Game.LEVEL_TRACKS.append(PX.Sound("sounds/level1.ogg"))
+        Game.LEVEL_TRACKS.append(PX.Sound("sounds/level2.ogg"))
+        Game.LEVEL_TRACKS.append(PX.Sound("sounds/level3.ogg"))
+        Game.LEVEL_TRACKS.append(PX.Sound("sounds/level4.ogg"))
+        Game.LEVEL_TRACKS.append(PX.Sound("sounds/level5.ogg"))
 
     def load_item_images(self):
         s_surf = PI.load("sprites/images/syringe_sprite.png")

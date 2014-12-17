@@ -191,7 +191,7 @@ class Slime(Enemy.Enemy):
     def start_death(self):
         if self.dying:
             return
-        Slime.SOUND.play()
+        G.Globals.FX_CHANNEL.play(Slime.SOUND)
         if self.b_index == 15:
             self.death_index = 4
         else:
