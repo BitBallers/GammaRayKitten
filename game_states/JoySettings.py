@@ -32,6 +32,7 @@ class JoySettings(State.State):
         self.no_joy = False
         if self.num_joys ==  0:
             self.no_joy = True
+            return
         joys = []
         for i in range(self.num_joys):
             joy = PJ.Joystick(i)
@@ -53,6 +54,7 @@ class JoySettings(State.State):
         self.selected_buttons = []
         if joys[0].get_numbuttons() < 9:
             self.no_joy = True
+            return
         for i in range(joys[0].get_numbuttons()):
             JoySettings.POSS_BUTTONS.append(i)
 
@@ -92,14 +94,15 @@ class JoySettings(State.State):
 
         if button is None:
             if event.type == PG.KEYDOWN:
-                if event.key == PG.K_SPACE:
-                    self.index = 0
-                    G.Globals.BUTTONUP = set([PG.JOYBUTTONUP])
-                    G.Globals.BUTTONDOWN = set([PG.JOYBUTTONDOWN, PG.JOYHATMOTION,
+                if len(self.selected_buttons) == 9: 
+                    if event.key == PG.K_SPACE:
+                        self.index = 0
+                        G.Globals.BUTTONUP = set([PG.JOYBUTTONUP])
+                        G.Globals.BUTTONDOWN = set([PG.JOYBUTTONDOWN, PG.JOYHATMOTION,
                                                 PG.JOYBALLMOTION])
-                    G.Globals.JOY_IN_USE = True
-                    JoySettings.POSS_BUTTONS = self.selected_buttons
-                    G.Globals.STATE = Options.Options()
+                        G.Globals.JOY_IN_USE = True
+                        JoySettings.POSS_BUTTONS = self.selected_buttons
+                        G.Globals.STATE = Options.Options()
                 elif event.key == PG.K_x:
                     self.default()    
 
@@ -129,7 +132,7 @@ class JoySettings(State.State):
                     self.index += 1  
                      
     def update(self, time):
-        if self.go_options:
+        if self.no_joy:
             G.Globals.STATE = Options.Options()
             return
 
