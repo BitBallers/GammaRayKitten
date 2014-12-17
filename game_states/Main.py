@@ -44,7 +44,7 @@ class Game(State.State):
     LEVEL = 1
     MAX_LEVEL = 5
     DOUBLE_KILL_SOUND = None
-    DOUBLE_KILL_TIME = .38
+    DOUBLE_KILL_TIME = .30
     IMG_1 = None
     IMG_2 = None
 
@@ -320,6 +320,7 @@ class Game(State.State):
             bull, laser = self.player.handle_events(event)
             for b in bull:
                 self.bullets.add(b)
+                self.double_kill_timer = 0
 
             if laser is not None:
                 self.bullets.add(laser)
@@ -457,6 +458,13 @@ class Game(State.State):
         Game.BEER_IMAGE.set_colorkey(color_key)
         Game.BEER_IMAGE.blit(beer, (0, 0))
 
+        boot = PI.load("sprites/images/boot.png").convert()
+        color_key = laser.get_at((0, 0))
+        Game.BOOT_IMAGE = PG.Surface(boot.get_size())
+        Game.BOOT_IMAGE.set_colorkey(color_key)
+        Game.BOOT_IMAGE.blit(boot, (0, 0))
+
+
         Game.ITEM_IMAGES = []
 
         Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
@@ -464,6 +472,7 @@ class Game(State.State):
         Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
         Game.ITEM_IMAGES.append(Game.HEART_UP_IMAGE)
         Game.ITEM_IMAGES.append(Game.BEER_IMAGE)
+        Game.ITEM_IMAGES.append(Game.BOOT_IMAGE)
         
         Game.ACTIVATED_ITEM_IMAGES = []
 
