@@ -41,7 +41,7 @@ class Menu(State.State):
         if not Menu.IMG_4:
             Menu.IMG_4 = PI.load("sprites/images/intro4.jpg").convert()
 
-
+        G.play_amb()
         self.menu_strings = ["New Game", "Instructions", "Options", 
                             "Display Highscores", "Quit"]
         self.surfs = []

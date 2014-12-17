@@ -15,7 +15,7 @@ class CutScene(State.State):
 
     def __init__(self, level, size, player):
         State.State.__init__(self)
-
+        G.play_amb()
         # loads image if not already
         if not CutScene.IMAGE:
             CutScene.IMAGE = PI.load("sprites/images/down.jpg").convert()

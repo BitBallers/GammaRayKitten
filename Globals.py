@@ -29,6 +29,7 @@ class Globals(object):
     ACT_KEY = PG.K_SPACE
     FX_CHANNEL = None
     MUSIC_CHANNEL = None
+    AMB_MUSIC = None
 
 
 def new_level(player):
@@ -45,3 +46,7 @@ def new_level(player):
                                                   images, Main.Game.LEVEL, player)   
     else:
         Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)
+
+def play_amb():
+    if Globals.MUSIC_CHANNEL.get_sound() is not Globals.AMB_MUSIC:
+        Globals.MUSIC_CHANNEL.play(Globals.AMB_MUSIC,loops=-1)
