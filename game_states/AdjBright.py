@@ -53,12 +53,12 @@ class AdjBright(State.State):
             if Menu.Menu.check_mouse(Menu.Menu(),
                 340, 40, 20, 20):
                 self.color1 = (0, 255, 0)
-                if (self.interval + 1) <= 100: 
+                if (self.interval - 1) >= 0:
                     self.interval -= 1
             elif Menu.Menu.check_mouse(Menu.Menu(),
                  430, 40, 20, 20):
                  self.color2 = (255, 0, 0)
-                 if (self.interval - 1) >= 0:
+                 if (self.interval + 1) <= 100:
                      self.interval += 1
             elif Menu.Menu.check_mouse(Menu.Menu(), 
                      G.Globals.WIDTH-(self.save_x+20), G.Globals.HEIGHT,
