@@ -146,11 +146,11 @@ class Game(State.State):
                 coords = (tile.rect.x, tile.rect.y)
                 G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
         # Siren
-        '''if Game.LEVEL is 2:
+        if Game.LEVEL is 2:
             surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
             c = int(100 + 50 * math.sin(self.l_interval))
             surface.fill((255, c, c))
-            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT) '''
+            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT) 
         self.black_tiles.draw(G.Globals.SCREEN)
         self.render_HUD()
 
@@ -172,135 +172,6 @@ class Game(State.State):
         if self.map.boss_coord is not None:            
             boss = Boss.Boss(self.map.boss_coord)
             self.enemies.add(boss)
-
-    def collision(self, enemies, bulls, e_bulls, player, walls):
-        c_enemies = []
-        c_bulls = []
-        c_ebulls = []
-        c_player = []
-        c_walls = []
-        for i in range(9):
-            c_enemies.append(PS.Group())
-            c_bulls.append(PS.Group())
-            c_ebulls.append(PS.Group())
-            c_player.append(PS.Group())
-            c_walls.append(PS.Group())
-        for e in enemies.sprites():
-            for i in range(9):
-                if e.rect.x > -e.rect.width + i * 800/3 and e.rect.x < e.rect.width + (i+1) * 800/3 \
-                        and e.rect.y > -e.rect.height + (int)(i/3) * 650/3 and \
-                        e.rect.y < e.rect.y + (int)(i+3) * 650/3:
-                    c_enemies[i].add(e)
-        for e in bulls.sprites():
-            for i in range(9):
-                if e.rect.x > -e.rect.width + i * 800/3 and e.rect.x < e.rect.width + (i+1) * 800/3 \
-                        and e.rect.y > -e.rect.height + (int)(i/3) * 650/3 and \
-                        e.rect.y < e.rect.y + (int)(i+3) * 650/3:
-                    c_bulls[i].add(e)
-        for e in e_bulls.sprites():
-            for i in range(9):
-                if e.rect.x > -e.rect.width + i * 800/3 and e.rect.x < e.rect.width + (i+1) * 800/3 \
-                        and e.rect.y > -e.rect.height + (int)(i/3) * 650/3 and \
-                        e.rect.y < e.rect.y + (int)(i+3) * 650/3:
-                    c_ebulls[i].add(e)
-        for e in player.sprites():
-            for i in range(9):
-                if e.rect.x > -e.rect.width + i * 800/3 and e.rect.x < e.rect.width + (i+1) * 800/3 \
-                        and e.rect.y > -e.rect.height + (int)(i/3) * 650/3 and \
-                        e.rect.y < e.rect.y + (int)(i+3) * 650/3:
-                    c_player[i].add(e)
-        for e in walls.sprites():
-            for i in range(9):
-                if e.rect.x > -e.rect.width + i * 800/3 and e.rect.x < e.rect.width + (i+1) * 800/3 \
-                        and e.rect.y > -e.rect.height + (int)(i/3) * 650/3 and \
-                        e.rect.y < e.rect.y + (int)(i+3) * 650/3:
-                    c_walls[i].add(e)
-        #Collision stuff
-        for i in range(9):
-            # Player Collision with walls
-            result = PS.groupcollide(c_player[i], c_walls[i],
-                                     False, False)
-            for key in result:
-                for wall in result[key]:
-                    if self.player.rect.colliderect(wall.rect):
-                        val = self.player.wall_collision(wall, self.map)
-                        self.set_screen_cords_player()
-                        if val == 1:
-                            self.wall_sprites_list.remove(wall)
-                        if val == 2:
-                            Game.SCORE += 100
-                            G.new_level(self.player)
-            # Player collision with enemies
-            result = PS.groupcollide(c_player[i], c_enemies[i],
-                                     False, False)
-            for key in result:
-                for enemy in result[key]:
-                    if enemy.dying is False and self.player.take_damage(1):
-                        G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
-            # Player collision with enemy bullets
-            result = PS.groupcollide(c_player[i], c_ebulls[i], False,
-                                     False)
-            for player in result:
-                if self.player.take_damage(1):
-                    G.Globals.STATE = GameOver.GameOver(False, Game.SCORE)
-                blood_x = player.world_coord_x + Player.Player.WIDTH / 2
-                blood_y = player.world_coord_y + Player.Player.HEIGHT / 2
-                self.blood.append(Blood.Blood(blood_x,
-                                              blood_y, .8))
-                p_width = Player.Player.WIDTH
-                p_height = Player.Player.HEIGHT
-                self.blood_stains.append(BloodStain.BloodStain(blood_x,
-                                                               blood_y,
-                                                               p_width,
-                                                               p_height))
-
-                for bullet in result[player]:
-                    self.e_bullets.remove(bullet)
-
-            # Enemy Collision with Bullets
-            result = PS.groupcollide(c_enemies[i], c_bulls[i], False, False)            
-            for enemy in result:
-                if enemy.dying is True:
-                    continue
-                if self.double_kill is False:                   
-                    self.double_kill = True
-                    self.double_kill_timer = 0
-                    self.last_killed = enemy
-                if self.double_kill_timer < Game.DOUBLE_KILL_TIME and self.double_kill \
-                and self.last_killed is not enemy:
-                    Game.DOUBLE_KILL_SOUND.play()
-                    self.double_kill = False                
-
-                enemy.start_death()
-                blood_x = int(enemy.world_x + enemy.width / 2)
-                blood_y = int(enemy.world_y + enemy.height / 2)
-                self.blood.append(Blood.Blood(blood_x,
-                                              blood_y, .8))
-                self.blood_stains.append(BloodStain.BloodStain(blood_x,
-                                                               blood_y,
-                                                               enemy.width,
-                                                               enemy.height))
-
-                Game.SCORE = Game.SCORE + 10
-                for bullet in result[enemy]:
-                    if self.player.piercing is False and bullet.__class__.__name__ is not "Laser":
-                        self.bullets.remove(bullet)
-                if random.random() < Game.HEALTH_DROP_RATE:
-                    self.hearts_group.add(Heart.Heart(enemy.world_x,
-                                                      enemy.world_y))                        
-
-            # Bullets Collide with Wall
-            result = PS.groupcollide(
-                c_bulls[i], c_walls[i], False, False)
-            for bullet in result:
-                if bullet.__class__.__name__ is not "Laser": 
-                    self.bullets.remove(bullet)
-            # Enemy Bullets Collide with Wall
-            result = PS.groupcollide(
-                c_ebulls[i], c_walls[i], False, False)
-            for bullet in result:
-                self.e_bullets.remove(bullet)
-
     def update(self, time):
         self.l_interval = self.l_interval + .01
         if self.l_interval >= 4 * math.pi:
