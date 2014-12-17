@@ -18,7 +18,7 @@ class Blood(object):
         self.size_decay = []
         self.surfs = []
 
-        self.num_particles = random.randint(75, 150)
+        self.num_particles = random.randint(50, 100)
         self.particles_gone = 0
         self.gone = False
 

@@ -44,7 +44,7 @@ class Game(State.State):
     LEVEL = 1
     MAX_LEVEL = 5
     DOUBLE_KILL_SOUND = None
-    DOUBLE_KILL_TIME = .38
+    DOUBLE_KILL_TIME = .20
     IMG_1 = None
     IMG_2 = None
     LEVEL_TRACKS = None
@@ -146,11 +146,11 @@ class Game(State.State):
                 coords = (tile.rect.x, tile.rect.y)
                 G.Globals.SCREEN.blit(light, coords, None, PG.BLEND_ADD)
         # Siren
-        '''if Game.LEVEL is 2:
+        if Game.LEVEL is 2:
             surface = PG.Surface((G.Globals.WIDTH, G.Globals.HEIGHT)).convert()
             c = int(100 + 50 * math.sin(self.l_interval))
             surface.fill((255, c, c))
-            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT) '''
+            G.Globals.SCREEN.blit(surface, (0, 0), None, PG.BLEND_MULT) 
         self.black_tiles.draw(G.Globals.SCREEN)
         self.render_HUD()
 
@@ -172,12 +172,10 @@ class Game(State.State):
         if self.map.boss_coord is not None:            
             boss = Boss.Boss(self.map.boss_coord)
             self.enemies.add(boss)
-
     def update(self, time):
         self.l_interval = self.l_interval + .01
         if self.l_interval >= 4 * math.pi:
             self.l_interval = 0.0
-
         self.time += time
         while self.time > G.Globals.INTERVAL:
             self.time -= G.Globals.INTERVAL
@@ -209,6 +207,8 @@ class Game(State.State):
 
             self.player.update(G.Globals.INTERVAL)
             self.set_screen_cords_player()
+
+            #self.collision(curr_enemies, self.bullets, self.e_bullets, self.player_group, self.wall_sprites_list) 
             # Are there collisions
             # Player Collision with walls
             result = PS.groupcollide(self.player_group, self.wall_sprites_list,
@@ -324,6 +324,7 @@ class Game(State.State):
             bull, laser = self.player.handle_events(event)
             for b in bull:
                 self.bullets.add(b)
+                self.double_kill_timer = 0
 
             if laser is not None:
                 self.bullets.add(laser)
@@ -469,6 +470,13 @@ class Game(State.State):
         Game.BEER_IMAGE.set_colorkey(color_key)
         Game.BEER_IMAGE.blit(beer, (0, 0))
 
+        boot = PI.load("sprites/images/boot.png").convert()
+        color_key = laser.get_at((0, 0))
+        Game.BOOT_IMAGE = PG.Surface(boot.get_size())
+        Game.BOOT_IMAGE.set_colorkey(color_key)
+        Game.BOOT_IMAGE.blit(boot, (0, 0))
+
+
         Game.ITEM_IMAGES = []
 
         Game.ITEM_IMAGES.append(Game.SYRINGE_IMAGE)
@@ -476,6 +484,7 @@ class Game(State.State):
         Game.ITEM_IMAGES.append(Game.PILL_IMAGE)
         Game.ITEM_IMAGES.append(Game.HEART_UP_IMAGE)
         Game.ITEM_IMAGES.append(Game.BEER_IMAGE)
+        Game.ITEM_IMAGES.append(Game.BOOT_IMAGE)
         
         Game.ACTIVATED_ITEM_IMAGES = []
 
