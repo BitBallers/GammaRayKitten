@@ -45,7 +45,11 @@ def new_level(player):
             Globals.STATE = StoryBoard.StoryBoard("story_texts/boss_text.txt", 
                                                   images, Main.Game.LEVEL, player)   
     else:
-        Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)
+        images = []
+        img_3 = PI.load("sprites/images/ending.jpg").convert()
+        images.append(img_3)
+        Globals.STATE = StoryBoard.StoryBoard("story_texts/ending.txt", images, 
+                                               Main.Game.LEVEL, player)
 
 def play_amb():
     if Globals.MUSIC_CHANNEL.get_sound() is not Globals.AMB_MUSIC:

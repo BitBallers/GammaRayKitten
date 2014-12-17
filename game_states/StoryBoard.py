@@ -6,6 +6,7 @@ import pygame.mixer as PX
 import Globals as G
 import State
 import Main
+import GameOver
 
 
 class StoryBoard(State.State):
@@ -83,6 +84,8 @@ class StoryBoard(State.State):
             else:
                 if self.level == 4:
                     G.Globals.STATE = Main.Game(self.level+1, 1)
+                elif self.level == 5:
+                    G.Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)        
                 else:
                     G.Globals.STATE = Main.Game(self.level)    
 
@@ -99,6 +102,8 @@ class StoryBoard(State.State):
             #G.Globals.STATE = Main.Game(self.level)
             if self.level == 4:
                 G.Globals.STATE = Main.Game(self.level+1, 1, self.player)
+            elif self.level == 5:
+                G.Globals.STATE = GameOver.GameOver(True, Main.Game.SCORE)  
             else:
                 G.Globals.STATE = Main.Game(self.level) 
 
