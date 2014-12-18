@@ -514,7 +514,7 @@ class Player(PS.Sprite):
 
             #BOOT
             elif tile.type == 19:
-                self.speed = 10
+                self.speed = 8
                 if 5 not in self.items:
                     self.items.append(5)
 

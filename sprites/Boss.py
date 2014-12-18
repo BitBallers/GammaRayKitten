@@ -388,6 +388,7 @@ class Boss(Enemy.Enemy):
             self.health = self.health - 1
             self.d_time = 0
             if self.health <= 0:
+                self.dead = True
                 return True
         return False
 

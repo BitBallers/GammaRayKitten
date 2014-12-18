@@ -115,6 +115,7 @@ class Game(State.State):
         self.double_kill_timer = 0
         self.double_kill = False
         self.last_killed = None
+        self.boss = None
 
 
     def render(self):
@@ -170,8 +171,9 @@ class Game(State.State):
             new_enemy = SuperSlime.SuperSlime(coords)
             self.enemies.add(new_enemy)
         if self.map.boss_coord is not None:            
-            boss = Boss.Boss(self.map.boss_coord)
-            self.enemies.add(boss)
+            self.boss = Boss.Boss(self.map.boss_coord)
+            self.enemies.add(self.boss)
+
     def update(self, time):
         self.l_interval = self.l_interval + .01
         if self.l_interval >= 4 * math.pi:
@@ -185,6 +187,10 @@ class Game(State.State):
                                       self.map, self.enemies.sprites(), i)
                 if dead:
                     self.enemies.remove(e)
+                    if self.map.boss_coord is not None:            
+                        Game.SCORE += 500
+                        G.new_level(self.player)
+                        return
                 elif not (e.rect.x < - e.rect.width or e.rect.x > G.Globals.WIDTH + e.rect.width \
                         or e.rect.y < -e.rect.height or e.rect.y > G.Globals.HEIGHT + e.rect.height):
                     curr_enemies.add(e)
@@ -261,7 +267,7 @@ class Game(State.State):
                     self.last_killed = enemy
                 if self.double_kill_timer < Game.DOUBLE_KILL_TIME and self.double_kill \
                 and self.last_killed is not enemy:
-                    Game.DOUBLE_KILL_SOUND.play()
+                    #Game.DOUBLE_KILL_SOUND.play()
                     self.double_kill = False                
 
                 enemy.start_death()
@@ -471,7 +477,7 @@ class Game(State.State):
         Game.BEER_IMAGE.blit(beer, (0, 0))
 
         boot = PI.load("sprites/images/boot.png").convert()
-        color_key = laser.get_at((0, 0))
+        color_key = boot.get_at((0, 0))
         Game.BOOT_IMAGE = PG.Surface(boot.get_size())
         Game.BOOT_IMAGE.set_colorkey(color_key)
         Game.BOOT_IMAGE.blit(boot, (0, 0))
